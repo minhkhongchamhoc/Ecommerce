@@ -1,17 +1,17 @@
 // src/components/RegisterPage.js
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Svg from './assets/svg.svg';
-import Svg1 from './assets/svg1.svg';
-import Svg2 from './assets/svg2.svg';
-import Svg3 from './assets/svg3.svg';
-import Stripe from './assets/stripe.svg';
-import Svg4 from './assets/svg4.svg';
-import Userbtn from './assets/userbtn.svg';
-import Svg5 from './assets/svg5.svg';
-import visaIcon from './assets/visa.png';
-import paypalIcon from './assets/paypal.png';
-import verisignIcon from './assets/verisign.png';
+import Svg from '../assets/svg.svg';
+import Svg1 from '../assets/svg1.svg';
+import Svg2 from '../assets/svg2.svg';
+import Svg3 from '../assets/svg3.svg';
+import Stripe from '../assets/stripe.svg';
+import Svg4 from '../assets/svg4.svg';
+import Userbtn from '../assets/userbtn.svg';
+import Svg5 from '../assets/svg5.svg';
+import visaIcon from '../assets/visa.png';
+import paypalIcon from '../assets/paypal.png';
+import verisignIcon from '../assets/verisign.png';
 
 const RegisterPage = () => {
   return (
