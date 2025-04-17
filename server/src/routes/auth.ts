@@ -1,8 +1,27 @@
-const express = require('express');
-const router = express.Router();
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-const auth = require('../middleware/auth');
+import { Router, Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
+import User, { IUser } from '../models/User';
+import auth from '../middleware/auth';
+
+const router = Router();
+
+interface RegisterRequest extends Request {
+  body: {
+    username: string;
+    email: string;
+    password: string;
+    first_name: string;
+    last_name: string;
+    telephone: string;
+  }
+}
+
+interface LoginRequest extends Request {
+  body: {
+    email: string;
+    password: string;
+  }
+}
 
 /**
  * @swagger
@@ -60,7 +79,7 @@ const auth = require('../middleware/auth');
  *       500:
  *         description: Server error
  */
-router.post('/register', async (req, res) => {
+router.post('/register', async (req: RegisterRequest, res: Response) => {
   try {
     const { username, email, password, first_name, last_name, telephone } = req.body;
 
@@ -88,7 +107,7 @@ router.post('/register', async (req, res) => {
     // Generate token
     const token = jwt.sign(
       { id: user._id },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET as string,
       { expiresIn: '30d' }
     );
 
@@ -104,11 +123,11 @@ router.post('/register', async (req, res) => {
         role: user.role
       }
     });
-  } catch (error) {
+  } catch (error: any) {
     if (error.name === 'ValidationError') {
       return res.status(400).json({ 
         message: 'Validation error',
-        errors: Object.values(error.errors).map(err => err.message)
+        errors: Object.values(error.errors).map((err: any) => err.message)
       });
     }
     res.status(500).json({ message: 'Server error' });
@@ -145,7 +164,7 @@ router.post('/register', async (req, res) => {
  *       500:
  *         description: Server error
  */
-router.post('/login', async (req, res) => {
+router.post('/login', async (req: LoginRequest, res: Response) => {
   try {
     const { email, password } = req.body;
 
@@ -164,7 +183,7 @@ router.post('/login', async (req, res) => {
     // Generate token
     const token = jwt.sign(
       { id: user._id },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET as string,
       { expiresIn: '30d' }
     );
 
@@ -199,7 +218,7 @@ router.post('/login', async (req, res) => {
  *       401:
  *         description: Not authorized
  */
-router.get('/me', auth, async (req, res) => {
+router.get('/me', auth, async (req: Request, res: Response) => {
   try {
     res.json(req.user);
   } catch (error) {
@@ -207,4 +226,4 @@ router.get('/me', auth, async (req, res) => {
   }
 });
 
-module.exports = router; 
+export default router; 

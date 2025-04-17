@@ -1,12 +1,12 @@
-const swaggerJsdoc = require('swagger-jsdoc');
+import swaggerJsdoc from 'swagger-jsdoc';
 
-const options = {
+const options: swaggerJsdoc.Options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'E-commerce API Documentation',
+      title: 'E-commerce API',
       version: '1.0.0',
-      description: 'API documentation for E-commerce project',
+      description: 'API documentation for E-commerce application',
     },
     servers: [
       {
@@ -24,9 +24,9 @@ const options = {
       },
     },
   },
-  apis: ['./routes/*.js'], // Path to the API routes
+  apis: ['./src/routes/*.ts'], // Path to the API routes
 };
 
 const swaggerSpec = swaggerJsdoc(options);
 
-module.exports = swaggerSpec; 
+export default swaggerSpec; 
