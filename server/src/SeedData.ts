@@ -48,16 +48,12 @@ class SeedData {
           continue;
         }
 
-        // Hash password
-        const hashedPassword = await bcrypt.hash(userData.password, 10);
-
-        // Create user
-        const user = new User({
+        // Create user without hashing password again
+        const user = await User.create({
           ...userData,
-          password: hashedPassword
+          password: userData.password // Không hash password ở đây
         });
 
-        await user.save();
         console.log(`User ${userData.email} created successfully`);
       }
     } catch (error) {
