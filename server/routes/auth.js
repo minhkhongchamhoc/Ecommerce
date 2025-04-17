@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const auth = require('../middleware/auth');
 
 /**
  * @swagger
@@ -13,6 +14,9 @@ const User = require('../models/User');
  *         - username
  *         - email
  *         - password
+ *         - first_name
+ *         - last_name
+ *         - telephone
  *       properties:
  *         username:
  *           type: string
@@ -25,11 +29,15 @@ const User = require('../models/User');
  *           type: string
  *           format: password
  *           description: User's password
- *         role:
+ *         first_name:
  *           type: string
- *           enum: [user, admin]
- *           default: user
- *           description: User's role
+ *           description: User's first name
+ *         last_name:
+ *           type: string
+ *           description: User's last name
+ *         telephone:
+ *           type: string
+ *           description: User's phone number
  */
 
 /**
@@ -47,35 +55,32 @@ const User = require('../models/User');
  *     responses:
  *       201:
  *         description: User registered successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 token:
- *                   type: string
- *                 user:
- *                   $ref: '#/components/schemas/User'
  *       400:
- *         description: User already exists
+ *         description: Invalid input or user already exists
  *       500:
  *         description: Server error
  */
 router.post('/register', async (req, res) => {
   try {
-    const { username, email, password } = req.body;
-    
+    const { username, email, password, first_name, last_name, telephone } = req.body;
+
     // Check if user exists
-    const userExists = await User.findOne({ email });
-    if (userExists) {
-      return res.status(400).json({ message: 'User already exists' });
+    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+    if (existingUser) {
+      return res.status(400).json({ 
+        message: 'User already exists',
+        field: existingUser.email === email ? 'email' : 'username'
+      });
     }
 
     // Create new user
     const user = new User({
       username,
       email,
-      password
+      password,
+      first_name,
+      last_name,
+      telephone
     });
 
     await user.save();
@@ -93,11 +98,20 @@ router.post('/register', async (req, res) => {
         id: user._id,
         username: user.username,
         email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        telephone: user.telephone,
         role: user.role
       }
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ 
+        message: 'Validation error',
+        errors: Object.values(error.errors).map(err => err.message)
+      });
+    }
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
@@ -126,15 +140,6 @@ router.post('/register', async (req, res) => {
  *     responses:
  *       200:
  *         description: Login successful
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 token:
- *                   type: string
- *                 user:
- *                   $ref: '#/components/schemas/User'
  *       400:
  *         description: Invalid credentials
  *       500:
@@ -169,11 +174,36 @@ router.post('/login', async (req, res) => {
         id: user._id,
         username: user.username,
         email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        telephone: user.telephone,
         role: user.role
       }
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+/**
+ * @swagger
+ * /api/auth/me:
+ *   get:
+ *     summary: Get current user
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Current user data
+ *       401:
+ *         description: Not authorized
+ */
+router.get('/me', auth, async (req, res) => {
+  try {
+    res.json(req.user);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
   }
 });
 

@@ -6,11 +6,21 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    trim: true
+    trim: true,
+    minlength: 3
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true,
+    match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email']
   },
   password: {
     type: String,
-    required: true
+    required: true,
+    minlength: 6
   },
   first_name: {
     type: String,
@@ -25,7 +35,13 @@ const userSchema = new mongoose.Schema({
   telephone: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
+    match: [/^[0-9]{10,11}$/, 'Please enter a valid phone number']
+  },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user'
   },
   created_at: {
     type: Date,
@@ -48,7 +64,7 @@ const userSchema = new mongoose.Schema({
 userSchema.virtual('addresses', {
   ref: 'UserAddress',
   localField: '_id',
-  foreignField: 'user_id'
+  foreignField: 'user'
 });
 
 userSchema.virtual('payments', {
@@ -72,13 +88,21 @@ userSchema.virtual('orders', {
 // Hash password before saving
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
+  
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
 // Method to compare password
 userSchema.methods.comparePassword = async function(candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password);
+  return bcrypt.compare(candidatePassword, this.password);
 };
 
-module.exports = mongoose.model('User', userSchema); 
+const User = mongoose.model('User', userSchema);
+
+module.exports = User; 
