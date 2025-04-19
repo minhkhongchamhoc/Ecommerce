@@ -6,6 +6,7 @@ export interface IProduct extends Document {
   price: number;
   category: mongoose.Types.ObjectId;
   image_url: string;
+  sizes: string[];
   stock: number;
   created_at: Date;
   modified_at: Date;
@@ -38,6 +39,12 @@ const productSchema = new Schema<IProduct, IProductModel>({
   image_url: {
     type: String,
     required: [true, 'Product image is required']
+  },
+  sizes: {
+    type: [String],
+    required: [true, 'Product sizes are required'],
+    enum: ['S', 'M', 'L', 'XL', 'XXL'],
+    default: ['M']
   },
   stock: {
     type: Number,

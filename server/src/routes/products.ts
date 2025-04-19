@@ -1,8 +1,9 @@
-import express, { Request, Response } from 'express';
+import { Router, Request, Response } from 'express';
 import Product from '../models/Product';
 import auth from '../middleware/auth';
+import { checkRole } from '../middleware/checkRole';
 
-const router = express.Router();
+const router = Router();
 
 /**
  * @swagger
@@ -64,19 +65,15 @@ interface UpdateProductRequest extends Request {
  *     responses:
  *       200:
  *         description: List of products
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Product'
+ *       500:
+ *         description: Server error
  */
 router.get('/', async (req: Request, res: Response) => {
   try {
     const products = await Product.find().populate('category');
     res.json(products);
   } catch (error) {
-    res.status(500).json({ message: error instanceof Error ? error.message : 'Unknown error' });
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
@@ -89,19 +86,16 @@ router.get('/', async (req: Request, res: Response) => {
  *     parameters:
  *       - in: path
  *         name: id
+ *         required: true
  *         schema:
  *           type: string
- *         required: true
- *         description: Product ID
  *     responses:
  *       200:
  *         description: Product details
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Product'
  *       404:
  *         description: Product not found
+ *       500:
+ *         description: Server error
  */
 router.get('/:id', async (req: Request, res: Response) => {
   try {
@@ -111,7 +105,7 @@ router.get('/:id', async (req: Request, res: Response) => {
     }
     res.json(product);
   } catch (error) {
-    res.status(500).json({ message: error instanceof Error ? error.message : 'Unknown error' });
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
@@ -119,7 +113,7 @@ router.get('/:id', async (req: Request, res: Response) => {
  * @swagger
  * /api/products:
  *   post:
- *     summary: Create a new product
+ *     summary: Create a new product (Admin only)
  *     tags: [Products]
  *     security:
  *       - bearerAuth: []
@@ -135,7 +129,7 @@ router.get('/:id', async (req: Request, res: Response) => {
  *               - price
  *               - category
  *               - image_url
- *               - stock
+ *               - sizes
  *             properties:
  *               name:
  *                 type: string
@@ -147,17 +141,39 @@ router.get('/:id', async (req: Request, res: Response) => {
  *                 type: string
  *               image_url:
  *                 type: string
+ *               sizes:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   enum: [S, M, L, XL, XXL]
  *               stock:
  *                 type: number
  *     responses:
  *       201:
- *         description: Product created
+ *         description: Product created successfully
  *       400:
  *         description: Invalid input
+ *       401:
+ *         description: Not authorized
+ *       403:
+ *         description: Access denied
+ *       500:
+ *         description: Server error
  */
-router.post('/', auth, async (req: CreateProductRequest, res: Response) => {
+router.post('/', [auth, checkRole('admin')], async (req: Request, res: Response) => {
   try {
-    const product = new Product(req.body);
+    const { name, description, price, category, image_url, sizes, stock } = req.body;
+
+    const product = new Product({
+      name,
+      description,
+      price,
+      category,
+      image_url,
+      sizes,
+      stock
+    });
+
     await product.save();
     res.status(201).json(product);
   } catch (error: any) {
@@ -175,7 +191,7 @@ router.post('/', auth, async (req: CreateProductRequest, res: Response) => {
  * @swagger
  * /api/products/{id}:
  *   put:
- *     summary: Update a product
+ *     summary: Update a product (Admin only)
  *     tags: [Products]
  *     security:
  *       - bearerAuth: []
@@ -190,23 +206,62 @@ router.post('/', auth, async (req: CreateProductRequest, res: Response) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Product'
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               price:
+ *                 type: number
+ *               category:
+ *                 type: string
+ *               image_url:
+ *                 type: string
+ *               sizes:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   enum: [S, M, L, XL, XXL]
+ *               stock:
+ *                 type: number
  *     responses:
  *       200:
- *         description: Product updated
+ *         description: Product updated successfully
+ *       400:
+ *         description: Invalid input
+ *       401:
+ *         description: Not authorized
+ *       403:
+ *         description: Access denied
  *       404:
  *         description: Product not found
+ *       500:
+ *         description: Server error
  */
-router.put('/:id', auth, async (req: UpdateProductRequest, res: Response) => {
+router.put('/:id', [auth, checkRole('admin')], async (req: Request, res: Response) => {
   try {
+    const { name, description, price, category, image_url, sizes, stock } = req.body;
+
     const product = await Product.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      {
+        name,
+        description,
+        price,
+        category,
+        image_url,
+        sizes,
+        stock,
+        modified_at: Date.now()
+      },
       { new: true, runValidators: true }
     );
+
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
+
     res.json(product);
   } catch (error: any) {
     if (error.name === 'ValidationError') {
@@ -223,7 +278,7 @@ router.put('/:id', auth, async (req: UpdateProductRequest, res: Response) => {
  * @swagger
  * /api/products/{id}:
  *   delete:
- *     summary: Delete a product
+ *     summary: Delete a product (Admin only)
  *     tags: [Products]
  *     security:
  *       - bearerAuth: []
@@ -235,17 +290,25 @@ router.put('/:id', auth, async (req: UpdateProductRequest, res: Response) => {
  *           type: string
  *     responses:
  *       200:
- *         description: Product deleted
+ *         description: Product deleted successfully
+ *       401:
+ *         description: Not authorized
+ *       403:
+ *         description: Access denied
  *       404:
  *         description: Product not found
+ *       500:
+ *         description: Server error
  */
-router.delete('/:id', auth, async (req: Request, res: Response) => {
+router.delete('/:id', [auth, checkRole('admin')], async (req: Request, res: Response) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
+    
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
-    res.json({ message: 'Product deleted' });
+
+    res.json({ message: 'Product deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
