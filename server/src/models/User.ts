@@ -2,12 +2,8 @@ import mongoose, { Document, Model, Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 export interface IUser extends Document {
-  username: string;
   email: string;
   password: string;
-  first_name: string;
-  last_name: string;
-  telephone: string;
   role: 'user' | 'admin';
   created_at: Date;
   modified_at: Date;
@@ -19,13 +15,6 @@ interface IUserModel extends Model<IUser> {
 }
 
 const userSchema = new Schema<IUser, IUserModel>({
-  username: {
-    type: String,
-    required: [true, 'Username is required'],
-    unique: true,
-    trim: true,
-    minlength: [3, 'Username must be at least 3 characters long']
-  },
   email: {
     type: String,
     required: [true, 'Email is required'],
@@ -38,22 +27,6 @@ const userSchema = new Schema<IUser, IUserModel>({
     type: String,
     required: [true, 'Password is required'],
     minlength: [6, 'Password must be at least 6 characters long']
-  },
-  first_name: {
-    type: String,
-    required: [true, 'First name is required'],
-    trim: true
-  },
-  last_name: {
-    type: String,
-    required: [true, 'Last name is required'],
-    trim: true
-  },
-  telephone: {
-    type: String,
-    required: [true, 'Telephone is required'],
-    trim: true,
-    match: [/^[0-9]{10,11}$/, 'Please enter a valid phone number']
   },
   role: {
     type: String,

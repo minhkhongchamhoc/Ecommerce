@@ -9,14 +9,9 @@ import * as path from 'path';
 dotenv.config();
 
 interface UserData {
-  username: string;
   email: string;
   password: string;
-  first_name: string;
-  last_name: string;
-  telephone: string;
   role: string;
-  is_active: boolean;
 }
 
 interface SeedData {
@@ -48,12 +43,14 @@ class SeedData {
           continue;
         }
 
-        // Create user without hashing password again
-        const user = await User.create({
-          ...userData,
-          password: userData.password // Không hash password ở đây
+        // Create user
+        const user = new User({
+          email: userData.email,
+          password: userData.password,
+          role: userData.role
         });
 
+        await user.save();
         console.log(`User ${userData.email} created successfully`);
       }
     } catch (error) {

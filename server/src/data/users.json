@@ -1,24 +1,14 @@
 {
   "users": [
     {
-      "username": "admin",
       "email": "admin@gmail.com",
       "password": "admin@1234",
-      "first_name": "Admin",
-      "last_name": "User",
-      "telephone": "0123456789",
-      "role": "admin",
-      "is_active": true
+      "role": "admin"
     },
     {
-      "username": "user1",
       "email": "user1@gmail.com",
       "password": "user1234",
-      "first_name": "User",
-      "last_name": "One",
-      "telephone": "0987654321",
-      "role": "user",
-      "is_active": true
+      "role": "user"
     }
   ]
 } 

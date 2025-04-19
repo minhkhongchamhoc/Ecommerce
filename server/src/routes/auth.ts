@@ -7,12 +7,8 @@ const router = Router();
 
 interface RegisterRequest extends Request {
   body: {
-    username: string;
     email: string;
     password: string;
-    first_name: string;
-    last_name: string;
-    telephone: string;
   }
 }
 
@@ -30,16 +26,9 @@ interface LoginRequest extends Request {
  *     User:
  *       type: object
  *       required:
- *         - username
  *         - email
  *         - password
- *         - first_name
- *         - last_name
- *         - telephone
  *       properties:
- *         username:
- *           type: string
- *           description: User's username
  *         email:
  *           type: string
  *           format: email
@@ -48,15 +37,6 @@ interface LoginRequest extends Request {
  *           type: string
  *           format: password
  *           description: User's password
- *         first_name:
- *           type: string
- *           description: User's first name
- *         last_name:
- *           type: string
- *           description: User's last name
- *         telephone:
- *           type: string
- *           description: User's phone number
  */
 
 /**
@@ -81,25 +61,21 @@ interface LoginRequest extends Request {
  */
 router.post('/register', async (req: RegisterRequest, res: Response) => {
   try {
-    const { username, email, password, first_name, last_name, telephone } = req.body;
+    const { email, password } = req.body;
 
     // Check if user exists
-    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ 
         message: 'User already exists',
-        field: existingUser.email === email ? 'email' : 'username'
+        field: 'email'
       });
     }
 
     // Create new user
     const user = new User({
-      username,
       email,
-      password,
-      first_name,
-      last_name,
-      telephone
+      password
     });
 
     await user.save();
@@ -115,11 +91,7 @@ router.post('/register', async (req: RegisterRequest, res: Response) => {
       token,
       user: {
         id: user._id,
-        username: user.username,
         email: user.email,
-        first_name: user.first_name,
-        last_name: user.last_name,
-        telephone: user.telephone,
         role: user.role
       }
     });
@@ -195,11 +167,7 @@ router.post('/login', async (req: LoginRequest, res: Response) => {
       token,
       user: {
         id: user._id,
-        username: user.username,
         email: user.email,
-        first_name: user.first_name,
-        last_name: user.last_name,
-        telephone: user.telephone,
         role: user.role
       }
     });
