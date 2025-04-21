@@ -7,9 +7,8 @@ import swaggerSpec from './config/swagger';
 
 // Import routes
 import productRoutes from './routes/products';
-import orderRoutes from './routes/orders';
-import categoryRoutes from './routes/categories';
 import authRoutes from './routes/auth';
+import categoryRoutes from './routes/categories';
 
 // Load environment variables
 dotenv.config();
@@ -28,7 +27,6 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ecommerce
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
-app.use('/api/orders', orderRoutes);
 app.use('/api/categories', categoryRoutes);
 
 // Swagger documentation

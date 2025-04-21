@@ -1,8 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-import User from '../models/User';
+import User, { IUser } from '../models/User';
+
+interface AuthRequest extends Request {
+  user: IUser;
+}
 
 export const checkRole = (role: string) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const user = await User.findById(req.user.id);
       

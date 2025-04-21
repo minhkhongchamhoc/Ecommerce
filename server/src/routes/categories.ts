@@ -1,39 +1,9 @@
-import express, { Request, Response } from 'express';
+import { Router, Request, Response } from 'express';
 import Category from '../models/Category';
 import auth from '../middleware/auth';
+import { checkRole } from '../middleware/checkRole';
 
-const router = express.Router();
-
-/**
- * @swagger
- * components:
- *   schemas:
- *     Category:
- *       type: object
- *       required:
- *         - name
- *       properties:
- *         name:
- *           type: string
- *           description: Category name
- *         description:
- *           type: string
- *           description: Category description
- */
-
-interface CreateCategoryRequest extends Request {
-  body: {
-    name: string;
-    description: string;
-  }
-}
-
-interface UpdateCategoryRequest extends Request {
-  params: {
-    id: string;
-  };
-  body: Partial<CreateCategoryRequest['body']>;
-}
+const router = Router();
 
 /**
  * @swagger
@@ -44,19 +14,15 @@ interface UpdateCategoryRequest extends Request {
  *     responses:
  *       200:
  *         description: List of categories
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Category'
+ *       500:
+ *         description: Server error
  */
 router.get('/', async (req: Request, res: Response) => {
   try {
     const categories = await Category.find();
     res.json(categories);
   } catch (error) {
-    res.status(500).json({ message: error instanceof Error ? error.message : 'Unknown error' });
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
@@ -69,19 +35,16 @@ router.get('/', async (req: Request, res: Response) => {
  *     parameters:
  *       - in: path
  *         name: id
+ *         required: true
  *         schema:
  *           type: string
- *         required: true
- *         description: Category ID
  *     responses:
  *       200:
  *         description: Category details
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Category'
  *       404:
  *         description: Category not found
+ *       500:
+ *         description: Server error
  */
 router.get('/:id', async (req: Request, res: Response) => {
   try {
@@ -91,7 +54,7 @@ router.get('/:id', async (req: Request, res: Response) => {
     }
     res.json(category);
   } catch (error) {
-    res.status(500).json({ message: error instanceof Error ? error.message : 'Unknown error' });
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
@@ -99,7 +62,7 @@ router.get('/:id', async (req: Request, res: Response) => {
  * @swagger
  * /api/categories:
  *   post:
- *     summary: Create a new category
+ *     summary: Create a new category (Admin only)
  *     tags: [Categories]
  *     security:
  *       - bearerAuth: []
@@ -119,13 +82,25 @@ router.get('/:id', async (req: Request, res: Response) => {
  *                 type: string
  *     responses:
  *       201:
- *         description: Category created
+ *         description: Category created successfully
  *       400:
  *         description: Invalid input
+ *       401:
+ *         description: Not authorized
+ *       403:
+ *         description: Access denied
+ *       500:
+ *         description: Server error
  */
-router.post('/', auth, async (req: CreateCategoryRequest, res: Response) => {
+router.post('/', [auth, checkRole('admin')], async (req: Request, res: Response) => {
   try {
-    const category = new Category(req.body);
+    const { name, description } = req.body;
+
+    const category = new Category({
+      name,
+      description
+    });
+
     await category.save();
     res.status(201).json(category);
   } catch (error: any) {
@@ -133,6 +108,11 @@ router.post('/', auth, async (req: CreateCategoryRequest, res: Response) => {
       return res.status(400).json({ 
         message: 'Validation error',
         errors: Object.values(error.errors).map((err: any) => err.message)
+      });
+    }
+    if (error.code === 11000) {
+      return res.status(400).json({ 
+        message: 'Category name already exists'
       });
     }
     res.status(500).json({ message: 'Server error' });
@@ -143,7 +123,7 @@ router.post('/', auth, async (req: CreateCategoryRequest, res: Response) => {
  * @swagger
  * /api/categories/{id}:
  *   put:
- *     summary: Update a category
+ *     summary: Update a category (Admin only)
  *     tags: [Categories]
  *     security:
  *       - bearerAuth: []
@@ -158,29 +138,55 @@ router.post('/', auth, async (req: CreateCategoryRequest, res: Response) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Category'
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               description:
+ *                 type: string
  *     responses:
  *       200:
- *         description: Category updated
+ *         description: Category updated successfully
+ *       400:
+ *         description: Invalid input
+ *       401:
+ *         description: Not authorized
+ *       403:
+ *         description: Access denied
  *       404:
  *         description: Category not found
+ *       500:
+ *         description: Server error
  */
-router.put('/:id', auth, async (req: UpdateCategoryRequest, res: Response) => {
+router.put('/:id', [auth, checkRole('admin')], async (req: Request, res: Response) => {
   try {
+    const { name, description } = req.body;
+
     const category = await Category.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      {
+        name,
+        description,
+        modified_at: Date.now()
+      },
       { new: true, runValidators: true }
     );
+
     if (!category) {
       return res.status(404).json({ message: 'Category not found' });
     }
+
     res.json(category);
   } catch (error: any) {
     if (error.name === 'ValidationError') {
       return res.status(400).json({ 
         message: 'Validation error',
         errors: Object.values(error.errors).map((err: any) => err.message)
+      });
+    }
+    if (error.code === 11000) {
+      return res.status(400).json({ 
+        message: 'Category name already exists'
       });
     }
     res.status(500).json({ message: 'Server error' });
@@ -191,7 +197,7 @@ router.put('/:id', auth, async (req: UpdateCategoryRequest, res: Response) => {
  * @swagger
  * /api/categories/{id}:
  *   delete:
- *     summary: Delete a category
+ *     summary: Delete a category (Admin only)
  *     tags: [Categories]
  *     security:
  *       - bearerAuth: []
@@ -203,17 +209,25 @@ router.put('/:id', auth, async (req: UpdateCategoryRequest, res: Response) => {
  *           type: string
  *     responses:
  *       200:
- *         description: Category deleted
+ *         description: Category deleted successfully
+ *       401:
+ *         description: Not authorized
+ *       403:
+ *         description: Access denied
  *       404:
  *         description: Category not found
+ *       500:
+ *         description: Server error
  */
-router.delete('/:id', auth, async (req: Request, res: Response) => {
+router.delete('/:id', [auth, checkRole('admin')], async (req: Request, res: Response) => {
   try {
     const category = await Category.findByIdAndDelete(req.params.id);
+    
     if (!category) {
       return res.status(404).json({ message: 'Category not found' });
     }
-    res.json({ message: 'Category deleted' });
+
+    res.json({ message: 'Category deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
