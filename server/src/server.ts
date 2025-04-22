@@ -53,11 +53,77 @@ const swaggerOptions = {
           scheme: 'bearer',
           bearerFormat: 'JWT'
         }
+      },
+      schemas: {
+        Product: {
+          type: 'object',
+          required: ['name', 'description', 'price', 'category'],
+          properties: {
+            name: {
+              type: 'string',
+              description: 'Product name'
+            },
+            description: {
+              type: 'string',
+              description: 'Product description'
+            },
+            price: {
+              type: 'number',
+              description: 'Product price'
+            },
+            category: {
+              type: 'string',
+              description: 'Category ID'
+            },
+            images: {
+              type: 'array',
+              items: {
+                type: 'string'
+              },
+              description: 'Product images URLs'
+            },
+            sizes: {
+              type: 'array',
+              items: {
+                type: 'string',
+                enum: ['S', 'M', 'L', 'XL', 'XXL']
+              },
+              description: 'Available sizes'
+            },
+            stock: {
+              type: 'number',
+              description: 'Available stock'
+            }
+          }
+        }
       }
     },
-    security: [{
-      bearerAuth: []
-    }]
+    tags: [
+      {
+        name: 'Products',
+        description: 'Product management APIs'
+      },
+      {
+        name: 'Categories',
+        description: 'Category management APIs'
+      },
+      {
+        name: 'Auth',
+        description: 'Authentication APIs'
+      },
+      {
+        name: 'Cart',
+        description: 'Shopping cart APIs'
+      },
+      {
+        name: 'Orders',
+        description: 'Order management APIs'
+      },
+      {
+        name: 'User Profile',
+        description: 'User profile management APIs'
+      }
+    ]
   },
   apis: ['./src/routes/*.ts']
 };

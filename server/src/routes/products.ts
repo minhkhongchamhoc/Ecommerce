@@ -58,50 +58,79 @@ interface UpdateProductRequest extends Request {
 
 /**
  * @swagger
- * /api/products:
+ * /api/products/filter:
  *   get:
- *     summary: Get all products with filtering and search
+ *     summary: Filter and search products
  *     tags: [Products]
  *     parameters:
  *       - in: query
  *         name: search
  *         schema:
  *           type: string
- *         description: Search products by name
+ *         description: Search products by name (case-insensitive)
+ *         example: "áo thun"
  *       - in: query
  *         name: category
  *         schema:
  *           type: string
  *         description: Filter by category ID
+ *         example: "6405f8f71234567890abcdef"
  *       - in: query
  *         name: minPrice
  *         schema:
  *           type: number
  *         description: Minimum price filter
+ *         example: 100000
  *       - in: query
  *         name: maxPrice
  *         schema:
  *           type: number
  *         description: Maximum price filter
+ *         example: 500000
  *       - in: query
  *         name: sort
  *         schema:
  *           type: string
  *           enum: [price_asc, price_desc, newest]
- *         description: Sort products (price_asc: low to high, price_desc: high to low, newest: latest)
+ *         description: Sort products (price_asc = low to high, price_desc = high to low, newest = latest first)
  *       - in: query
  *         name: page
  *         schema:
  *           type: integer
+ *           minimum: 1
  *           default: 1
- *         description: Page number
+ *         description: Page number for pagination
  *     responses:
  *       200:
- *         description: List of products with pagination
+ *         description: Successfully retrieved filtered products
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 products:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Product'
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     total:
+ *                       type: number
+ *                       description: Total number of products
+ *                     page:
+ *                       type: number
+ *                       description: Current page
+ *                     limit:
+ *                       type: number
+ *                       description: Products per page (fixed at 9)
+ *                     totalPages:
+ *                       type: number
+ *                       description: Total number of pages
  *       500:
  *         description: Server error
  */
-router.get('/', async (req: Request, res: Response) => {
+router.get('/filter', async (req: Request, res: Response) => {
   try {
     const {
       search,
