@@ -1,36 +1,51 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import swaggerSpec from './config/swagger';
-
-// Import routes
-import productRoutes from './routes/products';
+import { connectDB } from './config/database';
 import authRoutes from './routes/auth';
 import categoryRoutes from './routes/categories';
+import productRoutes from './routes/products';
 
 // Load environment variables
 dotenv.config();
 
+// Create Express app
 const app = express();
+
+// Connect to MongoDB with auto-seeding
+connectDB();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// MongoDB connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ecommerce')
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((error) => console.error('MongoDB connection error:', error));
-
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/products', productRoutes);
 
-// Swagger documentation
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// Swagger configuration
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'E-commerce API',
+      version: '1.0.0',
+      description: 'API documentation for the e-commerce application'
+    },
+    servers: [
+      {
+        url: `http://localhost:${process.env.PORT || 5000}`
+      }
+    ]
+  },
+  apis: ['./src/routes/*.ts']
+};
+
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Start server
 const PORT = process.env.PORT || 5000;
