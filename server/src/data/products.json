@@ -1,0 +1,298 @@
+{
+  "products": [
+    {
+      "name": "Classic Cotton T-Shirt",
+      "description": "Men's comfortable cotton t-shirt for daily wear",
+      "price": 29.99,
+      "category": "Men's fashion",
+      "images": [
+        "https://example.com/mens-tshirt-front.jpg",
+        "https://example.com/mens-tshirt-back.jpg",
+        "https://example.com/mens-tshirt-side.jpg",
+        "https://example.com/mens-tshirt-detail.jpg"
+      ],
+      "sizes": ["S", "M", "L", "XL"],
+      "stock": 100
+    },
+    {
+      "name": "Slim Fit Jeans",
+      "description": "Men's classic blue denim jeans with perfect fit",
+      "price": 59.99,
+      "category": "Men's fashion",
+      "images": [
+        "https://example.com/mens-jeans-front.jpg",
+        "https://example.com/mens-jeans-back.jpg",
+        "https://example.com/mens-jeans-side.jpg",
+        "https://example.com/mens-jeans-detail.jpg"
+      ],
+      "sizes": ["S", "M", "L", "XL"],
+      "stock": 80
+    },
+    {
+      "name": "Business Casual Shirt",
+      "description": "Men's formal shirt perfect for office wear",
+      "price": 45.99,
+      "category": "Men's fashion",
+      "images": [
+        "https://example.com/mens-shirt-front.jpg",
+        "https://example.com/mens-shirt-back.jpg",
+        "https://example.com/mens-shirt-side.jpg",
+        "https://example.com/mens-shirt-detail.jpg"
+      ],
+      "sizes": ["M", "L", "XL", "XXL"],
+      "stock": 60
+    },
+    {
+      "name": "Floral Summer Dress",
+      "description": "Women's lightweight floral print dress",
+      "price": 49.99,
+      "category": "Women's fashion",
+      "images": [
+        "https://example.com/womens-dress-front.jpg",
+        "https://example.com/womens-dress-back.jpg",
+        "https://example.com/womens-dress-side.jpg",
+        "https://example.com/womens-dress-detail.jpg"
+      ],
+      "sizes": ["S", "M", "L"],
+      "stock": 75
+    },
+    {
+      "name": "High-Waist Yoga Pants",
+      "description": "Women's comfortable stretchy yoga pants",
+      "price": 39.99,
+      "category": "Women's fashion",
+      "images": [
+        "https://example.com/yoga-pants-front.jpg",
+        "https://example.com/yoga-pants-back.jpg",
+        "https://example.com/yoga-pants-side.jpg",
+        "https://example.com/yoga-pants-detail.jpg"
+      ],
+      "sizes": ["S", "M", "L", "XL"],
+      "stock": 90
+    },
+    {
+      "name": "Elegant Blouse",
+      "description": "Women's silk-like elegant blouse for formal occasions",
+      "price": 35.99,
+      "category": "Women's fashion",
+      "images": [
+        "https://example.com/blouse-front.jpg",
+        "https://example.com/blouse-back.jpg",
+        "https://example.com/blouse-side.jpg",
+        "https://example.com/blouse-detail.jpg"
+      ],
+      "sizes": ["S", "M", "L"],
+      "stock": 70
+    },
+    {
+      "name": "Kids Dinosaur T-Shirt",
+      "description": "Fun dinosaur print t-shirt for children",
+      "price": 19.99,
+      "category": "Kids & Toys",
+      "images": [
+        "https://example.com/kids-tshirt-front.jpg",
+        "https://example.com/kids-tshirt-back.jpg",
+        "https://example.com/kids-tshirt-side.jpg",
+        "https://example.com/kids-tshirt-detail.jpg"
+      ],
+      "sizes": ["S", "M", "L"],
+      "stock": 100
+    },
+    {
+      "name": "Children's Denim Overall",
+      "description": "Comfortable denim overall for active kids",
+      "price": 34.99,
+      "category": "Kids & Toys",
+      "images": [
+        "https://example.com/kids-overall-front.jpg",
+        "https://example.com/kids-overall-back.jpg",
+        "https://example.com/kids-overall-side.jpg",
+        "https://example.com/kids-overall-detail.jpg"
+      ],
+      "sizes": ["S", "M", "L"],
+      "stock": 60
+    },
+    {
+      "name": "Kids Winter Jacket",
+      "description": "Warm and cozy winter jacket for children",
+      "price": 49.99,
+      "category": "Kids & Toys",
+      "images": [
+        "https://example.com/kids-jacket-front.jpg",
+        "https://example.com/kids-jacket-back.jpg",
+        "https://example.com/kids-jacket-side.jpg",
+        "https://example.com/kids-jacket-detail.jpg"
+      ],
+      "sizes": ["S", "M", "L"],
+      "stock": 50
+    },
+    {
+      "name": "Leather Wallet",
+      "description": "Genuine leather wallet with multiple card slots",
+      "price": 29.99,
+      "category": "Accessories",
+      "images": [
+        "https://example.com/wallet-front.jpg",
+        "https://example.com/wallet-back.jpg",
+        "https://example.com/wallet-side.jpg",
+        "https://example.com/wallet-detail.jpg"
+      ],
+      "sizes": ["M"],
+      "stock": 120
+    },
+    {
+      "name": "Silver Necklace",
+      "description": "925 Sterling silver pendant necklace",
+      "price": 79.99,
+      "category": "Accessories",
+      "images": [
+        "https://example.com/necklace-front.jpg",
+        "https://example.com/necklace-back.jpg",
+        "https://example.com/necklace-side.jpg",
+        "https://example.com/necklace-detail.jpg"
+      ],
+      "sizes": ["M"],
+      "stock": 40
+    },
+    {
+      "name": "Sunglasses",
+      "description": "UV protection stylish sunglasses",
+      "price": 89.99,
+      "category": "Accessories",
+      "images": [
+        "https://example.com/sunglasses-front.jpg",
+        "https://example.com/sunglasses-side.jpg",
+        "https://example.com/sunglasses-back.jpg",
+        "https://example.com/sunglasses-detail.jpg"
+      ],
+      "sizes": ["M"],
+      "stock": 80
+    },
+    {
+      "name": "Face Moisturizer",
+      "description": "Hydrating face cream for all skin types",
+      "price": 24.99,
+      "category": "Cosmetics",
+      "images": [
+        "https://example.com/moisturizer-front.jpg",
+        "https://example.com/moisturizer-back.jpg",
+        "https://example.com/moisturizer-side.jpg",
+        "https://example.com/moisturizer-detail.jpg"
+      ],
+      "sizes": ["M"],
+      "stock": 150
+    },
+    {
+      "name": "Lipstick Set",
+      "description": "Set of 3 matte finish lipsticks",
+      "price": 39.99,
+      "category": "Cosmetics",
+      "images": [
+        "https://example.com/lipstick-front.jpg",
+        "https://example.com/lipstick-back.jpg",
+        "https://example.com/lipstick-side.jpg",
+        "https://example.com/lipstick-detail.jpg"
+      ],
+      "sizes": ["M"],
+      "stock": 100
+    },
+    {
+      "name": "Mascara",
+      "description": "Volumizing and lengthening mascara",
+      "price": 19.99,
+      "category": "Cosmetics",
+      "images": [
+        "https://example.com/mascara-front.jpg",
+        "https://example.com/mascara-back.jpg",
+        "https://example.com/mascara-side.jpg",
+        "https://example.com/mascara-detail.jpg"
+      ],
+      "sizes": ["M"],
+      "stock": 120
+    },
+    {
+      "name": "Running Shoes",
+      "description": "Comfortable athletic running shoes",
+      "price": 89.99,
+      "category": "Shoes",
+      "images": [
+        "https://example.com/running-shoes-front.jpg",
+        "https://example.com/running-shoes-back.jpg",
+        "https://example.com/running-shoes-side.jpg",
+        "https://example.com/running-shoes-detail.jpg"
+      ],
+      "sizes": ["S", "M", "L", "XL"],
+      "stock": 80
+    },
+    {
+      "name": "Casual Sneakers",
+      "description": "Everyday comfortable sneakers",
+      "price": 69.99,
+      "category": "Shoes",
+      "images": [
+        "https://example.com/sneakers-front.jpg",
+        "https://example.com/sneakers-back.jpg",
+        "https://example.com/sneakers-side.jpg",
+        "https://example.com/sneakers-detail.jpg"
+      ],
+      "sizes": ["S", "M", "L", "XL"],
+      "stock": 100
+    },
+    {
+      "name": "Formal Leather Shoes",
+      "description": "Classic leather formal shoes",
+      "price": 129.99,
+      "category": "Shoes",
+      "images": [
+        "https://example.com/formal-shoes-front.jpg",
+        "https://example.com/formal-shoes-back.jpg",
+        "https://example.com/formal-shoes-side.jpg",
+        "https://example.com/formal-shoes-detail.jpg"
+      ],
+      "sizes": ["M", "L", "XL"],
+      "stock": 60
+    },
+    {
+      "name": "Yoga Mat",
+      "description": "Non-slip exercise yoga mat",
+      "price": 29.99,
+      "category": "Sports",
+      "images": [
+        "https://example.com/yoga-mat-front.jpg",
+        "https://example.com/yoga-mat-back.jpg",
+        "https://example.com/yoga-mat-side.jpg",
+        "https://example.com/yoga-mat-detail.jpg"
+      ],
+      "sizes": ["M"],
+      "stock": 100
+    },
+    {
+      "name": "Dumbbell Set",
+      "description": "Set of adjustable dumbbells",
+      "price": 149.99,
+      "category": "Sports",
+      "images": [
+        "https://example.com/dumbbell-front.jpg",
+        "https://example.com/dumbbell-back.jpg",
+        "https://example.com/dumbbell-side.jpg",
+        "https://example.com/dumbbell-detail.jpg"
+      ],
+      "sizes": ["M"],
+      "stock": 40
+    },
+    {
+      "name": "Sports Water Bottle",
+      "description": "1L BPA-free sports water bottle",
+      "price": 19.99,
+      "category": "Sports",
+      "images": [
+        "https://example.com/bottle-front.jpg",
+        "https://example.com/bottle-back.jpg",
+        "https://example.com/bottle-side.jpg",
+        "https://example.com/bottle-detail.jpg"
+      ],
+      "sizes": ["M"],
+      "stock": 150
+    }
+  ]
+} 

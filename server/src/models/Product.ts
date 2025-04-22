@@ -5,7 +5,7 @@ export interface IProduct extends Document {
   description: string;
   price: number;
   category: mongoose.Types.ObjectId;
-  image_url: string;
+  images: string[];
   sizes: string[];
   stock: number;
   created_at: Date;
@@ -36,9 +36,21 @@ const productSchema = new Schema<IProduct, IProductModel>({
     ref: 'Category',
     required: [true, 'Product category is required']
   },
-  image_url: {
-    type: String,
-    required: [true, 'Product image is required']
+  images: {
+    type: [String],
+    required: [true, 'Product images are required'],
+    validate: {
+      validator: function(v: string[]) {
+        return v.length === 4;
+      },
+      message: 'Product must have exactly 4 images'
+    },
+    default: [
+      'https://via.placeholder.com/500x500?text=Image+1',
+      'https://via.placeholder.com/500x500?text=Image+2',
+      'https://via.placeholder.com/500x500?text=Image+3',
+      'https://via.placeholder.com/500x500?text=Image+4'
+    ]
   },
   sizes: {
     type: [String],
