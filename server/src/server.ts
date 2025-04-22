@@ -7,6 +7,9 @@ import { connectDB } from './config/database';
 import authRoutes from './routes/auth';
 import categoryRoutes from './routes/categories';
 import productRoutes from './routes/products';
+import cartRoutes from './routes/cart';
+import orderRoutes from './routes/orders';
+import userProfileRoutes from './routes/userProfile';
 
 // Load environment variables
 dotenv.config();
@@ -25,6 +28,9 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/user', userProfileRoutes);
 
 // Swagger configuration
 const swaggerOptions = {
@@ -39,7 +45,19 @@ const swaggerOptions = {
       {
         url: `http://localhost:${process.env.PORT || 5000}`
       }
-    ]
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT'
+        }
+      }
+    },
+    security: [{
+      bearerAuth: []
+    }]
   },
   apis: ['./src/routes/*.ts']
 };
