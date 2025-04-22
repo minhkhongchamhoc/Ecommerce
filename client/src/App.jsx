@@ -4,6 +4,7 @@ import './App.css';
 import RegisterPage from './screen/RegisterPage.jsx';
 import LoginPage from './screen/LoginPage.jsx';
 import AboutPage from './screen/AboutPage.jsx';
+import CheckoutPage from './screen/CheckoutPage.jsx';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -23,7 +24,11 @@ function App() {
             path="/about" 
             element={isLoggedIn ? <AboutPage /> : <Navigate to="/login" />} 
           />
-          <Route path="/" element={<Navigate to={isLoggedIn ? "/about" : "/register"} />} />
+          <Route 
+            path="/checkout" 
+            element={isLoggedIn ? <CheckoutPage /> : <Navigate to="/login" />} 
+          />
+          <Route path="/" element={<Navigate to={isLoggedIn ? "/checkout" : "/register"} />} />
         </Routes>
       </div>
     </Router>

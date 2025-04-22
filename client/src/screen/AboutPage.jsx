@@ -1,12 +1,19 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Header from '../components/Header.jsx';
 import Footer from '../components/Footer.jsx';
 import Image from '../assets/image.png';
 import Image1 from '../assets/image1.png';
 
-
 const AboutPage = () => {
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Điều hướng đến trang CheckoutPage
+    navigate('/checkout');
+  };
+
   return (
     <div className="about-page-desktop min-h-screen bg-white flex flex-col">
       <Header />
@@ -98,7 +105,7 @@ const AboutPage = () => {
                 </div>
                 
                 {/* Contact Form */}
-                <div className="w-1/2 space-y-6">
+                <form onSubmit={handleSubmit} className="w-1/2 space-y-6">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-900">Full name</label>
                     <input type="text" className="w-full p-2 border rounded-md" />
@@ -114,10 +121,13 @@ const AboutPage = () => {
                     <textarea className="w-full p-2 border rounded-md h-32"></textarea>
                   </div>
                   
-                  <button className="bg-gray-900 text-white px-6 py-3 rounded-full shadow-lg hover:bg-gray-800 transition-colors">
-                    Send Message
+                  <button 
+                    type="submit"
+                    className="bg-gray-900 text-white px-6 py-3 rounded-full shadow-lg hover:bg-gray-800 transition-colors"
+                  >
+                    Submit
                   </button>
-                </div>
+                </form>
               </div>
             </div>
           </div>
