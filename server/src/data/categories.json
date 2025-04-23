@@ -1,0 +1,32 @@
+{
+  "categories": [
+    {
+      "name": "Men's fashion",
+      "description": "Fashion items and clothing for men"
+    },
+    {
+      "name": "Women's fashion",
+      "description": "Fashion items and clothing for women"
+    },
+    {
+      "name": "Kids & Toys",
+      "description": "Children's clothing and toys"
+    },
+    {
+      "name": "Accessories",
+      "description": "Fashion accessories and jewelry"
+    },
+    {
+      "name": "Cosmetics",
+      "description": "Beauty and personal care products"
+    },
+    {
+      "name": "Shoes",
+      "description": "Footwear for men, women and kids"
+    },
+    {
+      "name": "Sports",
+      "description": "Sports equipment and athletic wear"
+    }
+  ]
+} 
