@@ -74,7 +74,7 @@ router.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, functio
         });
         yield user.save();
         // Generate token
-        const token = jsonwebtoken_1.default.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+        const token = jsonwebtoken_1.default.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
         res.status(201).json({
             token,
             user: {
@@ -142,7 +142,7 @@ router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
             return res.status(400).json({ message: 'Invalid credentials' });
         }
         // Generate token
-        const token = jsonwebtoken_1.default.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+        const token = jsonwebtoken_1.default.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
         res.json({
             token,
             user: {

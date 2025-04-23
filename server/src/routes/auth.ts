@@ -198,4 +198,28 @@ router.get('/me', auth, async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: Logout user
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Logout successful
+ *       401:
+ *         description: Not authorized
+ */
+router.post('/logout', auth, async (req: Request, res: Response) => {
+  try {
+    // Since we're using JWT, we don't need to do anything on the server side
+    // The client should remove the token from their storage
+    res.json({ message: 'Logged out successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 export default router; 
