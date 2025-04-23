@@ -148,6 +148,7 @@ This is a RESTful API for an e-commerce application built with Node.js, Express,
 - `GET /api/orders` - Get user's orders
 - `GET /api/orders/:orderId` - Get order details
 - `PUT /api/orders/:orderId/status` - Update order status (Admin only)
+- `PUT /api/orders/:orderId/payment` - Update payment status (Admin only)
 - `PUT /api/orders/:orderId/cancel` - Cancel order
 
 ## Authentication
@@ -217,6 +218,41 @@ Error responses follow this format:
   - On `cancelled`:
     - If paid: Payment status updated to failed (refund needed)
     - If not paid: Payment status updated to failed
+
+## Payment Status Update API
+### Endpoint: `PUT /api/orders/:orderId/payment`
+- **Access**: Admin only
+- **Request Body**:
+  ```json
+  {
+    "paymentStatus": "paid" // or "pending", "failed"
+  }
+  ```
+- **Validation Rules**:
+  - COD orders:
+    - Can only be marked as `paid` when delivered
+    - Automatically marked as `paid` on delivery
+  - Other payment methods:
+    - Must be marked as `paid` before order confirmation
+    - Can be marked as `failed` if payment fails
+    - Automatically marked as `failed` when cancelled
+
+- **Payment Method Rules**:
+  - **COD (Cash On Delivery)**:
+    - Initial status: `pending`
+    - Can be confirmed without payment
+    - Marked as `paid` only after delivery
+  - **Credit Card/Bank Transfer**:
+    - Must be `paid` before order confirmation
+    - Requires payment verification
+    - Can be refunded if cancelled
+
+- **Error Cases**:
+  - Invalid order ID format
+  - Order not found
+  - Invalid payment status
+  - Invalid status transition for payment method
+  - Unauthorized access
 
 ## Development
 To run the project locally:

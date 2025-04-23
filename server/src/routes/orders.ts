@@ -359,7 +359,14 @@ router.put('/:orderId/cancel', auth, async (req: Request, res: Response) => {
 router.put('/:orderId/status', [auth, checkRole('admin')], async (req: Request, res: Response) => {
   try {
     const { status } = req.body;
-    const orderId = req.params.orderId;
+    const { orderId } = req.params;
+
+    // Validate orderId format
+    if (!mongoose.Types.ObjectId.isValid(orderId)) {
+      return res.status(400).json({ 
+        message: 'Invalid order ID format' 
+      });
+    }
 
     // Validate status
     const validStatuses = ['confirmed', 'shipping', 'delivered', 'cancelled'];
@@ -387,7 +394,7 @@ router.put('/:orderId/status', [auth, checkRole('admin')], async (req: Request, 
 
     if (!validTransitions[currentStatus].includes(status)) {
       return res.status(400).json({ 
-        message: `Cannot transition from ${currentStatus} to ${status}` 
+        message: `Cannot transition from ${currentStatus} to ${status}. Valid transitions from ${currentStatus} are: ${validTransitions[currentStatus].join(', ')}` 
       });
     }
 
@@ -395,7 +402,7 @@ router.put('/:orderId/status', [auth, checkRole('admin')], async (req: Request, 
     if (status === 'confirmed') {
       // When order is confirmed, check payment method
       if (order.paymentInfo.paymentMethod === 'COD') {
-        // For COD, payment status remains pending until delivery
+        // For COD, payment status remains pending
         order.paymentStatus = 'pending';
       } else {
         // For other payment methods, payment should be paid
@@ -434,6 +441,104 @@ router.put('/:orderId/status', [auth, checkRole('admin')], async (req: Request, 
     });
   } catch (error) {
     console.error('Update order status error:', error);
+    if (error instanceof mongoose.Error.CastError) {
+      return res.status(400).json({ 
+        message: 'Invalid order ID format' 
+      });
+    }
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+/**
+ * @swagger
+ * /api/orders/{orderId}/payment:
+ *   put:
+ *     summary: Update order payment status (Admin only)
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: orderId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - paymentStatus
+ *             properties:
+ *               paymentStatus:
+ *                 type: string
+ *                 enum: [pending, paid, failed]
+ *     responses:
+ *       200:
+ *         description: Payment status updated successfully
+ *       400:
+ *         description: Invalid payment status
+ *       401:
+ *         description: Not authorized
+ *       404:
+ *         description: Order not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/:orderId/payment', [auth, checkRole('admin')], async (req: Request, res: Response) => {
+  try {
+    const { orderId } = req.params;
+    const { paymentStatus } = req.body;
+
+    // Validate orderId format
+    if (!mongoose.Types.ObjectId.isValid(orderId)) {
+      return res.status(400).json({ 
+        message: 'Invalid order ID format' 
+      });
+    }
+
+    // Validate payment status
+    const validPaymentStatuses = ['pending', 'paid', 'failed'];
+    if (!validPaymentStatuses.includes(paymentStatus)) {
+      return res.status(400).json({ 
+        message: 'Invalid payment status. Must be one of: pending, paid, failed' 
+      });
+    }
+
+    // Find order
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    // Validate payment method
+    if (order.paymentInfo.paymentMethod === 'COD' && paymentStatus === 'paid' && order.status !== 'delivered') {
+      return res.status(400).json({ 
+        message: 'COD payment can only be marked as paid upon delivery' 
+      });
+    }
+
+    // Update payment status
+    order.paymentStatus = paymentStatus;
+    order.modified_at = new Date();
+    await order.save();
+
+    // TODO: Send email notification about payment status change
+
+    res.json({
+      message: 'Payment status updated successfully',
+      order
+    });
+  } catch (error) {
+    console.error('Update payment status error:', error);
+    if (error instanceof mongoose.Error.CastError) {
+      return res.status(400).json({ 
+        message: 'Invalid order ID format' 
+      });
+    }
     res.status(500).json({ message: 'Server error' });
   }
 });
