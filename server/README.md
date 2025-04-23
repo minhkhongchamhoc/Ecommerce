@@ -148,6 +148,7 @@ This is a RESTful API for an e-commerce application built with Node.js, Express,
 - `GET /api/orders` - Get user's orders
 - `GET /api/orders/:orderId` - Get order details
 - `PUT /api/orders/:orderId/status` - Update order status (Admin only)
+- `PUT /api/orders/:orderId/cancel` - Cancel order
 
 ## Authentication
 The API uses JWT (JSON Web Tokens) for authentication. To access protected endpoints:
@@ -174,14 +175,48 @@ Error responses follow this format:
 ## Order Status Flow
 1. **pending**: Initial state when order is created
 2. **confirmed**: Order is confirmed by admin
+   - For COD: Payment status remains pending
+   - For other methods: Payment must be completed
 3. **shipping**: Order is being shipped
 4. **delivered**: Order is delivered successfully
+   - For COD: Payment status is updated to paid
 5. **cancelled**: Order is cancelled
+   - If paid: Payment status is updated to failed (refund process needed)
+   - If not paid: Payment status is updated to failed
 
 ## Payment Status Flow
 1. **pending**: Initial state when order is created
 2. **paid**: Payment is successful
+   - Required for non-COD orders before confirmation
+   - Automatically set for COD orders upon delivery
 3. **failed**: Payment failed
+   - Set when order is cancelled
+   - May require refund process
+
+## Order Status Update API
+### Endpoint: `PUT /api/orders/:orderId/status`
+- **Access**: Admin only
+- **Request Body**:
+  ```json
+  {
+    "status": "confirmed" // or "shipping", "delivered", "cancelled"
+  }
+  ```
+- **Status Transitions**:
+  - `pending` → `confirmed` or `cancelled`
+  - `confirmed` → `shipping` or `cancelled`
+  - `shipping` → `delivered` or `cancelled`
+  - `delivered` → no transitions allowed
+  - `cancelled` → no transitions allowed
+- **Payment Status Handling**:
+  - On `confirmed`:
+    - COD: Payment remains pending
+    - Other methods: Must be paid
+  - On `delivered`:
+    - COD: Payment status updated to paid
+  - On `cancelled`:
+    - If paid: Payment status updated to failed (refund needed)
+    - If not paid: Payment status updated to failed
 
 ## Development
 To run the project locally:

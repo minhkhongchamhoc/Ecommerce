@@ -3,6 +3,7 @@ import Order from '../models/Order';
 import Cart from '../models/Cart';
 import Product from '../models/Product';
 import auth from '../middleware/auth';
+import { checkRole } from '../middleware/checkRole';
 import mongoose from 'mongoose';
 
 const router = Router();
@@ -311,6 +312,128 @@ router.put('/:orderId/cancel', auth, async (req: Request, res: Response) => {
 
     res.json(order);
   } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+/**
+ * @swagger
+ * /api/orders/{orderId}/status:
+ *   put:
+ *     summary: Update order status (Admin only)
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: orderId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - status
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [confirmed, shipping, delivered, cancelled]
+ *     responses:
+ *       200:
+ *         description: Order status updated successfully
+ *       401:
+ *         description: Not authorized
+ *       403:
+ *         description: Access denied (Admin only)
+ *       404:
+ *         description: Order not found
+ *       400:
+ *         description: Invalid status or status transition
+ *       500:
+ *         description: Server error
+ */
+router.put('/:orderId/status', [auth, checkRole('admin')], async (req: Request, res: Response) => {
+  try {
+    const { status } = req.body;
+    const orderId = req.params.orderId;
+
+    // Validate status
+    const validStatuses = ['confirmed', 'shipping', 'delivered', 'cancelled'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ 
+        message: 'Invalid status. Must be one of: confirmed, shipping, delivered, cancelled' 
+      });
+    }
+
+    // Find order
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    // Validate status transition
+    const currentStatus = order.status;
+    const validTransitions: { [key: string]: string[] } = {
+      'pending': ['confirmed', 'cancelled'],
+      'confirmed': ['shipping', 'cancelled'],
+      'shipping': ['delivered', 'cancelled'],
+      'delivered': [],
+      'cancelled': []
+    };
+
+    if (!validTransitions[currentStatus].includes(status)) {
+      return res.status(400).json({ 
+        message: `Cannot transition from ${currentStatus} to ${status}` 
+      });
+    }
+
+    // Handle payment status based on order status
+    if (status === 'confirmed') {
+      // When order is confirmed, check payment method
+      if (order.paymentInfo.paymentMethod === 'COD') {
+        // For COD, payment status remains pending until delivery
+        order.paymentStatus = 'pending';
+      } else {
+        // For other payment methods, payment should be paid
+        if (order.paymentStatus !== 'paid') {
+          return res.status(400).json({ 
+            message: 'Payment must be completed before confirming order' 
+          });
+        }
+      }
+    } else if (status === 'delivered') {
+      // When order is delivered, update payment status for COD
+      if (order.paymentInfo.paymentMethod === 'COD') {
+        order.paymentStatus = 'paid';
+      }
+    } else if (status === 'cancelled') {
+      // When order is cancelled, handle payment status
+      if (order.paymentStatus === 'paid') {
+        // TODO: Implement refund process
+        order.paymentStatus = 'failed';
+      } else {
+        order.paymentStatus = 'failed';
+      }
+    }
+
+    // Update order status
+    order.status = status;
+    order.modified_at = new Date();
+    await order.save();
+
+    // TODO: Send email notification to customer about status change
+    // TODO: Update product stock if needed
+
+    res.json({
+      message: 'Order status updated successfully',
+      order
+    });
+  } catch (error) {
+    console.error('Update order status error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
