@@ -39,12 +39,32 @@ const productSchema = new Schema<IProduct, IProductModel>({
   images: {
     type: [String],
     required: [true, 'Product images are required'],
-    validate: {
-      validator: function(v: string[]) {
-        return v.length === 4;
+    validate: [
+      {
+        validator: function(v: string[]) {
+          return v.length === 4;
+        },
+        message: 'Product must have exactly 4 images'
       },
-      message: 'Product must have exactly 4 images'
-    },
+      {
+        validator: function(v: string[]) {
+          return v.every(url => {
+            try {
+              const urlObj = new URL(url);
+              // Kiểm tra định dạng ảnh
+              const validExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
+              const hasValidExtension = validExtensions.some(ext => 
+                urlObj.pathname.toLowerCase().endsWith(ext)
+              );
+              return hasValidExtension;
+            } catch {
+              return false;
+            }
+          });
+        },
+        message: 'All images must be valid URLs with supported image formats (jpg, jpeg, png, webp)'
+      }
+    ],
     default: [
       'https://via.placeholder.com/500x500?text=Image+1',
       'https://via.placeholder.com/500x500?text=Image+2',

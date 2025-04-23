@@ -41,7 +41,7 @@ This is a RESTful API for an e-commerce application built with Node.js, Express,
   description: String,
   price: Number,
   category: ObjectId,     // Reference to Category model
-  images: [String],       // Array of image URLs
+  images: [String],       // Array of image URLs (exactly 4 images)
   sizes: [String],        // enum: ['S', 'M', 'L', 'XL', 'XXL']
   stock: Number,
   created_at: Date,
@@ -125,6 +125,7 @@ This is a RESTful API for an e-commerce application built with Node.js, Express,
 
 ### Products
 - `GET /api/products` - Get all products
+- `GET /api/products/filter` - Filter and search products
 - `GET /api/products/:id` - Get product by ID
 - `POST /api/products` - Create new product (Admin only)
 - `PUT /api/products/:id` - Update product (Admin only)
@@ -522,4 +523,68 @@ Test các trường hợp lỗi:
 3. **Authorization**
    - Test role-based access control
    - Test resource ownership
-   - Test admin privileges 
+   - Test admin privileges
+
+#### Product Filter API
+- **Endpoint**: `GET /api/products/filter`
+- **Query Parameters**:
+  - `search`: Search by product name (case-insensitive)
+  - `category`: Filter by category ID
+  - `minPrice`: Minimum price filter
+  - `maxPrice`: Maximum price filter
+  - `sort`: Sort products
+    - `price_asc`: Price low to high
+    - `price_desc`: Price high to low
+    - `newest`: Latest first
+  - `page`: Page number (default: 1)
+- **Response**:
+  ```json
+  {
+    "products": [...],
+    "pagination": {
+      "total": number,
+      "page": number,
+      "limit": number,
+      "totalPages": number
+    }
+  }
+  ```
+
+#### Create/Update Product API
+- **Endpoints**: 
+  - `POST /api/products`
+  - `PUT /api/products/:id`
+- **Request Body**:
+  ```json
+  {
+    "name": "string",
+    "description": "string",
+    "price": number,
+    "category": "string",
+    "images": [
+      "string",  // URL of image 1
+      "string",  // URL of image 2
+      "string",  // URL of image 3
+      "string"   // URL of image 4
+    ],
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "stock": number
+  }
+  ```
+- **Validation Rules**:
+  - Images:
+    - Must have exactly 4 images
+    - Each image must be a valid URL
+    - Supported formats: jpg, jpeg, png, webp
+  - Sizes:
+    - Must be one of: S, M, L, XL, XXL
+  - Price and stock:
+    - Must be non-negative numbers
+- **Response**:
+  - 201: Product created successfully
+  - 200: Product updated successfully
+  - 400: Validation error
+  - 401: Not authorized
+  - 403: Access denied
+  - 404: Product not found
+  - 500: Server error 

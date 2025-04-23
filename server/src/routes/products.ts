@@ -16,7 +16,8 @@ const router = Router();
  *         - description
  *         - price
  *         - category
- *         - image
+ *         - images
+ *         - sizes
  *       properties:
  *         name:
  *           type: string
@@ -30,9 +31,19 @@ const router = Router();
  *         category:
  *           type: string
  *           description: Product category ID
- *         image:
- *           type: string
- *           description: Product image URL
+ *         images:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: Array of image URLs (exactly 4 images)
+ *           minItems: 4
+ *           maxItems: 4
+ *         sizes:
+ *           type: array
+ *           items:
+ *             type: string
+ *             enum: [S, M, L, XL, XXL]
+ *           description: Available sizes
  *         stock:
  *           type: number
  *           description: Product stock quantity
@@ -44,7 +55,8 @@ interface CreateProductRequest extends Request {
     description: string;
     price: number;
     category: string;
-    image_url: string;
+    images: string[];  // Array of image URLs
+    sizes: string[];
     stock: number;
   }
 }
@@ -264,7 +276,7 @@ router.get('/:id', async (req: Request, res: Response) => {
  *               - description
  *               - price
  *               - category
- *               - image_url
+ *               - images
  *               - sizes
  *             properties:
  *               name:
@@ -275,8 +287,11 @@ router.get('/:id', async (req: Request, res: Response) => {
  *                 type: number
  *               category:
  *                 type: string
- *               image_url:
- *                 type: string
+ *               images:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: Array of image URLs (max 4 images)
  *               sizes:
  *                 type: array
  *                 items:
@@ -298,14 +313,37 @@ router.get('/:id', async (req: Request, res: Response) => {
  */
 router.post('/', [auth, checkRole('admin')], async (req: Request, res: Response) => {
   try {
-    const { name, description, price, category, image_url, sizes, stock } = req.body;
+    const { name, description, price, category, images, sizes, stock } = req.body;
+
+    // Validate number of images
+    if (!images || !Array.isArray(images) || images.length > 4) {
+      return res.status(400).json({ 
+        message: 'Product must have between 1 and 4 images' 
+      });
+    }
+
+    // Validate image URLs
+    const isValidImageUrl = (url: string) => {
+      try {
+        new URL(url);
+        return true;
+      } catch {
+        return false;
+      }
+    };
+
+    if (!images.every(isValidImageUrl)) {
+      return res.status(400).json({ 
+        message: 'Invalid image URL format' 
+      });
+    }
 
     const product = new Product({
       name,
       description,
       price,
       category,
-      image_url,
+      images,
       sizes,
       stock
     });
@@ -352,8 +390,13 @@ router.post('/', [auth, checkRole('admin')], async (req: Request, res: Response)
  *                 type: number
  *               category:
  *                 type: string
- *               image_url:
- *                 type: string
+ *               images:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: Array of image URLs (exactly 4 images)
+ *                 minItems: 4
+ *                 maxItems: 4
  *               sizes:
  *                 type: array
  *                 items:
@@ -377,7 +420,35 @@ router.post('/', [auth, checkRole('admin')], async (req: Request, res: Response)
  */
 router.put('/:id', [auth, checkRole('admin')], async (req: Request, res: Response) => {
   try {
-    const { name, description, price, category, image_url, sizes, stock } = req.body;
+    const { name, description, price, category, images, sizes, stock } = req.body;
+
+    // Validate number of images
+    if (images && (!Array.isArray(images) || images.length !== 4)) {
+      return res.status(400).json({ 
+        message: 'Product must have exactly 4 images' 
+      });
+    }
+
+    // Validate image URLs if provided
+    if (images) {
+      const isValidImageUrl = (url: string) => {
+        try {
+          const urlObj = new URL(url);
+          const validExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
+          return validExtensions.some(ext => 
+            urlObj.pathname.toLowerCase().endsWith(ext)
+          );
+        } catch {
+          return false;
+        }
+      };
+
+      if (!images.every(isValidImageUrl)) {
+        return res.status(400).json({ 
+          message: 'All images must be valid URLs with supported image formats (jpg, jpeg, png, webp)' 
+        });
+      }
+    }
 
     const product = await Product.findByIdAndUpdate(
       req.params.id,
@@ -386,7 +457,7 @@ router.put('/:id', [auth, checkRole('admin')], async (req: Request, res: Respons
         description,
         price,
         category,
-        image_url,
+        images,
         sizes,
         stock,
         modified_at: Date.now()
