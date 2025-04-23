@@ -543,4 +543,181 @@ router.put('/:orderId/payment', [auth, checkRole('admin')], async (req: Request,
   }
 });
 
+/**
+ * @swagger
+ * /api/orders/admin/all:
+ *   get:
+ *     summary: Get all orders (Admin only)
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of items per page
+ *     responses:
+ *       200:
+ *         description: List of all orders
+ *       401:
+ *         description: Not authorized
+ *       403:
+ *         description: Forbidden - Admin access required
+ *       500:
+ *         description: Server error
+ */
+router.get('/admin/all', [auth, checkRole('admin')], async (req: Request, res: Response) => {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+
+    // Validate pagination parameters
+    if (page < 1 || limit < 1) {
+      return res.status(400).json({ 
+        message: 'Invalid pagination parameters' 
+      });
+    }
+
+    const orders = await Order.find()
+      .populate('items.product')
+      .populate('user', 'email')
+      .sort({ created_at: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const total = await Order.countDocuments();
+
+    res.json({
+      success: true,
+      data: {
+        orders,
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit)
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Get all orders error:', error);
+    if (error instanceof mongoose.Error.CastError) {
+      return res.status(400).json({ 
+        message: 'Invalid pagination parameters' 
+      });
+    }
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+/**
+ * @swagger
+ * /api/orders/admin/search:
+ *   get:
+ *     summary: Search orders by status (Admin only)
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [pending, confirmed, shipping, delivered, cancelled]
+ *         required: true
+ *         description: Order status to search for
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of items per page
+ *     responses:
+ *       200:
+ *         description: List of orders matching the status
+ *       400:
+ *         description: Invalid status or pagination parameters
+ *       401:
+ *         description: Not authorized
+ *       403:
+ *         description: Forbidden - Admin access required
+ *       500:
+ *         description: Server error
+ */
+router.get('/admin/search', [auth, checkRole('admin')], async (req: Request, res: Response) => {
+  try {
+    const { status } = req.query;
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+
+    // Validate status parameter
+    if (!status) {
+      return res.status(400).json({ 
+        message: 'Status parameter is required' 
+      });
+    }
+
+    const validStatuses = ['pending', 'confirmed', 'shipping', 'delivered', 'cancelled'];
+    if (!validStatuses.includes(status as string)) {
+      return res.status(400).json({ 
+        message: 'Invalid status',
+        validStatuses 
+      });
+    }
+
+    // Validate pagination parameters
+    if (page < 1 || limit < 1) {
+      return res.status(400).json({ 
+        message: 'Invalid pagination parameters' 
+      });
+    }
+
+    const orders = await Order.find({ status })
+      .populate('items.product')
+      .populate('user', 'email')
+      .sort({ created_at: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const total = await Order.countDocuments({ status });
+
+    res.json({
+      success: true,
+      data: {
+        orders,
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit)
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Search orders error:', error);
+    if (error instanceof mongoose.Error.CastError) {
+      return res.status(400).json({ 
+        message: 'Invalid parameters' 
+      });
+    }
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 export default router; 

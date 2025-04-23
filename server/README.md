@@ -150,6 +150,8 @@ This is a RESTful API for an e-commerce application built with Node.js, Express,
 - `PUT /api/orders/:orderId/status` - Update order status (Admin only)
 - `PUT /api/orders/:orderId/payment` - Update payment status (Admin only)
 - `PUT /api/orders/:orderId/cancel` - Cancel order
+- `GET /api/orders/admin/all` - Get all orders (Admin only)
+- `GET /api/orders/admin/search` - Search orders by status (Admin only)
 
 ## Authentication
 The API uses JWT (JSON Web Tokens) for authentication. To access protected endpoints:
@@ -254,9 +256,270 @@ Error responses follow this format:
   - Invalid status transition for payment method
   - Unauthorized access
 
+## Admin Order Management APIs
+### Endpoint: `GET /api/orders/admin/all`
+- **Access**: Admin only
+- **Query Parameters**:
+  - `page`: Page number (default: 1)
+  - `limit`: Items per page (default: 10)
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "data": {
+      "orders": [...],
+      "pagination": {
+        "total": number,
+        "page": number,
+        "limit": number,
+        "totalPages": number
+      }
+    }
+  }
+  ```
+
+### Endpoint: `GET /api/orders/admin/search`
+- **Access**: Admin only
+- **Query Parameters**:
+  - `status`: Order status to search for (required)
+    - Valid values: `pending`, `confirmed`, `shipping`, `delivered`, `cancelled`
+  - `page`: Page number (default: 1)
+  - `limit`: Items per page (default: 10)
+- **Response**:
+  ```json
+  {
+    "success": true,
+    "data": {
+      "orders": [...],
+      "pagination": {
+        "total": number,
+        "page": number,
+        "limit": number,
+        "totalPages": number
+      }
+    }
+  }
+  ```
+- **Error Cases**:
+  - Invalid status value
+  - Missing status parameter
+  - Invalid pagination parameters
+  - Unauthorized access
+
 ## Development
 To run the project locally:
 1. Install dependencies: `npm install`
 2. Set up environment variables in `.env`
 3. Run the server: `npm run dev`
-4. Access API documentation at: `http://localhost:5000/api-docs` 
+4. Access API documentation at: `http://localhost:5000/api-docs`
+
+## API Testing Procedures
+
+### 1. Authentication Testing
+1. **Register User**
+   ```bash
+   curl -X POST http://localhost:5000/api/auth/register \
+   -H "Content-Type: application/json" \
+   -d '{
+     "email": "test@example.com",
+     "password": "password123"
+   }'
+   ```
+
+2. **Login User**
+   ```bash
+   curl -X POST http://localhost:5000/api/auth/login \
+   -H "Content-Type: application/json" \
+   -d '{
+     "email": "test@example.com",
+     "password": "password123"
+   }'
+   ```
+   - Lưu token từ response để sử dụng cho các request tiếp theo
+
+3. **Logout User**
+   ```bash
+   curl -X POST http://localhost:5000/api/auth/logout \
+   -H "Authorization: Bearer <your_token>"
+   ```
+
+### 2. Order Management Testing
+
+#### User Order Operations
+1. **Create Order (Checkout)**
+   ```bash
+   curl -X POST http://localhost:5000/api/orders/checkout \
+   -H "Authorization: Bearer <your_token>" \
+   -H "Content-Type: application/json" \
+   -d '{
+     "selectedItems": ["cart_item_id_1", "cart_item_id_2"],
+     "contactInfo": {
+       "phoneNumber": "1234567890",
+       "email": "test@example.com"
+     },
+     "shippingAddress": {
+       "firstName": "John",
+       "lastName": "Doe",
+       "addressLine1": "123 Main St",
+       "city": "New York",
+       "country": "USA",
+       "state": "NY",
+       "postalCode": "10001"
+     },
+     "paymentInfo": {
+       "paymentMethod": "credit_card",
+       "cardNumber": "4111111111111111",
+       "nameOnCard": "John Doe",
+       "expirationDate": "12/25",
+       "cvc": "123"
+     }
+   }'
+   ```
+
+2. **Get User Orders**
+   ```bash
+   curl -X GET http://localhost:5000/api/orders \
+   -H "Authorization: Bearer <your_token>"
+   ```
+
+3. **Get Order Details**
+   ```bash
+   curl -X GET http://localhost:5000/api/orders/<order_id> \
+   -H "Authorization: Bearer <your_token>"
+   ```
+
+4. **Cancel Order**
+   ```bash
+   curl -X PUT http://localhost:5000/api/orders/<order_id>/cancel \
+   -H "Authorization: Bearer <your_token>"
+   ```
+
+#### Admin Order Operations
+1. **Get All Orders**
+   ```bash
+   curl -X GET "http://localhost:5000/api/orders/admin/all?page=1&limit=10" \
+   -H "Authorization: Bearer <admin_token>"
+   ```
+
+2. **Search Orders by Status**
+   ```bash
+   curl -X GET "http://localhost:5000/api/orders/admin/search?status=pending&page=1&limit=10" \
+   -H "Authorization: Bearer <admin_token>"
+   ```
+
+3. **Update Order Status**
+   ```bash
+   curl -X PUT http://localhost:5000/api/orders/<order_id>/status \
+   -H "Authorization: Bearer <admin_token>" \
+   -H "Content-Type: application/json" \
+   -d '{
+     "status": "confirmed"
+   }'
+   ```
+
+4. **Update Payment Status**
+   ```bash
+   curl -X PUT http://localhost:5000/api/orders/<order_id>/payment \
+   -H "Authorization: Bearer <admin_token>" \
+   -H "Content-Type: application/json" \
+   -d '{
+     "paymentStatus": "paid"
+   }'
+   ```
+
+### 3. Testing Tools
+1. **Postman Collection**
+   - Import file `postman_collection.json` vào Postman
+   - Set up environment variables:
+     - `base_url`: http://localhost:5000
+     - `token`: JWT token sau khi login
+
+2. **Automated Testing**
+   ```bash
+   # Run all tests
+   npm test
+
+   # Run specific test file
+   npm test -- orders.test.ts
+
+   # Run tests with coverage
+   npm run test:coverage
+   ```
+
+### 4. Test Cases
+
+#### Authentication
+- [ ] Register with valid data
+- [ ] Register with existing email
+- [ ] Login with valid credentials
+- [ ] Login with invalid credentials
+- [ ] Access protected route without token
+- [ ] Access protected route with invalid token
+
+#### Order Management
+- [ ] Create order with valid data
+- [ ] Create order with empty cart
+- [ ] Create order with invalid payment info
+- [ ] Get user orders
+- [ ] Get order details
+- [ ] Cancel pending order
+- [ ] Cancel non-pending order
+- [ ] Admin: Get all orders
+- [ ] Admin: Search orders by status
+- [ ] Admin: Update order status
+- [ ] Admin: Update payment status
+
+### 5. Error Handling
+Test các trường hợp lỗi:
+1. **400 Bad Request**
+   - Invalid input data
+   - Missing required fields
+   - Invalid status values
+
+2. **401 Unauthorized**
+   - Missing token
+   - Invalid token
+   - Expired token
+
+3. **403 Forbidden**
+   - User trying to access admin routes
+   - Invalid role permissions
+
+4. **404 Not Found**
+   - Invalid order ID
+   - Non-existent resource
+
+5. **500 Server Error**
+   - Database connection issues
+   - Internal server errors
+
+### 6. Performance Testing
+1. **Load Testing**
+   ```bash
+   # Install artillery
+   npm install -g artillery
+
+   # Run load test
+   artillery run load-tests/orders.yml
+   ```
+
+2. **Stress Testing**
+   - Test với số lượng request lớn
+   - Kiểm tra response time
+   - Kiểm tra error rate
+
+### 7. Security Testing
+1. **JWT Security**
+   - Test token expiration
+   - Test token tampering
+   - Test token replay attacks
+
+2. **Input Validation**
+   - Test SQL injection
+   - Test XSS attacks
+   - Test input sanitization
+
+3. **Authorization**
+   - Test role-based access control
+   - Test resource ownership
+   - Test admin privileges 
