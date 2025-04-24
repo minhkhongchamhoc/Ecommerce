@@ -6,11 +6,12 @@ import FashionBanner from '../../assets/fashion-banner.png';
 import { CategoriesContext } from '../../contexts/CategoriesContext';
 import { ProductsContext } from '../../contexts/ProductContext';
 import { transformProductData } from '../../utils/products';
-
+import { AuthContext } from '../../contexts/AuthContext';
 const Home = () => {
   const { categories, loading: categoriesLoading, error: categoriesError } = useContext(CategoriesContext);
   const { products, loading: productsLoading, error: productsError, filterProducts } = useContext(ProductsContext);
-
+  const {user} = useContext(AuthContext);
+  console.log(user);
   // Fetch products with limit of 4, run once on mount
   useEffect(() => {
     const fetchProducts = async () => {

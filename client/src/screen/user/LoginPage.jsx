@@ -1,12 +1,10 @@
-// src/pages/LoginPage.jsx
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext.jsx';
 import { validateEmail, validatePassword } from '../../utils/validationUtils.js';
-import  loginUser  from '../../utils/authUtils.js';
-import Header from '../../components/Header.jsx';
-import Footer from '../../components/Footer.jsx';
+import authUtils from '../../utils/authUtils.js'; // Import the default export
+const { loginUser } = authUtils; // Destructure loginUser from the default export
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -46,7 +44,8 @@ const LoginPage = () => {
   };
 
   return (
-    <div className=" bg-gray-100 flex flex-col">
+    <div className="min-h-screen bg-gray-100 flex flex-col">
+      
       <main className="flex-1 flex items-center justify-center py-4 sm:py-6 md:py-8 px-4 sm:px-6 md:px-8">
         <div className="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl pt-6 sm:pt-8 md:pt-10 pb-8 sm:pb-12 md:pb-16 inline-flex justify-center items-start">
           <div className="flex-1 w-full max-w-sm sm:max-w-md inline-flex flex-col justify-start items-center gap-6 sm:gap-10 md:gap-14">
@@ -154,7 +153,7 @@ const LoginPage = () => {
               {/* Register link */}
               <div className="justify-center">
                 <span className="text-gray-600 text-sm sm:text-base font-normal font-poppins leading-normal">New user? </span>
-                <Link to="/register" className="text-sky-500 text-sm sm:text-base font-normal font-poppins leading-normal hover:underline">
+                <Link to="/register" className="text-sky-500 text-sm sm:text-base font-normal Geometry Sans leading-normal hover:underline">
                   Create an account
                 </Link>
               </div>
@@ -162,6 +161,7 @@ const LoginPage = () => {
           </div>
         </div>
       </main>
+    
     </div>
   );
 };

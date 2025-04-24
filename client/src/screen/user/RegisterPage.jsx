@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { validateEmail, validatePassword, validateConfirmPassword } from '../../utils/validationUtils';
-import  registerUser  from '../../utils/authUtils';
+import authUtils from '../../utils/authUtils.js'; // Import the default export
+const { registerUser } = authUtils; // Destructure loginUser from the default export
 
 const RegisterPage = () => {
   const navigate = useNavigate();

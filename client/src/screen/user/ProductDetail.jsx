@@ -1,3 +1,4 @@
+'use client';
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import ProductCard from '../../components/ProductCard';
@@ -26,7 +27,7 @@ const ProductDetail = () => {
         const productData = await productsUtils.getProductById(id);
         setProduct(productData);
         setSelectedSize(productData.sizes?.[0] || 'S');
-        const recommendedData = await productsUtils.getRecommendedProducts(productData.category._id);
+        const recommendedData = await productsUtils.getRecommendedProducts(productData.category._id, { limit: 4 });
         setRecommendedProducts(recommendedData.products || []);
       } catch (err) {
         setError(err.message || 'Failed to load product details');
@@ -61,7 +62,7 @@ const ProductDetail = () => {
 
   if (loading) {
     return (
-      <div className="w-full pt-10 pb-16 flex justify-center items-center">
+      <div className="w-full pt-10 pb-16 flex justify-center items-center font-poppins">
         <div className="text-gray-600 text-lg">Loading...</div>
       </div>
     );
@@ -69,7 +70,7 @@ const ProductDetail = () => {
 
   if (error) {
     return (
-      <div className="w-full pt-10 pb-16 flex justify-center items-center">
+      <div className="w-full pt-10 pb-16 flex justify-center items-center font-poppins">
         <div className="text-red-600 text-lg">{error}</div>
       </div>
     );
@@ -77,7 +78,7 @@ const ProductDetail = () => {
 
   if (!product) {
     return (
-      <div className="w-full pt-10 pb-16 flex justify-center items-center">
+      <div className="w-full pt-10 pb-16 flex justify-center items-center font-poppins">
         <div className="text-gray-600 text-lg">Product not found</div>
       </div>
     );
@@ -87,7 +88,7 @@ const ProductDetail = () => {
   const originalPrice = product.price * 1.2 || 199.99;
 
   return (
-    <div className="w-full pt-10 pb-16 flex justify-center items-center">
+    <div className="w-full pt-10 pb-16 flex justify-center items-center font-poppins">
       <div className="pb-6 flex flex-col justify-start items-start gap-24 overflow-hidden max-w-7xl">
         {/* Product Section */}
         <div className="flex justify-start items-start gap-8 w-full flex-col lg:flex-row">
@@ -293,24 +294,34 @@ const ProductDetail = () => {
         {/* Recommended Products Section */}
         <div className="w-full flex flex-col justify-center items-start overflow-hidden">
           <div className="w-full flex flex-col justify-center items-start gap-10 overflow-hidden">
-            <h2 className="text-gray-900 text-4xl font-semibold leading-10">Recommended products</h2>
-            <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 overflow-hidden">
-              {recommendedProducts.length === 0 ? (
-                <div className="col-span-full text-gray-600 text-lg">No recommended products available</div>
-              ) : (
-                transformProductData(recommendedProducts).map((item) => (
-                  <ProductCard
-                    key={item.id}
-                    id={item.id}
-                    image={item.image}
-                    name={item.name}
-                    category={item.category}
-                    currentPrice={item.currentPrice}
-                    originalPrice={item.originalPrice}
-                  />
-                ))
-              )}
+            <div className="flex justify-start items-start">
+              <div className="justify-center">
+                <span className="text-gray-900 text-4xl font-semibold font-poppins leading-10">Recommended products. </span>
+                <span className="text-gray-600/80 text-4xl font-semibold font-poppins leading-10">Best matching products for you</span>
+              </div>
             </div>
+            {loading && <div className="w-full text-gray-600 text-lg font-poppins">Loading recommendations...</div>}
+            {error && <div className="w-full text-red-600 text-lg font-poppins">Error: {error}</div>}
+            {!loading && !error && (
+              <div className="w-full flex justify-start items-start gap-5 overflow-hidden">
+                {recommendedProducts.length === 0 ? (
+                  <div className="w-full text-gray-600 text-lg font-poppins">No recommended products available</div>
+                ) : (
+                  transformProductData(recommendedProducts).slice(0, 4).map((item) => (
+                    <div className="flex-1" key={item.id}>
+                      <ProductCard
+                        id={item.id}
+                        image={item.image}
+                        name={item.name}
+                        category={item.category}
+                        currentPrice={item.currentPrice}
+                        originalPrice={item.originalPrice}
+                      />
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

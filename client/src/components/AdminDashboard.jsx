@@ -1,8 +1,7 @@
 // src/components/AdminDashboard.jsx
 import React, { useState } from 'react';
 import { FiHome, FiBox, FiLayers, FiShoppingBag, FiChevronDown, FiChevronRight } from 'react-icons/fi';
-import Header from './Header';
-import Footer from './Footer';
+
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 
 const AdminDashboard = () => {
@@ -49,7 +48,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      <Header />
+     
       <div className="flex flex-1">
         {/* Sidebar */}
         <div className="w-64 bg-white border-r border-gray-200 min-h-[calc(100vh-4rem)] md:min-h-[calc(100vh-6rem)]">
@@ -117,7 +116,7 @@ const AdminDashboard = () => {
           </div>
         </div>
       </div>
-      <Footer />
+  
     </div>
   );
 };
