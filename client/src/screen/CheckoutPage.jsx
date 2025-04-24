@@ -22,7 +22,7 @@ const CheckoutPage = () => {
 
   return (
     <div className="checkout-page-desktop min-h-screen bg-white flex flex-col">
-      <Header />
+    
       
       <main className="flex-1 py-10 flex justify-center">
         <div className="w-full max-w-6xl px-6">
@@ -295,7 +295,7 @@ const CheckoutPage = () => {
         </div>
       </main>
       
-      <Footer />
+    
     </div>
   );
 };

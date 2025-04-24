@@ -16,7 +16,7 @@ const AboutPage = () => {
 
   return (
     <div className="about-page-desktop min-h-screen bg-white flex flex-col">
-      <Header />
+
       
       <main className="flex-1 py-10 flex justify-center">
         <div className="w-full max-w-6xl px-6">
@@ -133,8 +133,8 @@ const AboutPage = () => {
           </div>
         </div>
       </main>
-      
-      <Footer />
+  
+ 
     </div>
   );
 };
