@@ -1,37 +1,51 @@
 import React, { useContext } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import { AuthContext } from './contexts/AuthContext';
-import RegisterPage from './screen/user/RegisterPage';
-import LoginPage from './screen/user/LoginPage';
-import AboutPage from './screen/user/AboutPage';
+import RegisterPage from './screen/RegisterPage';
+import LoginPage from './screen/LoginPage';
+import AboutPage from './screen/AboutPage';
 import Layout from './Layout';
-import Home from './screen/user/HomePage';
-import ProductDetail from './screen/user/ProductDetail';
-import ShopPage from './screen/user/ShopPage';
-import Cart from './screen/user/Cart';
-import Admin from './screen/admin/Admin';
+import Home from './screen/HomePage';
+import AdminDashboard from './components/AdminDashboard';
+import AdminHomePage from './screen/admin/AdminHomePage';
+import ProductsPage from './screen/admin/ProductsPage';
+import CategoriesPage from './screen/admin/CategoriesPage';
+import OrdersPage from './screen/admin/OrdersPage';
 
 const Navigation = () => {
-  const { isLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn, user } = useContext(AuthContext);
+  
+  // Check if the user is an admin
+  const isAdmin = isLoggedIn && user?.role === 'admin';
 
   return (
-    <Layout>
-      <Routes>
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/shop" element={<ShopPage />} />
-        <Route path="/" element={<Home />} />
-        <Route path="/products/:id" element={<ProductDetail />} />
-        <Route path="/cart" element={<Cart/>} />
-        <Route
-          path="/about"
-          element={isLoggedIn ? <AboutPage /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/admin/*" element={<Admin/>}
-        />
-      </Routes>
-    </Layout>
+    <Routes>
+      {/* Public routes */}
+      <Route path="/" element={<Layout><Home /></Layout>} />
+      <Route path="/home" element={<Layout><Home /></Layout>} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      
+      {/* Protected routes */}
+      <Route
+        path="/about"
+        element={isLoggedIn ? <Layout><AboutPage /></Layout> : <Navigate to="/login" />}
+      />
+      
+      {/* Admin routes */}
+      <Route
+        path="/admin"
+        element={isAdmin ? <AdminDashboard /> : <Navigate to="/login" />}
+      >
+        <Route index element={<AdminHomePage />} />
+        <Route path="products" element={<ProductsPage />} />
+        <Route path="categories" element={<CategoriesPage />} />
+        <Route path="orders" element={<OrdersPage />} />
+      </Route>
+      
+      {/* Catch-all route */}
+      <Route path="*" element={<Navigate to="/" />} />
+    </Routes>
   );
 };
 
