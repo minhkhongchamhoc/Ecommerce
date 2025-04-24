@@ -1,48 +1,33 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { fetchProducts } from '../utils/apiClient';
-import { transformProductData } from '../utils/transformData';
+import React, { createContext, useState, useCallback } from 'react';
+import { productsUtils } from '../utils/products';
 
-const ProductsContext = createContext();
+export const ProductsContext = createContext();
 
 export const ProductsProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
+  const [pagination, setPagination] = useState({ total: 0, page: 1, limit: 9, totalPages: 1 });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [filters, setFilters] = useState({
-    category: '',
-    minPrice: '',
-    maxPrice: ''
-  });
 
-  const fetchData = async () => {
+  const filterProducts = useCallback(async (filters) => {
     setLoading(true);
-    setError(null);
     try {
-      const data = await fetchProducts(filters);
-      const transformedData = transformProductData(data);
-      setProducts(transformedData);
+      const data = await productsUtils.filterProducts(filters);
+      setProducts(data.products);
+      setPagination(data.pagination);
+      setError(null);
+      return data;
     } catch (err) {
-      setError(err.message || 'An error occurred');
+      setError(err.message || 'Failed to filter products');
+      throw err;
     } finally {
-      setLoading(false);
+      setTimeout(() => setLoading(false), 300); // Minimum loading time to reduce flickering
     }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [filters]);
+  }, []);
 
   return (
-    <ProductsContext.Provider value={{ products, loading, error, filters, setFilters }}>
+    <ProductsContext.Provider value={{ products, pagination, loading, error, filterProducts }}>
       {children}
     </ProductsContext.Provider>
   );
-};
-
-export const useProducts = () => {
-  const context = useContext(ProductsContext);
-  if (!context) {
-    throw new Error('useProducts must be used within a ProductsProvider');
-  }
-  return context;
 };

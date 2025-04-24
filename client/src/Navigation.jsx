@@ -7,6 +7,8 @@ import AboutPage from './screen/AboutPage';
 import Layout from './Layout';
 import Home from './screen/HomePage';
 
+import ShopPage from './screen/ShopPage';
+
 const Navigation = () => {
   const { isLoggedIn } = useContext(AuthContext);
 
@@ -15,15 +17,11 @@ const Navigation = () => {
       <Routes>
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="/shop" element={<ShopPage />} />
+        <Route path="/" element={<Home />} />
         <Route
           path="/about"
           element={isLoggedIn ? <AboutPage /> : <Navigate to="/login" />}
-        />
-
-        <Route
-          path="/"
-          element={isLoggedIn ? <Navigate to="/about" /> : <Navigate to="/login" />}
         />
       </Routes>
     </Layout>

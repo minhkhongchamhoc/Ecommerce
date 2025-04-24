@@ -1,53 +1,41 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import ProductCard from '../components/ProductCard';
 import { FaArrowRight, FaShippingFast, FaUndo, FaGlobe, FaMoneyCheckAlt } from 'react-icons/fa';
+import heroBanner from '../assets/hero-banner.png';
+import FashionBanner from '../assets/fashion-banner.png';
+import { CategoriesContext } from '../contexts/CategoriesContext';
+import { ProductsContext } from '../contexts/ProductContext';
 
 const Home = () => {
-  // Sample product data
-  const products = [
-    {
-      image: "https://placehold.co/600x400",
-      name: "Black Automatic Watch",
-      category: "Accessories",
-      rating: 4.9,
-      reviewCount: 98,
-      currentPrice: 169.99,
-      originalPrice: 199.99
-    },
-    {
-      image: "https://placehold.co/600x400",
-      name: "Leather Wristwatch",
-      category: "Accessories",
-      rating: 4.7,
-      reviewCount: 76,
-      currentPrice: 149.99,
-      originalPrice: 179.99
-    },
-    {
-      image: "https://placehold.co/600x400",
-      name: "Sport Smartwatch",
-      category: "Accessories",
-      rating: 4.8,
-      reviewCount: 112,
-      currentPrice: 189.99,
-      originalPrice: 219.99
-    },
-    {
-      image: "https://placehold.co/600x400",
-      name: "Gold Luxury Watch",
-      category: "Accessories",
-      rating: 5.0,
-      reviewCount: 64,
-      currentPrice: 249.99,
-      originalPrice: 299.99
-    }
-  ];
+  const { categories, loading: categoriesLoading, error: categoriesError } = useContext(CategoriesContext);
+  const { products, loading: productsLoading, error: productsError, filterProducts } = useContext(ProductsContext);
 
+  // Fetch products with limit of 4, run once on mount
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        await filterProducts({ limit: 4 }); // Empty filter object, limit to 4
+      } catch (err) {
+        console.error('Failed to fetch products:', err);
+      }
+    };
+    fetchProducts();
+  }, []); // Empty dependencies to run once
+
+  // Log products for debugging
+  useEffect(() => {
+    console.log('Products from Context:', products);
+    console.log('Products Loading:', productsLoading);
+    console.log('Products Error:', productsError);
+  }, [products, productsLoading, productsError]);
+
+  // Limit to first 4 products
+  const displayedProducts = products.slice(0, 4);
   return (
     <div className="flex flex-col justify-start items-start">
       {/* Hero Section */}
       <div className="w-full relative flex flex-col justify-start items-center overflow-hidden">
-        <img className="w-full h-[600px] left-0 top-0 absolute" src="https://placehold.co/600x400" alt="Hero Banner" />
+        <img className="w-full h-[600px] left-0 top-0 absolute" src={heroBanner} alt="Hero Banner" />
         <div className="self-stretch h-[600px] px-28 py-5 relative flex flex-col justify-center items-start overflow-hidden">
           <div className="pb-5 flex flex-col justify-center items-start gap-6">
             <div className="flex justify-start items-center">
@@ -213,21 +201,23 @@ const Home = () => {
             </div>
           </div>
           <div className="flex flex-col justify-center items-center gap-16">
-            <div className="w-full flex justify-start items-start gap-5 overflow-hidden">
-              {products.map((product, index) => (
-                <div className="flex-1" key={index}>
-                  <ProductCard
-                    image={product.image}
-                    name={product.name}
-                    category={product.category}
-                    rating={product.rating}
-                    reviewCount={product.reviewCount}
-                    currentPrice={product.currentPrice}
-                    originalPrice={product.originalPrice}
-                  />
-                </div>
-              ))}
-            </div>
+            {productsLoading && <div className="text-gray-600">Loading products...</div>}
+            {productsError && <div className="text-red-600">Error: {productsError}</div>}
+            {!productsLoading && !productsError && (
+              <div className="w-full flex justify-start items-start gap-5 overflow-hidden">
+                {displayedProducts.map((product) => (
+                  <div className="flex-1" key={product._id}>
+                    <ProductCard
+                      image={product.images[0] || undefined} // Use first image, fallback to default
+                      name={product.name}
+                      category={product.category.name} // Category is an object
+                      currentPrice={product.price}
+                      originalPrice={product.price * 1.2} // Example: 20% higher
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -242,21 +232,23 @@ const Home = () => {
             </div>
           </div>
           <div className="self-stretch flex flex-col justify-center items-center gap-16">
-            <div className="self-stretch flex justify-start items-start gap-5 overflow-hidden">
-              {products.map((product, index) => (
-                <div className="flex-1" key={index}>
-                  <ProductCard
-                    image={product.image}
-                    name={product.name}
-                    category={product.category}
-                    rating={product.rating}
-                    reviewCount={product.reviewCount}
-                    currentPrice={product.currentPrice}
-                    originalPrice={product.originalPrice}
-                  />
-                </div>
-              ))}
-            </div>
+            {productsLoading && <div className="text-gray-600">Loading products...</div>}
+            {productsError && <div className="text-red-600">Error: {productsError}</div>}
+            {!productsLoading && !productsError && (
+              <div className="self-stretch flex justify-start items-start gap-5 overflow-hidden">
+                {displayedProducts.map((product) => (
+                  <div className="flex-1" key={product._id}>
+                    <ProductCard
+                      image={product.images[0] || undefined} // Use first image, fallback to default
+                      name={product.name}
+                      category={product.category.name} // Category is an object
+                      currentPrice={product.price}
+                      originalPrice={product.price * 1.2} // Example: 20% higher
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -264,7 +256,7 @@ const Home = () => {
       {/* Promotion Banner */}
       <div className="w-full px-28 py-12 flex flex-col justify-start items-center overflow-hidden">
         <div className="self-stretch relative bg-neutral-100 rounded-3xl flex flex-col justify-start items-start overflow-hidden">
-          <img className="w-full h-[593px] left-[552px] top-[-0.44px] absolute" src="https://placehold.co/600x400" alt="Fashion Collection" />
+          <img className="w-full h-[593px] left-[552px] top-[-0.44px] absolute" src={FashionBanner} alt="Fashion Collection" />
           <div className="w-[971px] h-96 pl-28 pr-24 py-12 flex flex-col justify-center items-start gap-2.5 overflow-hidden">
             <div className="w-[552px] flex flex-col justify-start items-start gap-6">
               <div className="flex flex-col justify-start items-start gap-3.5">

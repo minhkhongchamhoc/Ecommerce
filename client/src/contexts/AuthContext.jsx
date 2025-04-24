@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
     setToken(token);
     setUser(userData); // userData is { id, email, role }
     setIsLoggedIn(true);
-    navigate('/home');
+    navigate('/');
   };
 
   const logout = () => {

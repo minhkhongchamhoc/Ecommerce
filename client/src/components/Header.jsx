@@ -1,14 +1,13 @@
-// src/components/Header.jsx
 import React, { useState, useContext } from 'react';
 import { FiUser, FiShoppingCart } from 'react-icons/fi';
 import { AuthContext } from '../contexts/AuthContext';
 import SearchBar from './SearchBar';
-
+import { useNavigate } from 'react-router-dom';
 const Header = () => {
   const { isLoggedIn, logout } = useContext(AuthContext);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isHamburgerDropdownOpen, setIsHamburgerDropdownOpen] = useState(false);
-
+  const navigate = useNavigate();
   // Toggle user dropdown (for larger screens)
   const toggleUserDropdown = () => {
     setIsUserDropdownOpen((prev) => !prev);
@@ -63,16 +62,28 @@ const Header = () => {
           {/* Hamburger Dropdown */}
           {isHamburgerDropdownOpen && (
             <div className="absolute top-12 right-0 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
-              {isLoggedIn && (
+              {isLoggedIn ? (
                 <button
                   onClick={handleLogout}
-                  className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins'] text-sm"
+                  className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins text-sm"
                 >
                   Logout
                 </button>
-              )}
-              {!isLoggedIn && (
-                <div className="px-4 py-2 text-gray-900 font-poppins'] text-sm">Please log in</div>
+              ) : (
+                <>
+                  <button
+                    onClick={() => setIsHamburgerDropdownOpen(false)}
+                    className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins text-sm"
+                  >
+                    Login
+                  </button>
+                  <button
+                    onClick={() => setIsHamburgerDropdownOpen(false)}
+                    className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins text-sm"
+                  >
+                    Register
+                  </button>
+                </>
               )}
             </div>
           )}
@@ -82,14 +93,31 @@ const Header = () => {
             <div className="relative">
               <FiUser className="w-6 h-6 text-gray-900 cursor-pointer" onClick={toggleUserDropdown} />
               {/* User Dropdown */}
-              {isUserDropdownOpen && isLoggedIn && (
+              {isUserDropdownOpen && (
                 <div className="absolute top-8 right-0 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
-                  <button
-                    onClick={handleLogout}
-                    className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins'] text-sm"
-                  >
-                    Logout
-                  </button>
+                  {isLoggedIn ? (
+                    <button
+                      onClick={handleLogout}
+                      className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins text-sm"
+                    >
+                      Logout
+                    </button>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => { setIsUserDropdownOpen(false); navigate("/login"); }}
+                        className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins text-sm"
+                      >
+                        Login
+                      </button>
+                      <button
+                        onClick={() => { setIsUserDropdownOpen(false); navigate("/register"); }}
+                        className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins text-sm"
+                      >
+                        Register
+                      </button>
+                    </>
+                  )}
                 </div>
               )}
             </div>
@@ -97,7 +125,7 @@ const Header = () => {
               <div className="w-8 relative inline-flex justify-start items-end">
                 <FiShoppingCart className="w-6 h-6 text-gray-900" />
                 <div className="w-5 h-5 px-[5px] left-[14px] top-[-10px] absolute bg-sky-500 rounded-full inline-flex flex-col justify-center items-center gap-2.5">
-                  <div className="w-1.5 h-2.5 text-center justify-center text-white text-xs font-medium font-poppins'] leading-none">3</div>
+                  <div className="w-1.5 h-2.5 text-center justify-center text-white text-xs font-medium font-poppins leading-none">3</div>
                 </div>
               </div>
             </div>

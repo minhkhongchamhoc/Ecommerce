@@ -4,15 +4,18 @@ import './App.css';
 import { AuthProvider } from './contexts/AuthContext';
 import Navigation from './Navigation';
 import { ProductsProvider } from './contexts/ProductContext';
+import CategoriesProvider from './contexts/CategoriesContext';
 
 function App() {
   return (
     <Router>
-      <ProductsProvider>
       <AuthProvider>
-        <Navigation />
+        <CategoriesProvider>
+          <ProductsProvider>
+            <Navigation />
+          </ProductsProvider>
+        </CategoriesProvider>
       </AuthProvider>
-      </ProductsProvider>
     </Router>
   );
 }
