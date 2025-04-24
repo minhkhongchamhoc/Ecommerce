@@ -521,4 +521,87 @@ router.delete('/:id', [auth, checkRole('admin')], async (req: Request, res: Resp
   }
 });
 
+/**
+ * @swagger
+ * /api/products:
+ *   get:
+ *     summary: Get all products
+ *     tags: [Products]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 20
+ *         description: Number of items per page
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved all products
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 products:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Product'
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     total:
+ *                       type: number
+ *                       description: Total number of products
+ *                     page:
+ *                       type: number
+ *                       description: Current page
+ *                     limit:
+ *                       type: number
+ *                       description: Products per page
+ *                     totalPages:
+ *                       type: number
+ *                       description: Total number of pages
+ *       500:
+ *         description: Server error
+ */
+router.get('/', async (req: Request, res: Response) => {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 20;
+    const skip = (page - 1) * limit;
+
+    const [products, total] = await Promise.all([
+      Product.find()
+        .populate('category')
+        .sort({ created_at: -1 })
+        .skip(skip)
+        .limit(limit),
+      Product.countDocuments()
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    res.json({
+      products,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching all products:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 export default router; 
