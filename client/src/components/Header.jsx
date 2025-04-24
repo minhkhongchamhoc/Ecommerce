@@ -173,7 +173,7 @@ const Header = () => {
             <div className="self-stretch inline-flex flex-col justify-between items-end">
               <div className="w-8 relative inline-flex justify-start items-end cursor-pointer" onClick={handleCartClick}>
                 <FiShoppingCart className="w-6 h-6 text-gray-900" />
-                {isLoggedIn && cart?.items?.length > 0 && (
+                {cart?.items?.length > 0 && (
                   <div className="w-5 h-5 px-[5px] left-[14px] top-[-10px] absolute bg-sky-500 rounded-full inline-flex flex-col justify-center items-center gap-2.5">
                     <div className="w-1.5 h-2.5 text-center justify-center text-white text-xs font-medium font-poppins leading-none">
                       {cart.items.length}
