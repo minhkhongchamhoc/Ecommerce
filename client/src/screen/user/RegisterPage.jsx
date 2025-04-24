@@ -1,8 +1,8 @@
 // src/pages/RegisterPage.jsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { validateEmail, validatePassword, validateConfirmPassword } from '../utils/validationUtils';
-import  registerUser  from '../utils/authUtils';
+import { validateEmail, validatePassword, validateConfirmPassword } from '../../utils/validationUtils';
+import  registerUser  from '../../utils/authUtils';
 
 const RegisterPage = () => {
   const navigate = useNavigate();

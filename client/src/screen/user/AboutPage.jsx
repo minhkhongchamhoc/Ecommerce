@@ -1,9 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Header from '../components/Header.jsx';
-import Footer from '../components/Footer.jsx';
-import Image from '../assets/image.png';
-import Image1 from '../assets/image1.png';
+import Image from '../../assets/image.png';
+import Image1 from '../../assets/image1.png';
 
 const AboutPage = () => {
   const navigate = useNavigate();

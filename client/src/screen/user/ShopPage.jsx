@@ -4,10 +4,10 @@ import { FaCircle } from 'react-icons/fa';
 import { FiChevronLeft, FiChevronRight, FiSliders } from 'react-icons/fi';
 import { BsBookmark, BsDot } from 'react-icons/bs';
 import { MdFilterListOff } from 'react-icons/md';
-import ProductCard from '../components/ProductCard';
-import { ProductsContext } from '../contexts/ProductContext';
-import { CategoriesContext } from '../contexts/CategoriesContext';
-import { transformProductData } from '../utils/products';
+import ProductCard from '../../components/ProductCard';
+import { ProductsContext } from '../../contexts/ProductContext';
+import { CategoriesContext } from '../../contexts/CategoriesContext';
+import { transformProductData } from '../../utils/products';
 
 // Debounce utility
 const debounce = (func, wait) => {

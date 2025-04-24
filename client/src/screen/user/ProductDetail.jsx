@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import ProductCard from '../components/ProductCard';
-import { productsUtils, transformProductData } from '../utils/products';
-import { CartContext } from '../contexts/CartContext';
+import ProductCard from '../../components/ProductCard';
+import { productsUtils, transformProductData } from '../../utils/products';
+import { CartContext } from '../../contexts/CartContext';
 
 const ProductDetail = () => {
   const { id } = useParams();

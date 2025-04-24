@@ -1,14 +1,16 @@
 import React, { useContext } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import { AuthContext } from './contexts/AuthContext';
-import RegisterPage from './screen/RegisterPage';
-import LoginPage from './screen/LoginPage';
-import AboutPage from './screen/AboutPage';
+import RegisterPage from './screen/user/RegisterPage';
+import LoginPage from './screen/user/LoginPage';
+import AboutPage from './screen/user/AboutPage';
 import Layout from './Layout';
-import Home from './screen/HomePage';
-import ProductDetail from './screen/ProductDetail';
-import ShopPage from './screen/ShopPage';
-import Cart from './screen/Cart';
+import Home from './screen/user/HomePage';
+import ProductDetail from './screen/user/ProductDetail';
+import ShopPage from './screen/user/ShopPage';
+import Cart from './screen/user/Cart';
+import Admin from './screen/admin/Admin';
+
 const Navigation = () => {
   const { isLoggedIn } = useContext(AuthContext);
 
@@ -24,6 +26,9 @@ const Navigation = () => {
         <Route
           path="/about"
           element={isLoggedIn ? <AboutPage /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/admin/*" element={<Admin/>}
         />
       </Routes>
     </Layout>

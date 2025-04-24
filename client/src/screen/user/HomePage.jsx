@@ -1,11 +1,11 @@
 import React, { useContext, useEffect } from 'react';
-import ProductCard from '../components/ProductCard';
+import ProductCard from '../../components/ProductCard';
 import { FaArrowRight, FaShippingFast, FaUndo, FaGlobe, FaMoneyCheckAlt } from 'react-icons/fa';
-import heroBanner from '../assets/hero-banner.png';
-import FashionBanner from '../assets/fashion-banner.png';
-import { CategoriesContext } from '../contexts/CategoriesContext';
-import { ProductsContext } from '../contexts/ProductContext';
-import { transformProductData } from '../utils/products';
+import heroBanner from '../../assets/hero-banner.png';
+import FashionBanner from '../../assets/fashion-banner.png';
+import { CategoriesContext } from '../../contexts/CategoriesContext';
+import { ProductsContext } from '../../contexts/ProductContext';
+import { transformProductData } from '../../utils/products';
 
 const Home = () => {
   const { categories, loading: categoriesLoading, error: categoriesError } = useContext(CategoriesContext);
