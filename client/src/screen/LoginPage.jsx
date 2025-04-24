@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { validateEmail, validatePassword } from '../utils/validationUtils';
-import { loginUser } from '../utils/authUtils';
+import  loginUser  from '../utils/authUtils';
 import Header from '../components/Header.jsx';
 import Footer from '../components/Footer.jsx';
 

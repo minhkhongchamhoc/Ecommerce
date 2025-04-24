@@ -5,6 +5,7 @@ import heroBanner from '../assets/hero-banner.png';
 import FashionBanner from '../assets/fashion-banner.png';
 import { CategoriesContext } from '../contexts/CategoriesContext';
 import { ProductsContext } from '../contexts/ProductContext';
+import { transformProductData } from '../utils/products';
 
 const Home = () => {
   const { categories, loading: categoriesLoading, error: categoriesError } = useContext(CategoriesContext);
@@ -14,13 +15,13 @@ const Home = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        await filterProducts({ limit: 4 }); // Empty filter object, limit to 4
+        await filterProducts({ limit: 4 });
       } catch (err) {
         console.error('Failed to fetch products:', err);
       }
     };
     fetchProducts();
-  }, []); // Empty dependencies to run once
+  }, []);
 
   // Log products for debugging
   useEffect(() => {
@@ -29,8 +30,9 @@ const Home = () => {
     console.log('Products Error:', productsError);
   }, [products, productsLoading, productsError]);
 
-  // Limit to first 4 products
-  const displayedProducts = products.slice(0, 4);
+  // Transform products for consistency
+  const displayedProducts = transformProductData(products.slice(0, 4));
+
   return (
     <div className="flex flex-col justify-start items-start">
       {/* Hero Section */}
@@ -42,7 +44,9 @@ const Home = () => {
               <div className="text-gray-600 text-xl font-medium font-poppins leading-7">Starting from: $49.99</div>
             </div>
             <div className="flex justify-start items-start">
-              <div className="text-gray-900 text-6xl font-semibold font-poppins leading-[72px]">Exclusive collection<br/>for everyone</div>
+              <div className="text-gray-900 text-6xl font-semibold font-poppins leading-[72px]">
+                Exclusive collection<br />for everyone
+              </div>
             </div>
             <div className="px-9 py-5 bg-gray-900 rounded-full shadow-[0px_8px_10px_-6px_rgba(0,0,0,0.10)] shadow-xl flex justify-center items-center overflow-hidden">
               <div className="flex justify-start items-center">
@@ -206,13 +210,14 @@ const Home = () => {
             {!productsLoading && !productsError && (
               <div className="w-full flex justify-start items-start gap-5 overflow-hidden">
                 {displayedProducts.map((product) => (
-                  <div className="flex-1" key={product._id}>
+                  <div className="flex-1" key={product.id}>
                     <ProductCard
-                      image={product.images[0] || undefined} // Use first image, fallback to default
+                      id={product.id}
+                      image={product.image}
                       name={product.name}
-                      category={product.category.name} // Category is an object
-                      currentPrice={product.price}
-                      originalPrice={product.price * 1.2} // Example: 20% higher
+                      category={product.category}
+                      currentPrice={product.currentPrice}
+                      originalPrice={product.originalPrice}
                     />
                   </div>
                 ))}
@@ -237,13 +242,14 @@ const Home = () => {
             {!productsLoading && !productsError && (
               <div className="self-stretch flex justify-start items-start gap-5 overflow-hidden">
                 {displayedProducts.map((product) => (
-                  <div className="flex-1" key={product._id}>
+                  <div className="flex-1" key={product.id}>
                     <ProductCard
-                      image={product.images[0] || undefined} // Use first image, fallback to default
+                      id={product.id}
+                      image={product.image}
                       name={product.name}
-                      category={product.category.name} // Category is an object
-                      currentPrice={product.price}
-                      originalPrice={product.price * 1.2} // Example: 20% higher
+                      category={product.category}
+                      currentPrice={product.currentPrice}
+                      originalPrice={product.originalPrice}
                     />
                   </div>
                 ))}
@@ -264,7 +270,9 @@ const Home = () => {
                   <div className="text-gray-600 text-xl font-medium font-poppins leading-7">100% Original Products</div>
                 </div>
                 <div className="flex justify-start items-start">
-                  <div className="text-gray-900 text-4xl font-semibold font-poppins leading-10">The All New Fashion<br/>Collection Items</div>
+                  <div className="text-gray-900 text-4xl font-semibold font-poppins leading-10">
+                    The All New Fashion<br />Collection Items
+                  </div>
                 </div>
               </div>
               <div className="flex justify-start items-center">

@@ -25,7 +25,7 @@ export const transformProductData = (apiData) => {
     name: item.name || 'Unknown Product',
     category: item.category.name || 'Uncategorized',
     currentPrice: item.price || 0,
-    originalPrice: item.price * 1.2 || 0, // Fallback: 20% markup
+    originalPrice: item.price * 1.2 || 0,
   }));
 };
 
@@ -35,7 +35,7 @@ export const transformProductData = (apiData) => {
 export const productsUtils = {
   /**
    * Filter products based on criteria
-   * @param {Object} filters - Filter criteria (category, minPrice, maxPrice, sort, page, limit, search)
+   * @param {Object} filters - Filter criteria (category, minPrice, maxPrice, sort, page, limit)
    * @returns {Promise} Filtered products and pagination data
    */
   filterProducts: async (filters) => {
@@ -46,8 +46,38 @@ export const productsUtils = {
     if (filters.sort) query.set('sort', filters.sort);
     if (filters.page) query.set('page', filters.page);
     if (filters.limit) query.set('limit', filters.limit);
-    if (filters.search) query.set('search', filters.search);
 
+    const response = await fetch(`${productsApi.FILTER}?${query}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return handleResponse(response);
+  },
+
+  /**
+   * Get a single product by ID
+   * @param {string} id - Product ID
+   * @returns {Promise} Product data
+   */
+  getProductById: async (id) => {
+    const response = await fetch(productsApi.GET_BY_ID(id), {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return handleResponse(response);
+  },
+
+  /**
+   * Get recommended products based on category
+   * @param {string} categoryId - Category ID
+   * @returns {Promise} Recommended products data
+   */
+  getRecommendedProducts: async (categoryId) => {
+    const query = new URLSearchParams({ category: categoryId, limit: '4' });
     const response = await fetch(`${productsApi.FILTER}?${query}`, {
       method: 'GET',
       headers: {

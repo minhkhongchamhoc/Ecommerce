@@ -336,6 +336,7 @@ const ShopPage = () => {
               transformProductData(products).map((product) => (
                 <ProductCard
                   key={product.id}
+                  id={product.id}
                   image={product.image}
                   name={product.name}
                   category={product.category}

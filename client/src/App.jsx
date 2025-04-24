@@ -5,6 +5,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import Navigation from './Navigation';
 import { ProductsProvider } from './contexts/ProductContext';
 import CategoriesProvider from './contexts/CategoriesContext';
+import { CartProvider } from './contexts/CartContext';
 
 function App() {
   return (
@@ -12,7 +13,9 @@ function App() {
       <AuthProvider>
         <CategoriesProvider>
           <ProductsProvider>
+            <CartProvider>
             <Navigation />
+            </CartProvider>
           </ProductsProvider>
         </CategoriesProvider>
       </AuthProvider>
