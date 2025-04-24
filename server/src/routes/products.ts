@@ -521,4 +521,35 @@ router.delete('/:id', [auth, checkRole('admin')], async (req: Request, res: Resp
   }
 });
 
+/**
+ * @swagger
+ * /api/products:
+ *   get:
+ *     summary: Get all products
+ *     tags: [Products]
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved all products
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Product'
+ *       500:
+ *         description: Server error
+ */
+router.get('/', async (req: Request, res: Response) => {
+  try {
+    const products = await Product.find()
+      .populate('category')
+      .sort({ created_at: -1 });
+
+    res.json(products);
+  } catch (error) {
+    console.error('Error fetching all products:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 export default router; 
