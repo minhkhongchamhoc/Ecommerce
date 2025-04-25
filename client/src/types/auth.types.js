@@ -8,7 +8,7 @@ export const LoginRequest = {
     user: {
       id: '',
       email: '',
-      name: '',
+      role: '',
     },
   };
   
@@ -23,6 +23,6 @@ export const LoginRequest = {
     user: {
       id: '',
       email: '',
-      name: '',
+      role: '',
     },
   };

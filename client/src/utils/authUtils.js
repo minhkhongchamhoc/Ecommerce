@@ -1,4 +1,4 @@
-import API from '../api/api';
+import authApi from '../api/authApi';
 
 /**
  * Handle API response
@@ -30,11 +30,12 @@ const getAuthHeaders = () => {
  * Login user with email and password
  * @param {string} email - User's email
  * @param {string} password - User's password
- * @returns {Promise<{ success: boolean, data?: any, error?: string }>} Login result
+ * @returns {Promise<{ success: boolean, data?: { token: string, user: { id: string, email: string, role: string } }, error?: string }>} Login result
  */
 const loginUser = async (email, password) => {
   try {
-    const response = await fetch(API.auth.LOGIN, {
+    console.log('Login Request:', { email, password });
+    const response = await fetch(authApi.LOGIN, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -44,16 +45,15 @@ const loginUser = async (email, password) => {
     });
 
     const data = await handleResponse(response);
-    console.log('Login Response:', data); // Debug log
+    console.log('Login Response:', data);
 
-    // Store token in localStorage
     if (data.token) {
       localStorage.setItem('token', data.token);
-      console.log('Token Stored:', data.token); // Debug log
+      console.log('Token Stored:', data.token);
     }
     return { success: true, data };
   } catch (err) {
-    console.error('Login Error:', err); // Debug log
+    console.error('Login Error:', err.message);
     let errorMsg;
     if (err.message.includes('401')) {
       errorMsg = 'Invalid email or password';
@@ -72,11 +72,12 @@ const loginUser = async (email, password) => {
  * Register a new user with email and password
  * @param {string} email - User's email
  * @param {string} password - User's password
- * @returns {Promise<{ success: boolean, data?: any, error?: string }>} Registration result
+ * @returns {Promise<{ success: boolean, data?: { token: string, user: { id: string, email: string, role: string } }, error?: string }>} Registration result
  */
 const registerUser = async (email, password) => {
   try {
-    const response = await fetch(API.auth.REGISTER, {
+    console.log('Register Request:', { email, password });
+    const response = await fetch(authApi.REGISTER, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -86,16 +87,15 @@ const registerUser = async (email, password) => {
     });
 
     const data = await handleResponse(response);
-    console.log('Register Response:', data); // Debug log
+    console.log('Register Response:', data);
 
-    // Store token in localStorage
     if (data.token) {
       localStorage.setItem('token', data.token);
-      console.log('Token Stored:', data.token); // Debug log
+      console.log('Token Stored:', data.token);
     }
     return { success: true, data };
   } catch (err) {
-    console.error('Register Error:', err); // Debug log
+    console.error('Register Error:', err.message);
     let errorMsg;
     if (err.message.includes('409')) {
       errorMsg = 'User already exists';
@@ -112,20 +112,26 @@ const registerUser = async (email, password) => {
 
 /**
  * Get current user's profile
- * @returns {Promise<{ user: string, firstName: string, lastName: string }>} User profile data
+ * @returns {Promise<{ id: string, email: string, role: string }>} User profile data
  */
 const getUserProfile = async () => {
   try {
-    const response = await fetch(API.user.GET_PROFILE, {
+    const token = localStorage.getItem('token');
+    console.log('Fetching user profile with token:', token ? 'Present' : 'Missing');
+    if (!token) {
+      throw new Error('No token found');
+    }
+    const response = await fetch(authApi.ME, {
       method: 'GET',
       headers: getAuthHeaders(),
     });
     const data = await handleResponse(response);
-    console.log('User Profile Response:', data); // Debug log
-    return data;
+    console.log('User Profile Response:', data);
+    // Normalize response: handle nested user object or direct fields
+    return data.user || data;
   } catch (err) {
-    console.error('Get User Profile Error:', err); // Debug log
-    throw err; // Let caller handle the error
+    console.error('Get User Profile Error:', err.message);
+    throw err;
   }
 };
 

@@ -1,7 +1,7 @@
 import React, { createContext, useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cartUtils } from '../utils/cart';
-import authUtils from '../utils/authUtils';
+
 
 export const CartContext = createContext({
   cart: null,
@@ -169,19 +169,19 @@ export const CartProvider = ({ children }) => {
     }
   }, [navigate]);
 
-  // Initialize on mount
+  // Automatically fetch cart on mount for authenticated users
   useEffect(() => {
-    const initialize = async () => {
-      if (!isAuthenticated()) {
-        console.log('No token found on mount, skipping initialization');
-        setLoading(false);
-        return;
+    const initializeCart = async () => {
+      if (isAuthenticated()) {
+        try {
+          await fetchCart();
+        } catch (err) {
+          console.error('Initialize Cart Error:', err.message);
+        }
       }
-      await fetchUserProfile();
-      await fetchCart();
     };
-    initialize();
-  }, [fetchUserProfile, fetchCart]);
+    initializeCart();
+  }, [fetchCart]);
 
   return (
     <CartContext.Provider
