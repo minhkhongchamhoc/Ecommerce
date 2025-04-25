@@ -3,15 +3,23 @@ import bcrypt from 'bcryptjs';
 
 export interface IUser extends Document {
   email: string;
-  password: string;
+  password?: string;
   role: 'user' | 'admin';
   created_at: Date;
   modified_at: Date;
+  googleId?: string;
+  displayName?: string;
+  photoURL?: string;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
 interface IUserModel extends Model<IUser> {
-  // Add any static methods here if needed
+  findOrCreateGoogleUser(userData: {
+    email: string;
+    googleId: string;
+    displayName?: string;
+    photoURL?: string;
+  }): Promise<IUser>;
 }
 
 const userSchema = new Schema<IUser, IUserModel>({
@@ -25,7 +33,7 @@ const userSchema = new Schema<IUser, IUserModel>({
   },
   password: {
     type: String,
-    required: [true, 'Password is required'],
+    required: false, // Not required for Google login
     minlength: [6, 'Password must be at least 6 characters long']
   },
   role: {
@@ -33,6 +41,13 @@ const userSchema = new Schema<IUser, IUserModel>({
     enum: ['user', 'admin'],
     default: 'user'
   },
+  googleId: {
+    type: String,
+    sparse: true,
+    unique: true
+  },
+  displayName: String,
+  photoURL: String,
   created_at: {
     type: Date,
     default: Date.now
@@ -75,9 +90,9 @@ userSchema.virtual('orders', {
   foreignField: 'user_id'
 });
 
-// Hash password before saving
+// Hash password before saving (only if password exists)
 userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
+  if (!this.isModified('password') || !this.password) return next();
   
   try {
     const salt = await bcrypt.genSalt(10);
@@ -90,11 +105,40 @@ userSchema.pre('save', async function(next) {
 
 // Method to compare password
 userSchema.methods.comparePassword = async function(candidatePassword: string): Promise<boolean> {
-  console.log('Stored hashed password:', this.password);
-  console.log('Candidate password:', candidatePassword);
-  const result = await bcrypt.compare(candidatePassword, this.password);
-  console.log('Compare result:', result);
-  return result;
+  if (!this.password) return false;
+  return bcrypt.compare(candidatePassword, this.password);
+};
+
+// Static method to find or create Google user
+userSchema.statics.findOrCreateGoogleUser = async function(userData: {
+  email: string;
+  googleId: string;
+  displayName?: string;
+  photoURL?: string;
+}): Promise<IUser> {
+  let user = await this.findOne({ 
+    $or: [
+      { googleId: userData.googleId },
+      { email: userData.email }
+    ]
+  });
+
+  if (!user) {
+    user = await this.create({
+      email: userData.email,
+      googleId: userData.googleId,
+      displayName: userData.displayName,
+      photoURL: userData.photoURL
+    });
+  } else if (!user.googleId) {
+    // If user exists but doesn't have googleId (registered via email)
+    user.googleId = userData.googleId;
+    user.displayName = userData.displayName;
+    user.photoURL = userData.photoURL;
+    await user.save();
+  }
+
+  return user;
 };
 
 const User = mongoose.model<IUser, IUserModel>('User', userSchema);
