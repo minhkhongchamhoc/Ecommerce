@@ -1,4 +1,5 @@
 import authApi from '../api/authApi';
+import { setToken, getToken } from './tokenStorage';
 
 /**
  * Handle API response
@@ -19,7 +20,7 @@ const handleResponse = async (response) => {
  * @returns {Object} Headers with JWT token
  */
 const getAuthHeaders = () => {
-  const token = localStorage.getItem('token');
+  const token = getToken();
   return {
     'Content-Type': 'application/json',
     Authorization: token ? `Bearer ${token}` : '',
@@ -48,7 +49,7 @@ const loginUser = async (email, password) => {
     console.log('Login Response:', data);
 
     if (data.token) {
-      localStorage.setItem('token', data.token);
+      setToken(data.token);
       console.log('Token Stored:', data.token);
     }
     return { success: true, data };

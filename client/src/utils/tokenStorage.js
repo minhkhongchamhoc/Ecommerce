@@ -1,4 +1,4 @@
-const TOKEN_KEY = 'auth_token';
+const TOKEN_KEY = 'token';
 
 export const setToken = (token) => {
   localStorage.setItem(TOKEN_KEY, token);
@@ -9,5 +9,7 @@ export const getToken = () => {
 };
 
 export const removeToken = () => {
+  // Remove auth token and user data
   localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem('user');
 };

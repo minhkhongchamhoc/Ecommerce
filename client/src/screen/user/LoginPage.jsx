@@ -6,6 +6,7 @@ import { validateEmail, validatePassword } from '../../utils/validationUtils.js'
 import authUtils from '../../utils/authUtils.js';
 import { auth, googleProvider } from '../../config/firebase.js';
 import { signInWithPopup } from 'firebase/auth';
+import { setToken } from '../../utils/tokenStorage.js';
 
 const { loginUser } = authUtils;
 
@@ -53,7 +54,6 @@ const LoginPage = () => {
       const result = await signInWithPopup(auth, googleProvider);
       console.log('Google auth successful:', result.user);
 
-      // Gọi API backend với URL đầy đủ
       const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
       const response = await fetch(`${apiUrl}/api/auth/google`, {
         method: 'POST',
@@ -83,6 +83,7 @@ const LoginPage = () => {
       
       if (data && data.success) {
         console.log('Logging in with data:', data.user);
+        setToken(data.token);
         login(data.user, data.token);
         navigate('/');
       } else {

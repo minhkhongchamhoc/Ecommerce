@@ -33,8 +33,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
+    // Clear all auth-related data from localStorage
     removeToken();
-    setUserData(null); // Clear from localStorage
+    localStorage.clear(); // Clear all localStorage data
+    setUserData(null);
     setUser(null);
     setIsLoggedIn(false);
     navigate('/login');

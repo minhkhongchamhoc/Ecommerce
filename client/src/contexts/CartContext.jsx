@@ -1,7 +1,8 @@
-import React, { createContext, useState, useCallback, useEffect } from 'react';
+import React, { createContext, useState, useCallback, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cartUtils } from '../utils/cart';
-
+import { AuthContext } from './AuthContext';
+import { getToken } from '../utils/tokenStorage';
 
 export const CartContext = createContext({
   cart: null,
@@ -12,6 +13,7 @@ export const CartContext = createContext({
   addToCart: async () => {},
   updateCartItem: async () => {},
   removeCartItem: async () => {},
+  resetCart: () => {},
 });
 
 export const CartProvider = ({ children }) => {
@@ -20,37 +22,27 @@ export const CartProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [currentUserId, setCurrentUserId] = useState(null);
   const navigate = useNavigate();
+  const { isLoggedIn } = useContext(AuthContext);
+
+  // Reset cart state
+  const resetCart = useCallback(() => {
+    setCart(null);
+    setError(null);
+    setCurrentUserId(null);
+  }, []);
+
+  // Listen for auth state changes
+  useEffect(() => {
+    if (!isLoggedIn) {
+      resetCart();
+    }
+  }, [isLoggedIn, resetCart]);
 
   // Check if user is authenticated
   const isAuthenticated = () => {
-    const token = localStorage.getItem('token');
+    const token = getToken();
     return !!token;
   };
-
-  // Fetch current user profile
-  const fetchUserProfile = useCallback(async () => {
-    if (!isAuthenticated()) {
-      console.log('No token found, redirecting to login');
-      navigate('/login');
-      return;
-    }
-
-    try {
-      const profile = await authUtils.getUserProfile();
-      setCurrentUserId(profile.user);
-      console.log('Current User ID:', profile.user);
-      setError(null);
-    } catch (err) {
-      console.error('Fetch User Profile Error:', err);
-      let errorMsg = err.message || 'Failed to fetch user profile';
-      if (err.message.includes('401')) {
-        errorMsg = 'Session expired. Please log in again.';
-        localStorage.removeItem('token');
-        navigate('/login');
-      }
-      setError(errorMsg);
-    }
-  }, [navigate]);
 
   // Fetch cart data
   const fetchCart = useCallback(async () => {
@@ -62,8 +54,8 @@ export const CartProvider = ({ children }) => {
     setLoading(true);
     try {
       const data = await cartUtils.getCart();
-      console.log('Cart Fetched:', data); // Debug log
-      setCart(data); // Set cart state
+      console.log('Cart Fetched:', data);
+      setCart(data);
       setError(null);
     } catch (err) {
       console.error('Fetch Cart Error:', err);
@@ -95,7 +87,6 @@ export const CartProvider = ({ children }) => {
         console.log('Cart Updated (Add):', data);
         setCart(data);
         setError(null);
-        // Refresh cart to ensure latest data
         await fetchCart();
       } catch (err) {
         console.error('Add to Cart Error:', err);
@@ -194,6 +185,7 @@ export const CartProvider = ({ children }) => {
         addToCart,
         updateCartItem,
         removeCartItem,
+        resetCart
       }}
     >
       {children}

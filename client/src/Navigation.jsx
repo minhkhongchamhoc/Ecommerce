@@ -18,7 +18,7 @@ import CheckoutPage from './screen/user/CheckoutPage'; // Assuming this exists
 import Orders from './screen/user/Orders'; // Assuming this exists
 import ProfilePage from './screen/user/ProfilePage'; // Assuming this exists
 const Navigation = () => {
-  const { isLoggedIn, user } = useContext(AuthContext);
+  useContext(AuthContext);
 
 
 
