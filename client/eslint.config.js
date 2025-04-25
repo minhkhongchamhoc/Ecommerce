@@ -9,10 +9,15 @@ export default [
     files: ['**/*.{js,jsx}'],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: globals.browser,
+      globals: {
+        ...globals.browser,
+        React: 'readonly',
+      },
       parserOptions: {
         ecmaVersion: 'latest',
-        ecmaFeatures: { js: true },
+        ecmaFeatures: {
+          jsx: true
+        },
         sourceType: 'module',
       },
     },
