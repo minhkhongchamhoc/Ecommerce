@@ -7,6 +7,8 @@ const ordersApi = {
   CANCEL: (orderId) => `${BASE_URL}/api/orders/${orderId}/cancel`,
   UPDATE_STATUS: (orderId) => `${BASE_URL}/api/orders/${orderId}/status`,
   UPDATE_PAYMENT: (orderId) => `${BASE_URL}/api/orders/${orderId}/payment`,
+  GET_ALL_ADMIN: `${BASE_URL}/api/orders/admin/all`,
+  SEARCH_ADMIN: `${BASE_URL}/api/orders/admin/search`,
 };
 
 export default ordersApi;

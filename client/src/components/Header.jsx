@@ -7,11 +7,14 @@ import SearchBar from './SearchBar';
 import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
-  const { isLoggedIn, logout } = useContext(AuthContext);
+  const { isLoggedIn, user, logout } = useContext(AuthContext);
   const { cart } = useContext(CartContext);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isHamburgerDropdownOpen, setIsHamburgerDropdownOpen] = useState(false);
   const navigate = useNavigate();
+
+  // Kiểm tra vai trò admin
+  const isAdmin = user?.role === 'admin';
 
   // Toggle user dropdown (for larger screens)
   const toggleUserDropdown = () => {
@@ -85,24 +88,46 @@ const Header = () => {
             <div className="absolute top-12 right-0 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
               {isLoggedIn ? (
                 <>
-                  {/* <button
-                    onClick={() => { setIsHamburgerDropdownOpen(false); navigate('/profile'); }}
-                    className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins text-sm"
-                  >
-                    Profile
-                  </button> */}
-                  <button
-                    onClick={() => { setIsHamburgerDropdownOpen(false); navigate('/orders'); }}
-                    className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins text-sm"
-                  >
-                    My Orders
-                  </button>
-                  <button
-                    onClick={handleLogout}
-                    className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins text-sm"
-                  >
-                    Logout
-                  </button>
+                  <div className="w-full px-4 py-2 text-left text-gray-900 font-poppins text-sm">
+                    {isAdmin ? 'Hello, Admin' : 'Hello, User'}
+                  </div>
+                  {isAdmin ? (
+                    <>
+                      <button
+                        onClick={() => { setIsHamburgerDropdownOpen(false); navigate('/admin/orders'); }}
+                        className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins text-sm"
+                      >
+                        Orders
+                      </button>
+                      <button
+                        onClick={() => { setIsHamburgerDropdownOpen(false); navigate('/admin/products'); }}
+                        className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins text-sm"
+                      >
+                        Products
+                      </button>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins text-sm"
+                      >
+                        Logout
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => { setIsHamburgerDropdownOpen(false); navigate('/orders'); }}
+                        className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins text-sm"
+                      >
+                        My Orders
+                      </button>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins text-sm"
+                      >
+                        Logout
+                      </button>
+                    </>
+                  )}
                 </>
               ) : (
                 <>
@@ -132,24 +157,46 @@ const Header = () => {
                 <div className="absolute top-8 right-0 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
                   {isLoggedIn ? (
                     <>
-                      {/* <button
-                        onClick={() => { setIsUserDropdownOpen(false); navigate('/profile'); }}
-                        className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins text-sm"
-                      >
-                        Profile
-                      </button> */}
-                      <button
-                        onClick={() => { setIsUserDropdownOpen(false); navigate('/orders'); }}
-                        className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins text-sm"
-                      >
-                        My Orders
-                      </button>
-                      <button
-                        onClick={handleLogout}
-                        className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins text-sm"
-                      >
-                        Logout
-                      </button>
+                      <div className="w-full px-4 py-2 text-left text-gray-900 font-poppins text-sm">
+                        {isAdmin ? 'Hello, Admin' : 'Hello, User'}
+                      </div>
+                      {isAdmin ? (
+                        <>
+                          <button
+                            onClick={() => { setIsUserDropdownOpen(false); navigate('/admin/orders'); }}
+                            className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins text-sm"
+                          >
+                            Orders
+                          </button>
+                          <button
+                            onClick={() => { setIsUserDropdownOpen(false); navigate('/admin/products'); }}
+                            className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins text-sm"
+                          >
+                            Products
+                          </button>
+                          <button
+                            onClick={handleLogout}
+                            className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins text-sm"
+                          >
+                            Logout
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            onClick={() => { setIsUserDropdownOpen(false); navigate('/orders'); }}
+                            className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins text-sm"
+                          >
+                            My Orders
+                          </button>
+                          <button
+                            onClick={handleLogout}
+                            className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins text-sm"
+                          >
+                            Logout
+                          </button>
+                        </>
+                      )}
                     </>
                   ) : (
                     <>
@@ -170,18 +217,21 @@ const Header = () => {
                 </div>
               )}
             </div>
-            <div className="self-stretch inline-flex flex-col justify-between items-end">
-              <div className="w-8 relative inline-flex justify-start items-end cursor-pointer" onClick={handleCartClick}>
-                <FiShoppingCart className="w-6 h-6 text-gray-900" />
-                {cart?.items?.length > 0 && (
-                  <div className="w-5 h-5 px-[5px] left-[14px] top-[-10px] absolute bg-sky-500 rounded-full inline-flex flex-col justify-center items-center gap-2.5">
-                    <div className="w-1.5 h-2.5 text-center justify-center text-white text-xs font-medium font-poppins leading-none">
-                      {cart.items.length}
+            {/* Chỉ hiển thị icon giỏ hàng nếu không phải admin */}
+            {!isAdmin && (
+              <div className="self-stretch inline-flex flex-col justify-between items-end">
+                <div className="w-8 relative inline-flex justify-start items-end cursor-pointer" onClick={handleCartClick}>
+                  <FiShoppingCart className="w-6 h-6 text-gray-900" />
+                  {cart?.items?.length > 0 && (
+                    <div className="w-5 h-5 px-[5px] left-[14px] top-[-10px] absolute bg-sky-500 rounded-full inline-flex flex-col justify-center items-center gap-2.5">
+                      <div className="w-1.5 h-2.5 text-center justify-center text-white text-xs font-medium font-poppins leading-none">
+                        {cart.items.length}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

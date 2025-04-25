@@ -1,14 +1,12 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
-import { ordersUtils } from '../../utils/orders';
+import { OrdersContext } from '../../contexts/OrderContext';
 
 const Orders = () => {
   const { isLoggedIn } = useContext(AuthContext);
+  const { orders, loading, error, fetchOrders, cancelOrder } = useContext(OrdersContext);
   const navigate = useNavigate();
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [expandedOrder, setExpandedOrder] = useState(null);
 
   useEffect(() => {
@@ -17,30 +15,33 @@ const Orders = () => {
       return;
     }
 
-    const loadOrders = async () => {
-      try {
-        const data = await ordersUtils.fetchOrders();
-        console.log('Fetch Orders Raw Data:', data);
-        setOrders(Array.isArray(data) ? data : data.orders || []);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message || 'Failed to load orders');
-        setLoading(false);
-      }
-    };
-
-    loadOrders();
-  }, [isLoggedIn, navigate]);
+    fetchOrders(); // Trigger fetchOrders from context
+  }, [isLoggedIn, navigate, fetchOrders]);
 
   const handleRetry = () => {
-    setError(null);
-    setLoading(true);
-    loadOrders();
+    fetchOrders();
+  };
+
+  const handleCancelOrder = async (orderId) => {
+    if (!window.confirm('Are you sure you want to cancel this order?')) {
+      return;
+    }
+    try {
+      await cancelOrder(orderId);
+    } catch (err) {
+      console.error('Error canceling order:', err);
+      // Error is set in OrdersContext
+    }
   };
 
   const toggleOrderDetails = (orderId) => {
     setExpandedOrder(expandedOrder === orderId ? null : orderId);
   };
+
+  // Filter out invalid orders (e.g., no items or missing critical fields)
+  const validOrders = orders.filter(
+    (order) => order && Array.isArray(order.items) && order.items.length > 0
+  );
 
   if (loading) {
     return (
@@ -78,7 +79,7 @@ const Orders = () => {
             Continue Shopping
           </button>
         </div>
-        {orders.length === 0 ? (
+        {validOrders.length === 0 ? (
           <div className="text-center bg-white p-8 rounded-lg shadow-sm">
             <p className="text-gray-600 text-lg mb-4">No orders found.</p>
             <button
@@ -90,7 +91,7 @@ const Orders = () => {
           </div>
         ) : (
           <div className="space-y-6">
-            {orders.map((order) => (
+            {validOrders.map((order) => (
               <div
                 key={order._id}
                 className="border rounded-lg p-6 bg-white shadow-sm transition-all"
@@ -125,7 +126,7 @@ const Orders = () => {
                 </div>
                 <div className="border-t pt-4">
                   <h4 className="text-sm font-medium text-gray-900 mb-2">Items</h4>
-                  {order.items?.map((item) => (
+                  {order.items.map((item) => (
                     <div key={item._id} className="flex gap-4 mb-4 items-start">
                       <img
                         src={item.product?.images?.[0] || 'https://placehold.co/80x80'}
@@ -142,26 +143,38 @@ const Orders = () => {
                         <p className="text-sm font-semibold text-gray-900">
                           ${(item.price || 0).toFixed(2)}
                         </p>
-                        <button
-                          onClick={() => navigate(`/products/${item.product?._id}`)}
-                          className="mt-2 text-sm text-gray-900 hover:text-gray-700 font-medium underline"
-                          aria-label={`View details for ${item.product?.name || 'product'}`}
-                        >
-                          View Product
-                        </button>
+                        {item.product?._id && (
+                          <button
+                            onClick={() => navigate(`/products/${item.product._id}`)}
+                            className="mt-2 text-sm text-gray-900 hover:text-gray-700 font-medium underline"
+                            aria-label={`View details for ${item.product?.name || 'product'}`}
+                          >
+                            View Product
+                          </button>
+                        )}
                       </div>
                     </div>
                   ))}
                 </div>
                 <div className="mt-4 flex justify-between items-center">
-                  <button
-                    onClick={() => toggleOrderDetails(order._id)}
-                    className="text-gray-900 hover:text-gray-700 text-sm font-medium"
-                    aria-expanded={expandedOrder === order._id}
-                    aria-controls={`order-details-${order._id}`}
-                  >
-                    {expandedOrder === order._id ? 'Hide Details' : 'View Details'}
-                  </button>
+                  <div className="space-x-2">
+                    <button
+                      onClick={() => toggleOrderDetails(order._id)}
+                      className="text-gray-900 hover:text-gray-700 text-sm font-medium"
+                      aria-expanded={expandedOrder === order._id}
+                      aria-controls={`order-details-${order._id}`}
+                    >
+                      {expandedOrder === order._id ? 'Hide Details' : 'View Details'}
+                    </button>
+                    {order.status !== 'delivered' && order.status !== 'cancelled' && (
+                      <button
+                        onClick={() => handleCancelOrder(order._id)}
+                        className="text-red-600 hover:text-red-800 text-sm font-medium"
+                      >
+                        Cancel Order
+                      </button>
+                    )}
+                  </div>
                 </div>
                 {expandedOrder === order._id && (
                   <div
@@ -196,6 +209,17 @@ const Orders = () => {
                         <p className="font-semibold">
                           Total: ${(order.orderSummary?.total || 0).toFixed(2)}
                         </p>
+                        <p className="mt-2 font-medium">Payment Information</p>
+                        <p>
+                          Method:{' '}
+                          {order.paymentInfo?.paymentMethod?.replace('_', ' ') || 'N/A'}
+                        </p>
+                        <p>Status: {order.paymentStatus || 'N/A'}</p>
+                        {order.paymentInfo?.cardNumber && (
+                          <p>
+                            Card: {order.paymentInfo.cardNumber.slice(-4).padStart(16, '**** ')}
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>

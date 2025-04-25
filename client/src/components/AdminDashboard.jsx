@@ -23,19 +23,9 @@ const AdminDashboard = () => {
   // Navigation items
   const navItems = [
     {
-      title: 'Dashboard',
-      icon: <FiHome className="w-5 h-5" />,
-      path: '/admin',
-    },
-    {
       title: 'Product Management',
       icon: <FiBox className="w-5 h-5" />,
       path: '/admin/products',
-    },
-    {
-      title: 'Category Management',
-      icon: <FiLayers className="w-5 h-5" />,
-      path: '/admin/categories',
     },
     {
       title: 'Order Management',

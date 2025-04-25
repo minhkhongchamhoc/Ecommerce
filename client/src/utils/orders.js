@@ -19,7 +19,7 @@ const handleResponse = async (response) => {
  * @returns {Object} Headers with JWT token
  */
 const getAuthHeaders = () => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('auth_token');
   return {
     'Content-Type': 'application/json',
     Authorization: token ? `Bearer ${token}` : '',
@@ -43,7 +43,7 @@ export const ordersUtils = {
       body: JSON.stringify(checkoutData),
     });
     const data = await handleResponse(response);
-    console.log('Checkout Response:', data); // Debug log
+    console.log('Checkout Response:', data);
     return data; // { order: {...}, message: string }
   },
 
@@ -58,8 +58,8 @@ export const ordersUtils = {
       headers: getAuthHeaders(),
     });
     const data = await handleResponse(response);
-    console.log('Fetch Orders Response:', data); // Debug log
-    return data; // { orders: [...] }
+    console.log('Fetch Orders Response:', data);
+    return { orders: data.orders || [] }; // { orders: [...] }
   },
 
   /**
@@ -69,12 +69,16 @@ export const ordersUtils = {
    * @throws {Error} If the request fails.
    */
   fetchOrderById: async (orderId) => {
-    const response = await fetch(ordersApi.GET_BY_ID(orderId), {
+    console.log('Fetching order with ID:', orderId); // Debug
+    const url = ordersApi.GET_BY_ID(orderId);
+    console.log('Fetch Order URL:', url); // Debug
+    console.log('Headers:', getAuthHeaders()); // Debug
+    const response = await fetch(url, {
       method: 'GET',
       headers: getAuthHeaders(),
     });
     const data = await handleResponse(response);
-    console.log('Fetch Order By ID Response:', data); // Debug log
+    console.log('Fetch Order By ID Response:', data);
     return data; // { order: {...} }
   },
 
@@ -86,30 +90,31 @@ export const ordersUtils = {
    */
   cancelOrder: async (orderId) => {
     const response = await fetch(ordersApi.CANCEL(orderId), {
-      method: 'POST',
+      method: 'PUT',
       headers: getAuthHeaders(),
       body: JSON.stringify({}),
     });
     const data = await handleResponse(response);
-    console.log('Cancel Order Response:', data); // Debug log
+    console.log('Cancel Order Response:', data);
     return data; // { order: {...} }
   },
 
   /**
    * Updates the status of an order.
    * @param {string} orderId - The order ID.
-   * @param {'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled'} status - The new status.
+   * @param {'pending' | 'confirmed' | 'shipping' | 'delivered' | 'cancelled'} status - The new status.
    * @returns {Promise<{ order: import('../utils/ordersTypes').Order }>} The updated order.
    * @throws {Error} If the request fails.
    */
   updateOrderStatus: async (orderId, status) => {
+    console.log('Sending status for update:', status); // Debug
     const response = await fetch(ordersApi.UPDATE_STATUS(orderId), {
       method: 'PUT',
       headers: getAuthHeaders(),
       body: JSON.stringify({ status }),
     });
     const data = await handleResponse(response);
-    console.log('Update Order Status Response:', data); // Debug log
+    console.log('Update Order Status Response:', data);
     return data; // { order: {...} }
   },
 
@@ -127,8 +132,54 @@ export const ordersUtils = {
       body: JSON.stringify(paymentInfo),
     });
     const data = await handleResponse(response);
-    console.log('Update Payment Response:', data); // Debug log
+    console.log('Update Payment Response:', data);
     return data; // { order: {...} }
+  },
+
+  /**
+   * Fetches all orders for admins with pagination.
+   * @param {Object} params - Pagination parameters.
+   * @param {number} params.page - Page number.
+   * @param {number} params.limit - Number of orders per page.
+   * @returns {Promise<{ orders: import('../utils/ordersTypes').Order[], pagination: { total: number, page: number, limit: number, totalPages: number } }>} List of orders and pagination info.
+   * @throws {Error} If the request fails.
+   */
+  fetchAllOrdersAdmin: async ({ page = 1, limit = 9 } = {}) => {
+    const url = new URL(ordersApi.GET_ALL_ADMIN);
+    url.searchParams.append('page', page);
+    url.searchParams.append('limit', limit);
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+    const data = await handleResponse(response);
+    console.log('Fetch All Orders Admin Response:', data);
+    return {
+      orders: data.data?.orders || [],
+      pagination: data.data?.pagination || { total: 0, page: 1, limit, totalPages: 1 },
+    };
+  },
+
+  /**
+   * Searches orders by status for admins.
+   * @param {string} status - The order status to filter by.
+   * @returns {Promise<{ orders: import('../utils/ordersTypes').Order[] }>} List of matching orders.
+   * @throws {Error} If the request fails.
+   */
+  searchOrdersByStatus: async (status) => {
+    const url = new URL(ordersApi.SEARCH_ADMIN);
+    if (status) {
+      console.log('Searching orders with status:', status); // Debug
+      url.searchParams.append('status', status);
+    }
+    console.log('Search URL:', url.toString()); // Debug
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+    const data = await handleResponse(response);
+    console.log('Search Orders By Status Response:', data);
+    return { orders: data.data?.orders || [] }; // { orders: [...] }
   },
 };
 
