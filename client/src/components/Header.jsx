@@ -85,12 +85,12 @@ const Header = () => {
             <div className="absolute top-12 right-0 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
               {isLoggedIn ? (
                 <>
-                  <button
+                  {/* <button
                     onClick={() => { setIsHamburgerDropdownOpen(false); navigate('/profile'); }}
                     className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins text-sm"
                   >
                     Profile
-                  </button>
+                  </button> */}
                   <button
                     onClick={() => { setIsHamburgerDropdownOpen(false); navigate('/orders'); }}
                     className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins text-sm"
@@ -132,12 +132,12 @@ const Header = () => {
                 <div className="absolute top-8 right-0 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
                   {isLoggedIn ? (
                     <>
-                      <button
+                      {/* <button
                         onClick={() => { setIsUserDropdownOpen(false); navigate('/profile'); }}
                         className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins text-sm"
                       >
                         Profile
-                      </button>
+                      </button> */}
                       <button
                         onClick={() => { setIsUserDropdownOpen(false); navigate('/orders'); }}
                         className="w-full px-4 py-2 text-left text-gray-900 hover:bg-gray-100 font-poppins text-sm"

@@ -1,9 +1,22 @@
-// src/contexts/AuthContext.jsx
 import React, { createContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getToken, setToken, removeToken } from '../utils/tokenStorage';
 
 export const AuthContext = createContext();
+
+const TOKEN_KEY = 'auth_token';
+
+// Token storage utilities
+const setToken = (token) => {
+  localStorage.setItem(TOKEN_KEY, token);
+};
+
+const getToken = () => {
+  return localStorage.getItem(TOKEN_KEY);
+};
+
+const removeToken = () => {
+  localStorage.removeItem(TOKEN_KEY);
+};
 
 // Helper functions for user data persistence
 const setUserData = (userData) => {
@@ -20,13 +33,13 @@ const getUserData = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(!!getToken());
+  const [isLoggedIn, setIsLoggedIn] = useState(!!getToken()); // Initialize based on token
   const [user, setUser] = useState(getUserData()); // Initialize from localStorage
   const navigate = useNavigate();
 
   const login = (userData, token) => {
-    setToken(token);
-    setUserData(userData); // Save to localStorage
+    setToken(token); // Store token in localStorage
+    setUserData(userData); // Save user data to localStorage
     setUser(userData);
     setIsLoggedIn(true);
     navigate('/');

@@ -17,13 +17,13 @@ const handleResponse = async (response) => {
 
 /**
  * Get authentication headers
- * @returns {Object} Headers with JWT token
+ * @returns {Object} Headers (assuming token is provided by context)
  */
 const getAuthHeaders = () => {
   const token = getToken();
   return {
     'Content-Type': 'application/json',
-    Authorization: token ? `Bearer ${token}` : '',
+    // Authorization header omitted since token is not stored locally
   };
 };
 
@@ -90,10 +90,6 @@ const registerUser = async (email, password) => {
     const data = await handleResponse(response);
     console.log('Register Response:', data);
 
-    if (data.token) {
-      localStorage.setItem('token', data.token);
-      console.log('Token Stored:', data.token);
-    }
     return { success: true, data };
   } catch (err) {
     console.error('Register Error:', err.message);
@@ -117,11 +113,7 @@ const registerUser = async (email, password) => {
  */
 const getUserProfile = async () => {
   try {
-    const token = localStorage.getItem('token');
-    console.log('Fetching user profile with token:', token ? 'Present' : 'Missing');
-    if (!token) {
-      throw new Error('No token found');
-    }
+    // Token is assumed to be provided by context, so no localStorage access
     const response = await fetch(authApi.ME, {
       method: 'GET',
       headers: getAuthHeaders(),

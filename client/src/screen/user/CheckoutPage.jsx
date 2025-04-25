@@ -194,45 +194,43 @@ const CheckoutPage = () => {
   }
 
   return (
-    <div className="checkout-page-desktop min-h-screen bg-white flex flex-col font-poppins">
-      <main className="flex-1 py-10 flex justify-center">
-        <div className="w-full max-w-6xl px-6">
+    <div className="checkout-page min-h-screen bg-white flex flex-col font-poppins">
+      <main className="flex-1 py-6 md:py-8 lg:py-10 flex justify-center">
+        <div className="w-full max-w-6xl px-4 sm:px-6">
           {/* Breadcrumbs and Heading */}
-          <div className="flex flex-col gap-4 mb-10">
-            <h2 className="text-4xl font-semibold text-gray-900">Checkout</h2>
-            <div className="flex gap-2 text-gray-600">
-              <Link to="/" className="hover:underline">
-                Homepage
-              </Link>
+          <div className="flex flex-col gap-2 md:gap-4 mb-6 md:mb-8 lg:mb-10">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-gray-900">Checkout</h2>
+            <div className="flex gap-2 text-sm md:text-base text-gray-600">
+              <Link to="/" className="hover:underline">Homepage</Link>
               <span>/</span>
               <span>Checkout</span>
             </div>
           </div>
 
           {/* Page Content */}
-          <div className="flex gap-8 flex-col lg:flex-row">
+          <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
             {/* Checkout Details */}
-            <div className="w-full lg:w-1/2 space-y-6">
+            <div className="w-full lg:w-1/2 space-y-4 md:space-y-6">
               {/* Contact Info */}
-              <div className="border rounded-lg">
-                <div className="flex items-center gap-4 p-6 border-b">
-                  <span className="text-gray-900 font-semibold">CONTACT INFO</span>
+              <div className="border rounded-lg shadow-sm">
+                <div className="flex items-center gap-4 p-4 md:p-6 border-b">
+                  <span className="text-gray-900 font-semibold text-sm md:text-base">CONTACT INFO</span>
                 </div>
-                <div className="p-6 space-y-4">
+                <div className="p-4 md:p-6 space-y-4">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-900">Your phone number</label>
+                    <label className="text-xs md:text-sm font-medium text-gray-900">Your phone number</label>
                     <input
                       type="text"
-                      className="w-full p-2 border rounded-md"
+                      className="w-full p-2 border rounded-md text-sm md:text-base"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-900">Email address</label>
+                    <label className="text-xs md:text-sm font-medium text-gray-900">Email address</label>
                     <input
                       type="email"
-                      className="w-full p-2 border rounded-md"
+                      className="w-full p-2 border rounded-md text-sm md:text-base"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                     />
@@ -241,95 +239,95 @@ const CheckoutPage = () => {
               </div>
 
               {/* Shipping Address */}
-              <div className="border rounded-lg">
-                <div className="flex items-center gap-4 p-6 border-b">
-                  <span className="text-gray-900 font-semibold">SHIPPING ADDRESS</span>
+              <div className="border rounded-lg shadow-sm">
+                <div className="flex items-center gap-4 p-4 md:p-6 border-b">
+                  <span className="text-gray-900 font-semibold text-sm md:text-base">SHIPPING ADDRESS</span>
                 </div>
-                <div className="p-6 space-y-4">
-                  <div className="flex gap-4">
-                    <div className="space-y-2 flex-1">
-                      <label className="text-sm font-medium text-gray-900">First name</label>
+                <div className="p-4 md:p-6 space-y-4">
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="space-y-2 w-full sm:w-1/2">
+                      <label className="text-xs md:text-sm font-medium text-gray-900">First name</label>
                       <input
                         type="text"
-                        className="w-full p-2 border rounded-md"
+                        className="w-full p-2 border rounded-md text-sm md:text-base"
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
                       />
                     </div>
-                    <div className="space-y-2 flex-1">
-                      <label className="text-sm font-medium text-gray-900">Last name</label>
+                    <div className="space-y-2 w-full sm:w-1/2">
+                      <label className="text-xs md:text-sm font-medium text-gray-900">Last name</label>
                       <input
                         type="text"
-                        className="w-full p-2 border rounded-md"
+                        className="w-full p-2 border rounded-md text-sm md:text-base"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                       />
                     </div>
                   </div>
-                  <div className="flex gap-4">
-                    <div className="space-y-2 flex-1">
-                      <label className="text-sm font-medium text-gray-900">Address line 1</label>
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="space-y-2 w-full sm:w-1/2">
+                      <label className="text-xs md:text-sm font-medium text-gray-900">Address line 1</label>
                       <input
                         type="text"
-                        className="w-full p-2 border rounded-md"
+                        className="w-full p-2 border rounded-md text-sm md:text-base"
                         value={address1}
                         onChange={(e) => setAddress1(e.target.value)}
                       />
                     </div>
-                    <div className="space-y-2 flex-1">
-                      <label className="text-sm font-medium text-gray-900">Apt, Suite</label>
+                    <div className="space-y-2 w-full sm:w-1/2">
+                      <label className="text-xs md:text-sm font-medium text-gray-900">Apt, Suite</label>
                       <input
                         type="text"
-                        className="w-full p-2 border rounded-md"
+                        className="w-full p-2 border rounded-md text-sm md:text-base"
                         value={aptSuite}
                         onChange={(e) => setAptSuite(e.target.value)}
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-900">Address line 2</label>
+                    <label className="text-xs md:text-sm font-medium text-gray-900">Address line 2</label>
                     <input
                       type="text"
-                      className="w-full p-2 border rounded-md"
+                      className="w-full p-2 border rounded-md text-sm md:text-base"
                       value={address2}
                       onChange={(e) => setAddress2(e.target.value)}
                     />
                   </div>
-                  <div className="flex gap-4">
-                    <div className="space-y-2 flex-1">
-                      <label className="text-sm font-medium text-gray-900">City</label>
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="space-y-2 w-full sm:w-1/2">
+                      <label className="text-xs md:text-sm font-medium text-gray-900">City</label>
                       <input
                         type="text"
-                        className="w-full p-2 border rounded-md"
+                        className="w-full p-2 border rounded-md text-sm md:text-base"
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
                       />
                     </div>
-                    <div className="space-y-2 flex-1">
-                      <label className="text-sm font-medium text-gray-900">Country</label>
+                    <div className="space-y-2 w-full sm:w-1/2">
+                      <label className="text-xs md:text-sm font-medium text-gray-900">Country</label>
                       <input
                         type="text"
-                        className="w-full p-2 border rounded-md"
+                        className="w-full p-2 border rounded-md text-sm md:text-base"
                         value={country}
                         onChange={(e) => setCountry(e.target.value)}
                       />
                     </div>
                   </div>
-                  <div className="flex gap-4">
-                    <div className="space-y-2 flex-1">
-                      <label className="text-sm font-medium text-gray-900">State/Province</label>
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="space-y-2 w-full sm:w-1/2">
+                      <label className="text-xs md:text-sm font-medium text-gray-900">State/Province</label>
                       <input
                         type="text"
-                        className="w-full p-2 border rounded-md"
+                        className="w-full p-2 border rounded-md text-sm md:text-base"
                         value={state}
                         onChange={(e) => setState(e.target.value)}
                       />
                     </div>
-                    <div className="space-y-2 flex-1">
-                      <label className="text-sm font-medium text-gray-900">Postal code</label>
+                    <div className="space-y-2 w-full sm:w-1/2">
+                      <label className="text-xs md:text-sm font-medium text-gray-900">Postal code</label>
                       <input
                         type="text"
-                        className="w-full p-2 border rounded-md"
+                        className="w-full p-2 border rounded-md text-sm md:text-base"
                         value={postalCode}
                         onChange={(e) => setPostalCode(e.target.value)}
                       />
@@ -339,46 +337,48 @@ const CheckoutPage = () => {
               </div>
 
               {/* Payment */}
-              <div className="border rounded-lg">
-                <div className="flex items-center gap-4 p-6 border-b">
-                  <span className="text-gray-900 font-semibold">PAYMENT</span>
+              <div className="border rounded-lg shadow-sm">
+                <div className="flex items-center gap-4 p-4 md:p-6 border-b">
+                  <span className="text-gray-900 font-semibold text-sm md:text-base">PAYMENT</span>
                 </div>
-                <div className="p-6 space-y-4">
+                <div className="p-4 md:p-6 space-y-4">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-900">Card number</label>
+                    <label className="text-xs md:text-sm font-medium text-gray-900">Card number</label>
                     <input
                       type="text"
-                      className="w-full p-2 border rounded-md"
+                      className="w-full p-2 border rounded-md text-sm md:text-base"
                       value={cardNumber}
                       onChange={(e) => setCardNumber(e.target.value)}
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-900">Name on the card</label>
+                    <label className="text-xs md:text-sm font-medium text-gray-900">Name on the card</label>
                     <input
                       type="text"
-                      className="w-full p-2 border rounded-md"
+                      className="w-full p-2 border rounded-md text-sm md:text-base"
                       value={cardName}
                       onChange={(e) => setCardName(e.target.value)}
                     />
                   </div>
-                  <div className="flex gap-4">
-                    <div className="space-y-2 flex-1">
-                      <label className="text-sm font-medium text-gray-900">Expiration date (MM/YY)</label>
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="space-y-2 w-full sm:w-1/2">
+                      <label className="text-xs md:text-sm font-medium text-gray-900">Expiration date (MM/YY)</label>
                       <input
                         type="text"
-                        className="w-full p-2 border rounded-md"
+                        className="w-full p-2 border rounded-md text-sm md:text-base"
                         value={expiryDate}
                         onChange={(e) => setExpiryDate(e.target.value)}
+                        placeholder="MM/YY"
                       />
                     </div>
-                    <div className="space-y-2 flex-1">
-                      <label className="text-sm font-medium text-gray-900">CVC</label>
+                    <div className="space-y-2 w-full sm:w-1/2">
+                      <label className="text-xs md:text-sm font-medium text-gray-900">CVC</label>
                       <input
                         type="text"
-                        className="w-full p-2 border rounded-md"
+                        className="w-full p-2 border rounded-md text-sm md:text-base"
                         value={cvc}
                         onChange={(e) => setCvc(e.target.value)}
+                        placeholder="123"
                       />
                     </div>
                   </div>
@@ -386,56 +386,56 @@ const CheckoutPage = () => {
               </div>
             </div>
 
-            {/* Order Summary */}
-            <div className="w-full lg:w-1/2 space-y-6">
-              <h3 className="text-2xl font-semibold text-gray-900">Order summary</h3>
-              <div className="space-y-6">
+            {/* Order Summary - shown below checkout details on mobile, adjacent on larger screens */}
+            <div className="w-full lg:w-1/2 mt-6 lg:mt-0 space-y-4 md:space-y-6">
+              <h3 className="text-xl md:text-2xl font-semibold text-gray-900">Order summary</h3>
+              <div className="space-y-4 md:space-y-6 border rounded-lg shadow-sm p-4 md:p-6 bg-gray-50">
                 {cart?.items?.length ? (
                   cart.items.map((item) => (
-                    <div key={item._id} className="flex gap-4 border-t pt-6">
-                      <div className="w-24 h-28 overflow-hidden rounded-lg">
+                    <div key={item._id} className="flex gap-3 md:gap-4 border-t pt-4 md:pt-6">
+                      <div className="w-16 h-20 md:w-24 md:h-28 overflow-hidden rounded-lg bg-white">
                         <img
                           src={item.product.images?.[0] || 'https://placehold.co/100x100'}
                           alt={item.product.name}
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <div className="flex-1 space-y-2">
+                      <div className="flex-1 space-y-1 md:space-y-2">
                         <div className="flex justify-between">
                           <div>
-                            <h4 className="text-base font-semibold text-gray-900">{item.product.name}</h4>
-                            <p className="text-gray-600 text-sm">Size: {item.size}</p>
+                            <h4 className="text-sm md:text-base font-semibold text-gray-900">{item.product.name}</h4>
+                            <p className="text-xs md:text-sm text-gray-600">Size: {item.size}</p>
                           </div>
-                          <div className="text-gray-600 text-sm">
+                          <div className="text-xs md:text-sm text-gray-600">
                             Quantity: {item.quantity}
                           </div>
                         </div>
                         <div className="flex gap-2">
-                          <span className="text-base font-semibold text-gray-900">${item.price.toFixed(2)}</span>
-                          <span className="text-sm text-gray-600 line-through">${(item.price * 1.2).toFixed(2)}</span>
+                          <span className="text-sm md:text-base font-semibold text-gray-900">${item.price.toFixed(2)}</span>
+                          <span className="text-xs md:text-sm text-gray-600 line-through">${(item.price * 1.2).toFixed(2)}</span>
                         </div>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div className="text-gray-600 text-lg">Your cart is empty</div>
+                  <div className="text-gray-600 text-base md:text-lg py-4">Your cart is empty</div>
                 )}
 
                 {/* Order Total */}
-                <div className="border-t pt-6 space-y-4">
-                  <div className="flex justify-between text-gray-600">
+                <div className="border-t pt-4 md:pt-6 space-y-2 md:space-y-4">
+                  <div className="flex justify-between text-sm md:text-base text-gray-600">
                     <span>Subtotal</span>
                     <span>${subtotal.toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-gray-600">
+                  <div className="flex justify-between text-sm md:text-base text-gray-600">
                     <span>Shipping estimate</span>
                     <span>${shipping.toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-gray-600">
+                  <div className="flex justify-between text-sm md:text-base text-gray-600">
                     <span>Tax estimate</span>
                     <span>${tax.toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-gray-900 font-semibold">
+                  <div className="flex justify-between text-base md:text-lg text-gray-900 font-semibold pt-2 border-t">
                     <span>Order total</span>
                     <span>${total.toFixed(2)}</span>
                   </div>
@@ -443,18 +443,24 @@ const CheckoutPage = () => {
 
                 {/* Confirm Order Button */}
                 <button
-                  className="w-full bg-gray-900 text-white py-3 rounded-full shadow-lg hover:bg-gray-800 transition-colors disabled:opacity-50"
+                  className="w-full bg-gray-900 text-white py-3 px-4 text-sm md:text-base rounded-full shadow-lg hover:bg-gray-800 transition-colors disabled:opacity-50 flex justify-center items-center"
                   onClick={handleCheckout}
                   disabled={orderLoading || cartLoading}
                 >
                   {orderLoading ? 'Processing...' : 'Confirm order'}
                 </button>
+                
+                {/* Back to shopping link - added for better mobile UX */}
+                <div className="text-center pt-2">
+                  <Link to="/products" className="text-sm md:text-base text-gray-600 hover:text-gray-900 underline">
+                    Continue shopping
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </main>
-    
     </div>
   );
 };

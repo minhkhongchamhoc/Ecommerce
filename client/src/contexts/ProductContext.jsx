@@ -25,8 +25,56 @@ export const ProductsProvider = ({ children }) => {
     }
   }, []);
 
+  const createProduct = useCallback(async (productData) => {
+    setLoading(true);
+    try {
+      const newProduct = await productsUtils.createProduct(productData);
+      setProducts((prev) => [...prev, newProduct]);
+      setError(null);
+      return newProduct;
+    } catch (err) {
+      setError(err.message || 'Failed to create product');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const updateProduct = useCallback(async (id, productData) => {
+    setLoading(true);
+    try {
+      const updatedProduct = await productsUtils.updateProduct(id, productData);
+      setProducts((prev) =>
+        prev.map((product) => (product._id === id ? updatedProduct : product))
+      );
+      setError(null);
+      return updatedProduct;
+    } catch (err) {
+      setError(err.message || 'Failed to update product');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const deleteProduct = useCallback(async (id) => {
+    setLoading(true);
+    try {
+      await productsUtils.deleteProduct(id);
+      setProducts((prev) => prev.filter((product) => product._id !== id));
+      setError(null);
+    } catch (err) {
+      setError(err.message || 'Failed to delete product');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   return (
-    <ProductsContext.Provider value={{ products, pagination, loading, error, filterProducts }}>
+    <ProductsContext.Provider
+      value={{ products, pagination, loading, error, filterProducts, createProduct, updateProduct, deleteProduct }}
+    >
       {children}
     </ProductsContext.Provider>
   );

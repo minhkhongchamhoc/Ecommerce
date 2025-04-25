@@ -86,6 +86,60 @@ export const productsUtils = {
     });
     return handleResponse(response);
   },
+
+  /**
+   * Create a new product
+   * @param {Object} productData - Product data to create
+   * @returns {Promise} Created product data
+   */
+  createProduct: async (productData) => {
+    const token = localStorage.getItem('auth_token');
+    const response = await fetch(productsApi.CREATE, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token ? `Bearer ${token}` : '',
+      },
+      body: JSON.stringify(productData),
+    });
+    return handleResponse(response);
+  },
+
+  /**
+   * Update an existing product
+   * @param {string} id - Product ID
+   * @param {Object} productData - Updated product data
+   * @returns {Promise} Updated product data
+   */
+  updateProduct: async (id, productData) => {
+    const token = localStorage.getItem('auth_token');
+    const response = await fetch(productsApi.UPDATE(id), {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token ? `Bearer ${token}` : '',
+      },
+      body: JSON.stringify(productData),
+    });
+    return handleResponse(response);
+  },
+
+  /**
+   * Delete a product
+   * @param {string} id - Product ID
+   * @returns {Promise} Deletion confirmation
+   */
+  deleteProduct: async (id) => {
+    const token = localStorage.getItem('auth_token');
+    const response = await fetch(productsApi.DELETE(id), {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token ? `Bearer ${token}` : '',
+      },
+    });
+    return handleResponse(response);
+  },
 };
 
 export default productsUtils;

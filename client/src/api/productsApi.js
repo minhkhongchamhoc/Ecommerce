@@ -6,6 +6,7 @@ const productsApi = {
   UPDATE: (id) => `${BASE_URL}/api/products/${id}`,
   DELETE: (id) => `${BASE_URL}/api/products/${id}`,
   CREATE: `${BASE_URL}/api/products`,
+  GET_ALL: `${BASE_URL}/api/products`,
 };
 
 export default productsApi;
