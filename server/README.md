@@ -550,6 +550,39 @@ Test các trường hợp lỗi:
   }
   ```
 
+#### Get All Products API
+- **Endpoint**: `GET /api/products`
+- **Description**: Lấy tất cả sản phẩm từ database
+- **Access**: Public
+- **Response**:
+  ```json
+  [
+    {
+      "name": "string",
+      "description": "string",
+      "price": number,
+      "category": {
+        "_id": "string",
+        "name": "string",
+        "description": "string"
+      },
+      "images": [
+        "string",  // URL of image 1
+        "string",  // URL of image 2
+        "string",  // URL of image 3
+        "string"   // URL of image 4
+      ],
+      "sizes": ["S", "M", "L", "XL", "XXL"],
+      "stock": number,
+      "created_at": "date",
+      "modified_at": "date"
+    }
+  ]
+  ```
+- **Response Codes**:
+  - 200: Successfully retrieved all products
+  - 500: Server error
+
 #### Create/Update Product API
 - **Endpoints**: 
   - `POST /api/products`

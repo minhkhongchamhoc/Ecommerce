@@ -19,6 +19,15 @@ interface LoginRequest extends Request {
   }
 }
 
+interface GoogleLoginRequest extends Request {
+  body: {
+    email: string;
+    googleId: string;
+    displayName?: string;
+    photoURL?: string;
+  }
+}
+
 /**
  * @swagger
  * components:
@@ -219,6 +228,84 @@ router.post('/logout', auth, async (req: Request, res: Response) => {
     res.json({ message: 'Logged out successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
+  }
+});
+
+/**
+ * @swagger
+ * /api/auth/google:
+ *   post:
+ *     summary: Login or register with Google
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - googleId
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               googleId:
+ *                 type: string
+ *               displayName:
+ *                 type: string
+ *               photoURL:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *       400:
+ *         description: Invalid input
+ *       500:
+ *         description: Server error
+ */
+router.post('/google', async (req: GoogleLoginRequest, res: Response) => {
+  try {
+    const { email, googleId, displayName, photoURL } = req.body;
+
+    // Validate required fields
+    if (!email || !googleId) {
+      return res.status(400).json({ message: 'Email and googleId are required' });
+    }
+
+    // Find or create user
+    const user = await User.findOrCreateGoogleUser({
+      email,
+      googleId,
+      displayName,
+      photoURL
+    });
+
+    // Generate token
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET as string,
+      { expiresIn: '30d' }
+    );
+
+    // Return user data and token
+    res.json({
+      success: true,
+      token,
+      user: {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+        displayName: user.displayName,
+        photoURL: user.photoURL
+      }
+    });
+  } catch (error) {
+    console.error('Google login error:', error);
+    res.status(500).json({ 
+      success: false,
+      message: 'Server error during Google authentication' 
+    });
   }
 });
 

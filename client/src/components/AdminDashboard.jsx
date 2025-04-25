@@ -30,17 +30,17 @@ const AdminDashboard = () => {
       path: "/admin",
     },
     {
-      title: "Quản lí Sản phẩm",
+      title: "Product Management",
       icon: <FiBox className="w-5 h-5" />,
       path: "/admin/products",
     },
     {
-      title: "Quản lí Danh mục",
+      title: "Category Management",
       icon: <FiLayers className="w-5 h-5" />,
       path: "/admin/categories",
     },
     {
-      title: "Quản lí Đơn hàng",
+      title: "Order Management",
       icon: <FiShoppingBag className="w-5 h-5" />,
       path: "/admin/orders",
     }
