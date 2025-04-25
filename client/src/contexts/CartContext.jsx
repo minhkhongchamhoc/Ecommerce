@@ -2,6 +2,7 @@ import React, { createContext, useState, useCallback, useEffect, useContext } fr
 import { useNavigate } from 'react-router-dom';
 import { cartUtils } from '../utils/cart';
 import { AuthContext } from './AuthContext';
+import { getToken } from '../utils/tokenStorage';
 
 export const CartContext = createContext({
   cart: null,
@@ -39,7 +40,7 @@ export const CartProvider = ({ children }) => {
 
   // Check if user is authenticated
   const isAuthenticated = () => {
-    const token = localStorage.getItem('token');
+    const token = getToken();
     return !!token;
   };
 
