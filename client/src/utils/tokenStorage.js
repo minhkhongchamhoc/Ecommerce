@@ -9,5 +9,8 @@ export const getToken = () => {
 };
 
 export const removeToken = () => {
+  // Remove both the auth token and any other auth-related data
   localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem('token'); // Remove token if stored with different key
+  localStorage.removeItem('user'); // Remove user data
 };
