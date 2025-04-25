@@ -43,45 +43,90 @@ const Radio = ({ label, isSelected, onSelect }) => {
 
 // RangeSlider component
 const RangeSlider = ({ min, max, value, onChange }) => {
-  const [activeThumb, setActiveThumb] = useState(null);
-  const [positions, setPositions] = useState({ min: 0, max: 100 });
+  const [tempValue, setTempValue] = useState(value);
   const trackRef = useRef(null);
+  const isDragging = useRef(null);
 
+  // Update tempValue when value prop changes
   useEffect(() => {
-    const minPos = ((value.min - min) / (max - min)) * 100;
-    const maxPos = ((value.max - min) / (max - min)) * 100;
-    setPositions({ min: minPos, max: maxPos });
-  }, [value.min, value.max, min, max]);
+    setTempValue(value);
+  }, [value]);
 
-  const handleMouseDown = (thumb) => (e) => {
-    setActiveThumb(thumb);
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+  // Calculate position percentage
+  const getPosition = (val) => ((val - min) / (max - min)) * 100;
+
+  // Convert position to value
+  const positionToValue = (pos) => {
+    const percent = Math.min(100, Math.max(0, pos));
+    return Math.round(min + (percent * (max - min)) / 100);
+  };
+
+  // Handle drag start
+  const handleDragStart = (thumb) => (e) => {
+    isDragging.current = thumb;
+    document.addEventListener('mousemove', handleDragMove);
+    document.addEventListener('mouseup', handleDragEnd);
+    document.addEventListener('touchmove', handleDragMove);
+    document.addEventListener('touchend', handleDragEnd);
     e.preventDefault();
   };
 
-  const handleMouseMove = (e) => {
-    if (!trackRef.current || !activeThumb) return;
+  // Handle drag move
+  const handleDragMove = useCallback(
+    (e) => {
+      if (!trackRef.current || !isDragging.current) return;
 
-    const track = trackRef.current.getBoundingClientRect();
-    const percent = Math.min(Math.max(0, ((e.clientX - track.left) / track.width) * 100), 100);
-    const newValue = Math.round(min + ((max - min) * percent) / 100);
+      const track = trackRef.current.getBoundingClientRect();
+      const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+      const percent = ((clientX - track.left) / track.width) * 100;
+      const newValue = positionToValue(percent);
 
-    if (activeThumb === 'min') {
-      if (newValue <= value.max) {
-        onChange({ ...value, min: newValue });
-      }
-    } else if (activeThumb === 'max') {
-      if (newValue >= value.min) {
-        onChange({ ...value, max: newValue });
-      }
+      setTempValue((prev) => {
+        let updated;
+        if (isDragging.current === 'min') {
+          if (newValue <= prev.max) {
+            updated = { ...prev, min: newValue };
+          } else {
+            return prev;
+          }
+        } else if (newValue >= prev.min) {
+          updated = { ...prev, max: newValue };
+        } else {
+          return prev;
+        }
+        onChange(updated); // Call onChange immediately to update priceRange
+        return updated;
+      });
+    },
+    [min, max, onChange]
+  );
+
+  // Handle drag end
+  const handleDragEnd = useCallback(() => {
+    isDragging.current = null;
+    document.removeEventListener('mousemove', handleDragMove);
+    document.removeEventListener('mouseup', handleDragEnd);
+    document.removeEventListener('touchmove', handleDragMove);
+    document.removeEventListener('touchend', handleDragEnd);
+  }, [handleDragMove]);
+
+  // Handle keyboard navigation
+  const handleKeyDown = (thumb) => (e) => {
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+      const step = (max - min) / 100;
+      setTempValue((prev) => {
+        let newMin = prev.min;
+        let newMax = prev.max;
+        if (thumb === 'min') {
+          newMin = e.key === 'ArrowLeft' ? Math.max(min, prev.min - step) : Math.min(prev.max, prev.min + step);
+        } else {
+          newMax = e.key === 'ArrowLeft' ? Math.max(prev.min, prev.max - step) : Math.min(max, prev.max + step);
+        }
+        const updated = { min: Math.round(newMin), max: Math.round(newMax) };
+        onChange(updated);
+        return updated;
+      });
     }
-  };
-
-  const handleMouseUp = () => {
-    setActiveThumb(null);
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
   };
 
   return (
@@ -89,40 +134,40 @@ const RangeSlider = ({ min, max, value, onChange }) => {
       <div
         ref={trackRef}
         className="w-full h-1 bg-gray-200 rounded-md relative cursor-pointer"
+        role="slider"
         tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-            const step = (max - min) / 100;
-            const newMin = e.key === 'ArrowLeft' ? Math.max(min, value.min - step) : Math.min(value.max, value.min + step);
-            const newMax = e.key === 'ArrowLeft' ? Math.max(newMin, value.max - step) : Math.min(max, value.max + step);
-            onChange({ min: Math.round(newMin), max: Math.round(newMax) });
-          }
-        }}
       >
         <div
           className="h-1 bg-sky-500 rounded-md absolute"
-          style={{ left: `${positions.min}%`, width: `${positions.max - positions.min}%` }}
+          style={{
+            left: `${getPosition(tempValue.min)}%`,
+            width: `${getPosition(tempValue.max) - getPosition(tempValue.min)}%`,
+          }}
         />
         <div
           className="w-4 h-4 bg-white rounded-full border-2 border-sky-500 absolute top-1/2 transform -translate-y-1/2 cursor-grab active:cursor-grabbing shadow-md hover:shadow-lg transition-shadow"
-          style={{ left: `${positions.min}%`, marginLeft: '-8px' }}
-          onMouseDown={handleMouseDown('min')}
+          style={{ left: `${getPosition(tempValue.min)}%`, marginLeft: '-8px' }}
+          onMouseDown={handleDragStart('min')}
+          onTouchStart={handleDragStart('min')}
+          onKeyDown={handleKeyDown('min')}
           role="slider"
           aria-label="Minimum price"
           aria-valuemin={min}
-          aria-valuemax={value.max}
-          aria-valuenow={value.min}
+          aria-valuemax={tempValue.max}
+          aria-valuenow={tempValue.min}
           tabIndex={0}
         />
         <div
           className="w-4 h-4 bg-white rounded-full border-2 border-sky-500 absolute top-1/2 transform -translate-y-1/2 cursor-grab active:cursor-grabbing shadow-md hover:shadow-lg transition-shadow"
-          style={{ left: `${positions.max}%`, marginLeft: '-8px' }}
-          onMouseDown={handleMouseDown('max')}
+          style={{ left: `${getPosition(tempValue.max)}%`, marginLeft: '-8px' }}
+          onMouseDown={handleDragStart('max')}
+          onTouchStart={handleDragStart('max')}
+          onKeyDown={handleKeyDown('max')}
           role="slider"
           aria-label="Maximum price"
-          aria-valuemin={value.min}
+          aria-valuemin={tempValue.min}
           aria-valuemax={max}
-          aria-valuenow={value.max}
+          aria-valuenow={tempValue.max}
           tabIndex={0}
         />
       </div>
