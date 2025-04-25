@@ -8,23 +8,26 @@ import CategoriesProvider from './contexts/CategoriesContext';
 import { CartProvider } from './contexts/CartContext';
 import { OrdersProvider } from './contexts/OrderContext';
 import { UserProvider } from './contexts/UserContext';
+import { SearchProvider } from './contexts/SearchContext';
 
 
 function App() {
   return (
     <Router>
       <AuthProvider>
-        <UserProvider>
-        <CategoriesProvider>
-          <ProductsProvider>
-            <CartProvider>
-             <OrdersProvider>
-            <Navigation />
-            </OrdersProvider>
-            </CartProvider>
-          </ProductsProvider>
-        </CategoriesProvider>
-        </UserProvider>
+        <SearchProvider>
+          <UserProvider>
+          <CategoriesProvider>
+            <ProductsProvider>
+              <CartProvider>
+               <OrdersProvider>
+              <Navigation />
+              </OrdersProvider>
+              </CartProvider>
+            </ProductsProvider>
+          </CategoriesProvider>
+          </UserProvider>
+        </SearchProvider>
       </AuthProvider>
     </Router>
   );
