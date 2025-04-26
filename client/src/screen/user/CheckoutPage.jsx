@@ -4,7 +4,7 @@ import { CartContext } from '../../contexts/CartContext';
 import { OrdersContext } from '../../contexts/OrderContext';
 
 const CheckoutPage = () => {
-  const { cart, fetchCart, removeCartItem, loading: cartLoading, error: cartError } = useContext(CartContext);
+  const { cart, loading: cartLoading, error: cartError } = useContext(CartContext);
   const { checkout, loading: orderLoading, error: orderError } = useContext(OrdersContext);
 
   const [phone, setPhone] = useState('');

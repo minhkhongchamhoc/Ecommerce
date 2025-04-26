@@ -171,7 +171,6 @@ const ProductDetail = () => {
                 <div>
                   <h2 className="text-gray-900 text-xl font-semibold mb-2 font-poppins">Sale performance</h2>
                   <p className="text-gray-600 font-poppins">Sales: 0</p>
-                  <p className="text-gray-600 font-poppins">Review Count: -</p>
                   <p className="text-gray-600 font-poppins">Review Average: -</p>
                 </div>
                 
@@ -283,7 +282,6 @@ const ProductDetail = () => {
               <div className="space-y-1">
                 <h2 className="text-gray-900 text-lg font-semibold font-poppins">Sale performance</h2>
                 <p className="text-gray-600 text-sm font-poppins">Sales: 0</p>
-                <p className="text-gray-600 text-sm font-poppins">Review Count: -</p>
                 <p className="text-gray-600 text-sm font-poppins">Review Average: -</p>
               </div>
               

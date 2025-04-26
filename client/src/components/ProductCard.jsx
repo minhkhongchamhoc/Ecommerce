@@ -44,7 +44,7 @@ const ProductCard = ({
             <FaStar className="w-4 h-4 md:w-5 md:h-5 text-amber-400" />
             <div className="flex justify-start items-center">
               <div className="text-gray-600 text-xs md:text-sm font-normal font-poppins leading-tight">
-                4.9 (98)
+                4.5
               </div>
             </div>
           </div>
