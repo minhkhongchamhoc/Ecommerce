@@ -9,6 +9,7 @@ const SearchBar = ({ placeholder = 'Search in products...' }) => {
   const { searchResults, isLoading, error, showResults, searchProducts, clearSearch, setShowResults } = useSearch();
   const searchRef = useRef(null);
   const navigate = useNavigate();
+  console.log('Search Results:', searchResults);
 
   // Debounce search function
   const debouncedSearch = useRef(
@@ -53,8 +54,13 @@ const SearchBar = ({ placeholder = 'Search in products...' }) => {
     setSearchTerm('');
   };
 
+  // Handle image load error
+  const handleImageError = (e) => {
+    e.target.src = '/placeholder.jpg';
+  };
+
   return (
-    <div ref={searchRef} className="relative">
+    <div ref={searchRef} className="relative font-poppins">
       {/* Mobile Search Bar */}
       <div className="md:hidden w-48 h-9 px-4 bg-stone-50 rounded-full flex justify-start items-center gap-1.5">
         <FiSearch className="w-3.5 h-3.5 text-gray-600" />
@@ -93,7 +99,7 @@ const SearchBar = ({ placeholder = 'Search in products...' }) => {
 
       {/* Search Results Dropdown */}
       {showResults && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto font-poppins">
           {isLoading && (
             <div className="p-4 text-center text-gray-600">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
@@ -101,13 +107,13 @@ const SearchBar = ({ placeholder = 'Search in products...' }) => {
           )}
 
           {error && (
-            <div className="p-4 text-center text-red-500">
+            <div className="p-4 text-center text-red-500 font-poppins">
               {error}
             </div>
           )}
 
           {!isLoading && !error && searchResults.length === 0 && (
-            <div className="p-4 text-center text-gray-600">
+            <div className="p-4 text-center text-gray-600 font-poppins">
               No products found
             </div>
           )}
@@ -115,17 +121,18 @@ const SearchBar = ({ placeholder = 'Search in products...' }) => {
           {!isLoading && !error && searchResults.map((product) => (
             <div
               key={product.id}
-              className="p-4 hover:bg-gray-50 cursor-pointer flex items-center gap-4"
+              className="p-4 hover:bg-gray-50 cursor-pointer flex items-center gap-4 font-poppins"
               onClick={() => handleProductClick(product.id)}
             >
               <img
-                src={product.image || '/placeholder.jpg'}
+                src={product.image}
                 alt={product.name}
                 className="w-12 h-12 object-cover rounded"
+                onError={handleImageError}
               />
               <div className="flex-1">
-                <div className="text-sm font-medium text-gray-900">{product.name}</div>
-                <div className="text-sm text-gray-600">${product.price.toLocaleString()}</div>
+                <div className="text-sm font-medium text-gray-900 font-poppins">{product.name}</div>
+                <div className="text-sm text-gray-600 font-poppins">${product.price.toLocaleString()}</div>
               </div>
             </div>
           ))}

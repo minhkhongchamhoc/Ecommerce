@@ -28,7 +28,7 @@ const ProductsPage = () => {
   const [imageInput, setImageInput] = useState('');
   const [sizeInput, setSizeInput] = useState('');
   const [formError, setFormError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null); // Thêm trạng thái thông báo thành công
+  const [successMessage, setSuccessMessage] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
   // Predefined sizes for quick selection
@@ -66,7 +66,7 @@ const ProductsPage = () => {
     setImageInput('');
     setSizeInput('');
     setFormError(null);
-    setSuccessMessage(null); // Xóa thông báo thành công khi mở modal
+    setSuccessMessage(null);
     setIsModalOpen(true);
   };
 
@@ -136,9 +136,9 @@ const ProductsPage = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Kiểm tra các trường bắt buộc
+    // Validate required fields
     if (!formData.name || !formData.price || !formData.category || formData.stock < 0) {
-      setFormError('Vui lòng điền đầy đủ các trường bắt buộc: Tên, Giá, Danh mục, Tồn kho.');
+      setFormError('Please fill in all required fields: Name, Price, Category, Stock.');
       return;
     }
 
@@ -146,19 +146,19 @@ const ProductsPage = () => {
       console.log('Sending product data:', formData);
       if (editingProduct) {
         await updateProduct(editingProduct._id, formData);
-        setSuccessMessage('Sản phẩm đã được cập nhật thành công!');
+        setSuccessMessage('Product updated successfully!');
       } else {
         await createProduct(formData);
-        setSuccessMessage('Sản phẩm đã được thêm thành công!');
+        setSuccessMessage('Product added successfully!');
       }
-      // Luôn làm mới danh sách sản phẩm ở trang hiện tại
+      // Refresh product list on the current page
       filterProducts({ page: currentPage, limit: 9 });
       console.log('Products after create:', products, 'Pagination:', pagination); // Debug
       setIsModalOpen(false);
       setEditingProduct(null);
       setFormError(null);
     } catch (err) {
-      const errorMessage = err.response?.data?.message || 'Lỗi khi lưu sản phẩm. Vui lòng thử lại.';
+      const errorMessage = err.response?.data?.message || 'Error saving product. Please try again.';
       setFormError(errorMessage);
       console.error('Error saving product:', err);
     }
@@ -166,10 +166,10 @@ const ProductsPage = () => {
 
   // Handle delete
   const handleDelete = async (id) => {
-    if (window.confirm('Bạn có chắc muốn xóa sản phẩm này?')) {
+    if (window.confirm('Are you sure you want to delete this product?')) {
       try {
         await deleteProduct(id);
-        // Nếu trang hiện tại trống, quay lại trang trước
+        // If the current page is empty, go to the previous page
         if (products.length === 1 && currentPage > 1) {
           setCurrentPage(currentPage - 1);
         } else {
@@ -189,238 +189,243 @@ const ProductsPage = () => {
   };
 
   return (
-    <div className="bg-gray-50 p-3 sm:p-4 md:p-6 rounded-lg shadow">
+    <div className="bg-gray-50 p-3 sm:p-4 md:p-6 rounded-lg shadow font-poppins">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6">
-        <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-2 sm:mb-0">Quản lí Sản phẩm</h1>
+        <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-2 sm:mb-0 font-poppins">Product Management</h1>
         {!editingProduct && (
           <button
-            className="px-3 py-1.5 sm:px-4 sm:py-2 bg-gray-900 text-white text-sm rounded hover:bg-gray-800"
+            className="px-3 py-1.5 sm:px-4 sm:py-2 bg-gray-900 text-white text-sm rounded hover:bg-gray-800 font-poppins"
             onClick={() => openModal()}
           >
-            Thêm Sản phẩm
+            Add Product
           </button>
         )}
       </div>
 
-      {/* Thông báo thành công */}
+      {/* Success Notification */}
       {successMessage && (
-        <p className="text-green-500 text-sm mb-4">{successMessage}</p>
+        <p className="text-green-500 text-sm mb-4 font-poppins">{successMessage}</p>
       )}
 
       {/* Form Section */}
       {isModalOpen && (
         <div className="bg-white p-3 sm:p-4 rounded-lg shadow-sm mb-4 sm:mb-6">
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">
-            {editingProduct ? 'Sửa Sản phẩm' : 'Thêm Sản phẩm'}
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4 font-poppins">
+            {editingProduct ? 'Edit Product' : 'Add Product'}
           </h2>
-          {/* Hiển thị lỗi form nếu có */}
+          {/* Display form error if any */}
           {formError && (
-            <p className="text-red-500 text-sm mb-3">{formError}</p>
+            <p className="text-red-500 text-sm mb-3 font-poppins">{formError}</p>
           )}
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-            <div className="mb-3 sm:mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Tên</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                className="block w-full border border-gray-300 rounded-md focus:ring focus:ring-indigo-200 focus:border-indigo-500"
-                required
-              />
-            </div>
-            <div className="mb-3 sm:mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Giá</label>
-              <input
-                type="number"
-                name="price"
-                value={formData.price}
-                onChange={handleInputChange}
-                className="block w-full border border-gray-300 rounded-md focus:ring focus:ring-indigo-200 focus:border-indigo-500"
-                required
-              />
-            </div>
-            <div className="mb-3 sm:mb-4 md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Mô tả</label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                className="block w-full border border-gray-300 rounded-md focus:ring focus:ring-indigo-200 focus:border-indigo-500"
-                rows="3"
-              />
-            </div>
-            <div className="mb-3 sm:mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Danh mục</label>
-              {categoriesLoading ? (
-                <p className="text-gray-600 text-sm">Đang tải danh mục...</p>
-              ) : categoriesError ? (
-                <p className="text-red-500 text-sm">{categoriesError}</p>
-              ) : categories.length === 0 ? (
-                <p className="text-gray-600 text-sm">Không có danh mục nào.</p>
-              ) : (
-                <select
-                  name="category"
-                  value={formData.category}
-                  onChange={handleInputChange}
-                  className="block w-full border border-gray-300 rounded-md focus:ring focus:ring-indigo-200 focus:border-indigo-500"
-                  required
-                >
-                  <option value="">Chọn danh mục</option>
-                  {categories.map((category) => (
-                    <option key={category._id} value={category._id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-              )}
-            </div>
-            <div className="mb-3 sm:mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Tồn kho</label>
-              <input
-                type="number"
-                name="stock"
-                value={formData.stock}
-                onChange={handleInputChange}
-                className="block w-full border border-gray-300 rounded-md focus:ring focus:ring-indigo-200 focus:border-indigo-500"
-                required
-              />
-            </div>
-            <div className="mb-3 sm:mb-4 md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Kích cỡ</label>
-              <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
-                <input
-                  type="text"
-                  name="sizeInput"
-                  value={sizeInput}
-                  onChange={handleInputChange}
-                  placeholder="Nhập kích cỡ"
-                  className="block w-full border border-gray-300 rounded-md focus:ring focus:ring-indigo-200 focus:border-indigo-500"
-                />
-                <button
-                  type="button"
-                  onClick={addSize}
-                  className="px-3 py-1.5 sm:px-4 sm:py-2 bg-gray-900 text-white text-sm rounded hover:bg-gray-800 sm:whitespace-nowrap"
-                >
-                  Thêm
-                </button>
-              </div>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {predefinedSizes.map((size) => (
-                  <button
-                    key={size}
-                    type="button"
-                    onClick={() => addPredefinedSize(size)}
-                    className={`px-3 py-1 text-sm border rounded-md ${
-                      formData.sizes.includes(size)
-                        ? 'bg-gray-900 text-white'
-                        : 'bg-white text-gray-700 hover:bg-gray-50'
-                    }`}
-                  >
-                    {size}
-                  </button>
-                ))}
-              </div>
-              {formData.sizes.length > 0 && (
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {formData.sizes.map((size, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center space-x-2 bg-gray-100 p-2 rounded-md"
-                    >
-                      <span className="text-sm text-gray-600">{size}</span>
-                      <button
-                        type="button"
-                        onClick={() => removeSize(index)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        X
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            <div className="mb-3 sm:mb-4 md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Hình ảnh</label>
-              <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
-                <input
-                  type="text"
-                  name="imageInput"
-                  value={imageInput}
-                  onChange={handleInputChange}
-                  placeholder="Nhập URL hình ảnh"
-                  className="block w-full border border-gray-300 rounded-md focus:ring focus:ring-indigo-200 focus:border-indigo-500"
-                />
-                <button
-                  type="button"
-                  onClick={addImage}
-                  className="px-3 py-1.5 sm:px-4 sm:py-2 bg-gray-900 text-white text-sm rounded hover:bg-gray-800 sm:whitespace-nowrap"
-                >
-                  Thêm
-                </button>
-              </div>
-              {formData.images.length > 0 && (
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {formData.images.map((image, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center space-x-2 bg-gray-100 p-2 rounded-md"
-                    >
-                      <img
-                        src={image}
-                        alt={`Preview ${index}`}
-                        className="w-10 h-10 object-cover rounded"
-                        onError={(e) => (e.target.src = 'https://placehold.co/48x48')}
-                      />
-                      <span className="text-sm text-gray-600 truncate max-w-[80px] sm:max-w-[150px]">
-                        {image}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => removeImage(index)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        X
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            <div className="md:col-span-2 flex justify-end space-x-2">
-              <button
-                type="button"
-                className="px-3 py-1.5 sm:px-4 sm:py-2 bg-gray-200 text-gray-700 text-sm rounded hover:bg-gray-300"
-                onClick={() => {
-                  setIsModalOpen(false);
-                  setEditingProduct(null);
-                  setFormError(null);
-                  setSuccessMessage(null);
-                }}
-              >
-                Hủy
-              </button>
-              <button
-                type="submit"
-                className="px-3 py-1.5 sm:px-4 sm:py-2 bg-gray-900 text-white text-sm rounded hover:bg-gray-800"
-              >
-                {editingProduct ? 'Cập nhật' : 'Tạo'}
-              </button>
-            </div>
-          </form>
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+  <div className="mb-3 sm:mb-4">
+    <label className="block text-sm font-medium text-gray-700 mb-1 font-poppins">Name</label>
+    <input
+      type="text"
+      name="name"
+      value={formData.name}
+      onChange={handleInputChange}
+      className="block w-full border border-gray-300 rounded-md focus:ring focus:ring-indigo-200 focus:border-indigo-500 font-poppins"
+      required
+    />
+  </div>
+  <div className="mb-3 sm:mb-4">
+    <label className="block text-sm font-medium text-gray-700 mb-1 font-poppins">Price</label>
+    <input
+      type="number"
+      name="price"
+      value={formData.price || ''} // Use empty string instead of 0
+      onChange={handleInputChange}
+      className="block w-full border border-gray-300 rounded-md focus:ring focus:ring-indigo-200 focus:border-indigo-500 font-poppins"
+      placeholder="Enter price"
+      min="0" // Prevent negative values
+      step="0.01" // Allow decimals
+      required
+    />
+  </div>
+  <div className="mb-3 sm:mb-4 md:col-span-2">
+    <label className="block text-sm font-medium text-gray-700 mb-1 font-poppins">Description</label>
+    <textarea
+      name="description"
+      value={formData.description}
+      onChange={handleInputChange}
+      className="block w-full border border-gray-300 rounded-md focus:ring focus:ring-indigo-200 focus:border-indigo-500 font-poppins"
+      rows="3"
+    />
+  </div>
+  <div className="mb-3 sm:mb-4">
+    <label className="block text-sm font-medium text-gray-700 mb-1 font-poppins">Category</label>
+    {categoriesLoading ? (
+      <p className="text-gray-600 text-sm font-poppins">Loading categories...</p>
+    ) : categoriesError ? (
+      <p className="text-red-500 text-sm font-poppins">{categoriesError}</p>
+    ) : categories.length === 0 ? (
+      <p className="text-gray-600 text-sm font-poppins">No categories available.</p>
+    ) : (
+      <select
+        name="category"
+        value={formData.category}
+        onChange={handleInputChange}
+        className="block w-full border border-gray-300 rounded-md focus:ring focus:ring-indigo-200 focus:border-indigo-500 font-poppins"
+        required
+      >
+        <option value="" className="font-poppins">Select category</option>
+        {categories.map((category) => (
+          <option key={category._id} value={category._id} className="font-poppins">
+            {category.name}
+          </option>
+        ))}
+      </select>
+    )}
+  </div>
+  <div className="mb-3 sm:mb-4">
+    <label className="block text-sm font-medium text-gray-700 mb-1 font-poppins">Stock</label>
+    <input
+      type="number"
+      name="stock"
+      value={formData.stock || ''} // Use empty string instead of 0
+      onChange={handleInputChange}
+      className="block w-full border border-gray-300 rounded-md focus:ring focus:ring-indigo-200 focus:border-indigo-500 font-poppins"
+      placeholder="Enter stock"
+      min="0" // Prevent negative values
+      required
+    />
+  </div>
+  <div className="mb-3 sm:mb-4 md:col-span-2">
+    <label className="block text-sm font-medium text-gray-700 mb-1 font-poppins">Sizes</label>
+    <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
+      <input
+        type="text"
+        name="sizeInput"
+        value={sizeInput}
+        onChange={handleInputChange}
+        placeholder="Enter size"
+        className="block w-full border border-gray-300 rounded-md focus:ring focus:ring-indigo-200 focus:border-indigo-500 font-poppins"
+      />
+      <button
+        type="button"
+        onClick={addSize}
+        className="px-3 py-1.5 sm:px-4 sm:py-2 bg-gray-900 text-white text-sm rounded hover:bg-gray-800 sm:whitespace-nowrap font-poppins"
+      >
+        Add
+      </button>
+    </div>
+    <div className="mt-2 flex flex-wrap gap-2">
+      {predefinedSizes.map((size) => (
+        <button
+          key={size}
+          type="button"
+          onClick={() => addPredefinedSize(size)}
+          className={`px-3 py-1 text-sm border rounded-md font-poppins ${
+            formData.sizes.includes(size)
+              ? 'bg-gray-900 text-white'
+              : 'bg-white text-gray-700 hover:bg-gray-50'
+          }`}
+        >
+          {size}
+        </button>
+      ))}
+    </div>
+    {formData.sizes.length > 0 && (
+      <div className="mt-2 flex flex-wrap gap-2">
+        {formData.sizes.map((size, index) => (
+          <div
+            key={index}
+            className="flex items-center space-x-2 bg-gray-100 p-2 rounded-md"
+          >
+            <span className="text-sm text-gray-600 font-poppins">{size}</span>
+            <button
+              type="button"
+              onClick={() => removeSize(index)}
+              className="text-red-600 hover:text-red-900 font-poppins"
+            >
+              X
+            </button>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+  <div className="mb-3 sm:mb-4 md:col-span-2">
+    <label className="block text-sm font-medium text-gray-700 mb-1 font-poppins">Images</label>
+    <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
+      <input
+        type="text"
+        name="imageInput"
+        value={imageInput}
+        onChange={handleInputChange}
+        placeholder="Enter image URL"
+        className="block w-full border border-gray-300 rounded-md focus:ring focus:ring-indigo-200 focus:border-indigo-500 font-poppins"
+      />
+      <button
+        type="button"
+        onClick={addImage}
+        className="px-3 py-1.5 sm:px-4 sm:py-2 bg-gray-900 text-white text-sm rounded hover:bg-gray-800 sm:whitespace-nowrap font-poppins"
+      >
+        Add
+      </button>
+    </div>
+    {formData.images.length > 0 && (
+      <div className="mt-2 flex flex-wrap gap-2">
+        {formData.images.map((image, index) => (
+          <div
+            key={index}
+            className="flex items-center space-x-2 bg-gray-100 p-2 rounded-md"
+          >
+            <img
+              src={image}
+              alt={`Preview ${index}`}
+              className="w-10 h-10 object-cover rounded"
+              onError={(e) => (e.target.src = 'https://placehold.co/48x48')}
+            />
+            <span className="text-sm text-gray-600 truncate max-w-[80px] sm:max-w-[150px] font-poppins">
+              {image}
+            </span>
+            <button
+              type="button"
+              onClick={() => removeImage(index)}
+              className="text-red-600 hover:text-red-900 font-poppins"
+            >
+              X
+            </button>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+  <div className="md:col-span-2 flex justify-end space-x-2">
+    <button
+      type="button"
+      className="px-3 py-1.5 sm:px-4 sm:py-2 bg-gray-200 text-gray-700 text-sm rounded hover:bg-gray-300 font-poppins"
+      onClick={() => {
+        setIsModalOpen(false);
+        setEditingProduct(null);
+        setFormError(null);
+        setSuccessMessage(null);
+      }}
+    >
+      Cancel
+    </button>
+    <button
+      type="submit"
+      className="px-3 py-1.5 sm:px-4 sm:py-2 bg-gray-900 text-white text-sm rounded hover:bg-gray-800 font-poppins"
+    >
+      {editingProduct ? 'Update' : 'Create'}
+    </button>
+  </div>
+</form>
         </div>
       )}
 
       {/* Products List */}
-      {productsError && <p className="text-red-500 text-sm mb-4">{productsError}</p>}
+      {productsError && <p className="text-red-500 text-sm mb-4 font-poppins">{productsError}</p>}
       {productsLoading ? (
         <div className="flex justify-center items-center h-32">
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
         </div>
       ) : products.length === 0 ? (
         <div className="bg-white p-4 rounded-lg shadow-sm text-center">
-          <p className="text-gray-600">Không có sản phẩm nào.</p>
+          <p className="text-gray-600 font-poppins">No products found.</p>
         </div>
       ) : (
         <>
@@ -429,20 +434,20 @@ const ProductsPage = () => {
               {/* Table Header - Hidden on mobile */}
               <div className="bg-gray-50 hidden md:table-header-group">
                 <div className="md:table-row">
-                  <div className="px-2 sm:px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:table-cell">
-                    Tên
+                  <div className="px-2 sm:px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:table-cell font-poppins">
+                    Name
                   </div>
-                  <div className="px-2 sm:px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:table-cell">
-                    Danh mục
+                  <div className="px-2 sm:px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:table-cell font-poppins">
+                    Category
                   </div>
-                  <div className="px-2 sm:px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:table-cell">
-                    Giá
+                  <div className="px-2 sm:px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:table-cell font-poppins">
+                    Price
                   </div>
-                  <div className="px-2 sm:px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:table-cell">
-                    Tồn kho
+                  <div className="px-2 sm:px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:table-cell font-poppins">
+                    Stock
                   </div>
-                  <div className="px-2 sm:px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:table-cell">
-                    Hành động
+                  <div className="px-2 sm:px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:table-cell font-poppins">
+                    Actions
                   </div>
                 </div>
               </div>
@@ -453,60 +458,60 @@ const ProductsPage = () => {
                   <div key={product._id} className="block md:table-row hover:bg-gray-50 border-b md:border-b-0 border-gray-200">
                     {/* Mobile Product Header */}
                     <div className="md:hidden bg-gray-100 p-2 flex justify-between items-center">
-                      <span className="font-medium text-sm text-gray-800 truncate max-w-[180px]">{product.name}</span>
+                      <span className="font-medium text-sm text-gray-800 truncate max-w-[180px] font-poppins">{product.name}</span>
                       <div className="flex space-x-2">
                         <button
-                          className="text-indigo-600 hover:text-indigo-900 text-sm font-medium"
+                          className="text-indigo-600 hover:text-indigo-900 text-sm font-medium font-poppins"
                           onClick={() => openModal(product)}
                         >
-                          Sửa
+                          Edit
                         </button>
                         <button
-                          className="text-red-600 hover:text-red-900 text-sm font-medium"
+                          className="text-red-600 hover:text-red-900 text-sm font-medium font-poppins"
                           onClick={() => handleDelete(product._id)}
                         >
-                          Xóa
+                          Delete
                         </button>
                       </div>
                     </div>
 
                     {/* Name */}
                     <div className="block md:table-cell px-2 sm:px-4 md:px-6 py-2 md:py-4">
-                      <div className="md:hidden font-medium text-xs text-gray-500 mb-1">Tên</div>
-                      <div className="text-sm text-gray-900">{product.name}</div>
+                      <div className="md:hidden font-medium text-xs text-gray-500 mb-1 font-poppins">Name</div>
+                      <div className="text-sm text-gray-900 font-poppins">{product.name}</div>
                     </div>
 
                     {/* Category */}
                     <div className="block md:table-cell px-2 sm:px-4 md:px-6 py-2 md:py-4">
-                      <div className="md:hidden font-medium text-xs text-gray-500 mb-1">Danh mục</div>
-                      <div className="text-sm text-gray-500">{product.category.name}</div>
+                      <div className="md:hidden font-medium text-xs text-gray-500 mb-1 font-poppins">Category</div>
+                      <div className="text-sm text-gray-500 font-poppins">{product.category.name}</div>
                     </div>
 
                     {/* Price */}
                     <div className="block md:table-cell px-2 sm:px-4 md:px-6 py-2 md:py-4">
-                      <div className="md:hidden font-medium text-xs text-gray-500 mb-1">Giá</div>
-                      <div className="text-sm font-medium text-gray-900">{product.price}</div>
+                      <div className="md:hidden font-medium text-xs text-gray-500 mb-1 font-poppins">Price</div>
+                      <div className="text-sm font-medium text-gray-900 font-poppins">{product.price}</div>
                     </div>
 
                     {/* Stock */}
                     <div className="block md:table-cell px-2 sm:px-4 md:px-6 py-2 md:py-4">
-                      <div className="md:hidden font-medium text-xs text-gray-500 mb-1">Tồn kho</div>
-                      <div className="text-sm text-gray-500">{product.stock}</div>
+                      <div className="md:hidden font-medium text-xs text-gray-500 mb-1 font-poppins">Stock</div>
+                      <div className="text-sm text-gray-500 font-poppins">{product.stock}</div>
                     </div>
 
                     {/* Actions - Hidden on mobile as it's moved to the mobile header */}
                     <div className="hidden md:table-cell px-2 sm:px-4 md:px-6 py-2 md:py-4 text-sm font-medium">
                       <button
-                        className="text-indigo-600 hover:text-indigo-900 mr-4"
+                        className="text-indigo-600 hover:text-indigo-900 mr-4 font-poppins"
                         onClick={() => openModal(product)}
                       >
-                        Sửa
+                        Edit
                       </button>
                       <button
-                        className="text-red-600 hover:text-red-900"
+                        className="text-red-600 hover:text-red-900 font-poppins"
                         onClick={() => handleDelete(product._id)}
                       >
-                        Xóa
+                        Delete
                       </button>
                     </div>
                   </div>
@@ -520,27 +525,27 @@ const ProductsPage = () => {
             <div className="mt-4 flex justify-center">
               <div className="flex space-x-1">
                 <button
-                  className={`px-3 py-1 border rounded text-sm ${
+                  className={`px-3 py-1 border rounded text-sm font-poppins ${
                     currentPage === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50'
                   }`}
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
                 >
-                  
+                  Previous
                 </button>
 
-                <span className="px-3 py-1 border bg-white text-sm">
+                <span className="px-3 py-1 border bg-white text-sm font-poppins">
                   {currentPage} / {pagination.totalPages}
                 </span>
 
                 <button
-                  className={`px-3 py-1 border rounded text-sm ${
+                  className={`px-3 py-1 border rounded text-sm font-poppins ${
                     currentPage === pagination.totalPages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50'
                   }`}
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === pagination.totalPages}
                 >
-                  
+                  Next
                 </button>
               </div>
             </div>

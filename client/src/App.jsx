@@ -7,7 +7,6 @@ import { ProductsProvider } from './contexts/ProductContext';
 import CategoriesProvider from './contexts/CategoriesContext';
 import { CartProvider } from './contexts/CartContext';
 import { OrdersProvider } from './contexts/OrderContext';
-
 import { SearchProvider } from './contexts/SearchContext';
 
 
@@ -16,7 +15,6 @@ function App() {
     <Router>
       <AuthProvider>
         <SearchProvider>
-       
           <CategoriesProvider>
             <ProductsProvider>
               <CartProvider>
@@ -26,7 +24,6 @@ function App() {
               </CartProvider>
             </ProductsProvider>
           </CategoriesProvider>
-       
         </SearchProvider>
       </AuthProvider>
     </Router>

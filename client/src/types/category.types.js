@@ -1,53 +1,57 @@
-export const Category = {
-    id: '',
-    name: '',
-    description: '',
-    createdAt: '',
-    updatedAt: '',
-  };
-  
-  export const CategoryCreateRequest = {
-    name: '',
-    description: '',
-  };
-  
-  export const CategoryCreateResponse = {
-    id: '',
-    name: '',
-    description: '',
-    createdAt: '',
-    updatedAt: '',
-  };
-  
-  export const CategoryUpdateRequest = {
-    name: '',
-    description: '',
-  };
-  
-  export const CategoryUpdateResponse = {
-    id: '',
-    name: '',
-    description: '',
-    createdAt: '',
-    updatedAt: '',
-  };
-  
-  export const CategoryGetAllResponse = [
-    {
-      id: '',
-      name: '',
-      description: '',
-      createdAt: '',
-      updatedAt: '',
-    },
-  ];
-  
-  export const CategoryGetByIdResponse = {
-    id: '',
-    name: '',
-    description: '',
-    createdAt: '',
-    updatedAt: '',
-  };
-  
-  export const CategoryDeleteResponse = {};
+/**
+ * @typedef {Object} Category
+ * @property {string} id - Category identifier
+ * @property {string} name - Category name
+ * @property {string} description - Category description
+ * @property {string} createdAt - Category creation date (ISO date string)
+ * @property {string} updatedAt - Category modification date (ISO date string)
+ */
+
+/**
+ * @typedef {Object} CategoryCreateRequest
+ * @property {string} name - Category name
+ * @property {string} description - Category description
+ */
+
+/**
+ * @typedef {Object} CategoryCreateResponse
+ * @property {string} id - Category identifier
+ * @property {string} name - Category name
+ * @property {string} description - Category description
+ * @property {string} createdAt - Category creation date (ISO date string)
+ * @property {string} updatedAt - Category modification date (ISO date string)
+ */
+
+/**
+ * @typedef {Object} CategoryUpdateRequest
+ * @property {string} [name] - Category name
+ * @property {string} [description] - Category description
+ */
+
+/**
+ * @typedef {Object} CategoryUpdateResponse
+ * @property {string} id - Category identifier
+ * @property {string} name - Category name
+ * @property {string} description - Category description
+ * @property {string} createdAt - Category creation date (ISO date string)
+ * @property {string} updatedAt - Category modification date (ISO date string)
+ */
+
+/**
+ * @typedef {Category[]} CategoryGetAllResponse - List of categories
+ */
+
+/**
+ * @typedef {Object} CategoryGetByIdResponse
+ * @property {string} id - Category identifier
+ * @property {string} name - Category name
+ * @property {string} description - Category description
+ * @property {string} createdAt - Category creation date (ISO date string)
+ * @property {string} updatedAt - Category modification date (ISO date string)
+ */
+
+/**
+ * @typedef {Object} CategoryDeleteResponse - Empty response for category deletion
+ */
+
+export {};

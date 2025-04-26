@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useContext } from 'react';
 import { OrdersContext } from '../../contexts/OrderContext';
 
@@ -96,7 +95,7 @@ const OrdersPage = () => {
       if (formData.status && formData.status !== order.status) {
         const currentPaymentStatus = formData.paymentStatus || order.paymentStatus;
         if (currentPaymentStatus !== 'paid') {
-          setFormError('Trạng thái thanh toán phải là "Paid" trước khi thay đổi trạng thái đơn hàng.');
+          setFormError('Payment status must be "Paid" before changing order status.');
           return;
         }
         await updateOrderStatus(orderId, formData.status);
@@ -111,7 +110,7 @@ const OrdersPage = () => {
       }
     } catch (err) {
       console.error('Error updating order:', err);
-      setFormError(err.message || 'Cập nhật thất bại. Vui lòng thử lại.');
+      setFormError(err.message || 'Update failed. Please try again.');
     }
   };
 
@@ -140,41 +139,41 @@ const OrdersPage = () => {
   );
 
   return (
-    <div className="bg-gray-50 p-3 sm:p-4 md:p-6 rounded-lg shadow">
+    <div className="bg-gray-50 p-3 sm:p-4 md:p-6 rounded-lg shadow font-poppins">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6">
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 sm:mb-0">Quản lý Đơn hàng</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 sm:mb-0 font-poppins">Order Management</h1>
       </div>
-  
+
       {/* Status Filter */}
       <div className="mb-4 bg-white p-3 sm:p-4 rounded-lg shadow-sm">
-        <label className="block text-sm font-medium text-gray-700 mb-1">Lọc theo trạng thái</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1 font-poppins">Filter by Status</label>
         <select
           value={filterStatus}
           onChange={handleFilterChange}
-          className="w-full sm:w-auto sm:max-w-xs border border-gray-300 rounded-md focus:ring focus:ring-indigo-200 focus:border-indigo-500"
+          className="w-full sm:w-auto sm:max-w-xs border border-gray-300 rounded-md focus:ring focus:ring-indigo-200 focus:border-indigo-500 font-poppins"
         >
-          <option value="">Tất cả</option>
+          <option value="" className="font-poppins">All</option>
           {statusOptions.map((status) => (
-            <option key={status} value={status}>
+            <option key={status} value={status} className="font-poppins">
               {status.charAt(0).toUpperCase() + status.slice(1)}
             </option>
           ))}
         </select>
       </div>
-  
+
       {error && (
         <div className="bg-red-50 border-l-4 border-red-500 p-3 mb-4 rounded">
-          <p className="text-red-700 text-sm">{error}</p>
+          <p className="text-red-700 text-sm font-poppins">{error}</p>
         </div>
       )}
-      
+
       {loading ? (
         <div className="flex justify-center items-center h-32">
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
         </div>
       ) : validOrders.length === 0 ? (
         <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm text-center">
-          <p className="text-gray-600">Không có đơn hàng nào.</p>
+          <p className="text-gray-600 font-poppins">No orders found.</p>
         </div>
       ) : (
         <>
@@ -183,27 +182,27 @@ const OrdersPage = () => {
               {/* Table Header */}
               <div className="bg-gray-50 hidden md:table-header-group">
                 <div className="md:table-row">
-                  <div className="px-2 sm:px-3 md:px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:table-cell">
-                    Mã đơn hàng
+                  <div className="px-2 sm:px-3 md:px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:table-cell font-poppins">
+                    Order ID
                   </div>
-                  <div className="px-2 sm:px-3 md:px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:table-cell">
-                    Mã khách hàng
+                  <div className="px-2 sm:px-3 md:px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:table-cell font-poppins">
+                    Customer ID
                   </div>
-                  <div className="px-2 sm:px-3 md:px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:table-cell">
-                    Tổng tiền
+                  <div className="px-2 sm:px-3 md:px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:table-cell font-poppins">
+                    Total
                   </div>
-                  <div className="px-2 sm:px-3 md:px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:table-cell">
-                    Trạng thái
+                  <div className="px-2 sm:px-3 md:px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:table-cell font-poppins">
+                    Status
                   </div>
-                  <div className="px-2 sm:px-3 md:px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:table-cell">
-                    Trạng thái TT
+                  <div className="px-2 sm:px-3 md:px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:table-cell font-poppins">
+                    Payment Status
                   </div>
-                  <div className="px-2 sm:px-3 md:px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:table-cell">
-                    Hành động
+                  <div className="px-2 sm:px-3 md:px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:table-cell font-poppins">
+                    Actions
                   </div>
                 </div>
               </div>
-              
+
               {/* Table Body */}
               <div className="bg-white divide-y divide-gray-200 block md:table-row-group">
                 {validOrders.map((order) => (
@@ -212,137 +211,150 @@ const OrdersPage = () => {
                     <div className="block md:table-row hover:bg-gray-50 border-b md:border-b-0 border-gray-200">
                       {/* Mobile Order Header */}
                       <div className="md:hidden bg-gray-100 p-2 flex justify-between items-center">
-                        <span className="font-medium text-sm text-gray-800">Đơn #{order._id.slice(-6)}</span>
+                        <span className="font-medium text-sm text-gray-800 font-poppins">Order #{order._id.slice(-6)}</span>
                         <div className="flex space-x-2">
                           <button
-                            className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                            className="text-blue-600 hover:text-blue-800 text-sm font-medium font-poppins"
                             onClick={() => openDetails(order._id)}
                           >
-                            Chi tiết
+                            Details
                           </button>
                           <button
-                            className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
+                            className="text-indigo-600 hover:text-indigo-800 text-sm font-medium font-poppins"
                             onClick={() => openUpdateForm(order)}
                           >
-                            Cập nhật
+                            Update
                           </button>
                         </div>
                       </div>
-                      
+
                       {/* Order ID */}
                       <div className="block md:table-cell px-2 sm:px-3 md:px-4 py-2 md:py-3">
-                        <div className="md:hidden font-medium text-xs text-gray-500 mb-1">Mã đơn hàng</div>
-                        <div className="text-sm font-medium text-gray-800 truncate max-w-xs">
+                        <div className="md:hidden font-medium text-xs text-gray-500 mb-1 font-poppins">Order ID</div>
+                        <div className="text-sm font-medium text-gray-800 truncate max-w-xs font-poppins">
                           {order._id}
                         </div>
                       </div>
-                      
+
                       {/* Customer ID */}
                       <div className="block md:table-cell px-2 sm:px-3 md:px-4 py-2 md:py-3">
-                        <div className="md:hidden font-medium text-xs text-gray-500 mb-1">Mã khách hàng</div>
-                        <div className="text-sm text-gray-500 truncate max-w-xs">
+                        <div className="md:hidden font-medium text-xs text-gray-500 mb-1 font-poppins">Customer ID</div>
+                        <div className="text-sm text-gray-500 truncate max-w-xs font-poppins">
                           {order.user?._id || 'N/A'}
                         </div>
                       </div>
-                      
+
                       {/* Total */}
                       <div className="block md:table-cell px-2 sm:px-3 md:px-4 py-2 md:py-3">
-                        <div className="md:hidden font-medium text-xs text-gray-500 mb-1">Tổng tiền</div>
-                        <div className="text-sm font-medium text-green-600">
+                        <div className="md:hidden font-medium text-xs text-gray-500 mb-1 font-poppins">Total</div>
+                        <div className="text-sm font-medium text-green-600 font-poppins">
                           {formatCurrency(order.orderSummary?.total)}
                         </div>
                       </div>
-                      
+
                       {/* Order Status */}
                       <div className="block md:table-cell px-2 sm:px-3 md:px-4 py-2 md:py-3">
-                        <div className="md:hidden font-medium text-xs text-gray-500 mb-1">Trạng thái</div>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium inline-block ${
-                          order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                          order.status === 'confirmed' ? 'bg-blue-100 text-blue-800' :
-                          order.status === 'shipping' ? 'bg-purple-100 text-purple-800' :
-                          order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                          'bg-yellow-100 text-yellow-800'
-                        }`}>
+                        <div className="md:hidden font-medium text-xs text-gray-500 mb-1 font-poppins">Status</div>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium inline-block font-poppins ${
+                            order.status === 'delivered'
+                              ? 'bg-green-100 text-green-800'
+                              : order.status === 'confirmed'
+                              ? 'bg-blue-100 text-blue-800'
+                              : order.status === 'shipping'
+                              ? 'bg-purple-100 text-purple-800'
+                              : order.status === 'cancelled'
+                              ? 'bg-red-100 text-red-800'
+                              : 'bg-yellow-100 text-yellow-800'
+                          }`}
+                        >
                           {order.status}
                         </span>
                       </div>
-                      
+
                       {/* Payment Status */}
                       <div className="block md:table-cell px-2 sm:px-3 md:px-4 py-2 md:py-3">
-                        <div className="md:hidden font-medium text-xs text-gray-500 mb-1">Trạng thái TT</div>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium inline-block ${
-                          order.paymentStatus === 'paid' ? 'bg-green-100 text-green-800' :
-                          order.paymentStatus === 'failed' ? 'bg-red-100 text-red-800' :
-                          'bg-yellow-100 text-yellow-800'
-                        }`}>
+                        <div className="md:hidden font-medium text-xs text-gray-500 mb-1 font-poppins">Payment Status</div>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium inline-block font-poppins ${
+                            order.paymentStatus === 'paid'
+                              ? 'bg-green-100 text-green-800'
+                              : order.paymentStatus === 'failed'
+                              ? 'bg-red-100 text-red-800'
+                              : 'bg-yellow-100 text-yellow-800'
+                          }`}
+                        >
                           {order.paymentStatus || 'N/A'}
                         </span>
                       </div>
-                      
+
                       {/* Actions - Hidden on mobile as it's moved to the mobile header */}
                       <div className="hidden md:table-cell px-2 sm:px-3 md:px-4 py-2 md:py-3 text-sm font-medium">
                         <button
-                          className="text-blue-600 hover:text-blue-800 mr-3"
+                          className="text-blue-600 hover:text-blue-800 mr-3 font-poppins"
                           onClick={() => openDetails(order._id)}
                         >
-                          Chi tiết
+                          Details
                         </button>
                         <button
-                          className="text-indigo-600 hover:text-indigo-800"
+                          className="text-indigo-600 hover:text-indigo-800 font-poppins"
                           onClick={() => openUpdateForm(order)}
                         >
-                          Cập nhật
+                          Update
                         </button>
                       </div>
                     </div>
-  
+
                     {/* Update Form */}
                     {editingOrderId === order._id && (
                       <div className="block md:table-row">
-                        <div className="block md:table-cell px-2 sm:px-3 md:px-4 py-4 bg-gray-50 md:border-t md:border-b md:border-gray-200" colSpan="6">
+                        <div
+                          className="block md:table-cell px-2 sm:px-3 md:px-4 py-4 bg-gray-50 md:border-t md:border-b md:border-gray-200"
+                          colSpan="6"
+                        >
                           <form onSubmit={(e) => handleUpdateSubmit(e, order._id)}>
                             <div className="grid grid-cols-1 gap-4">
                               <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                  Trạng thái đơn hàng
+                                <label className="block text-sm font-medium text-gray-700 mb-1 font-poppins">
+                                  Order Status
                                 </label>
                                 <select
                                   name="status"
                                   value={formData.status}
                                   onChange={handleInputChange}
                                   disabled={formData.paymentStatus !== 'paid' && order.paymentStatus !== 'paid'}
-                                  className={`w-full border border-gray-300 rounded-md ${
-                                    (formData.paymentStatus !== 'paid' && order.paymentStatus !== 'paid')
+                                  className={`w-full border border-gray-300 rounded-md font-poppins ${
+                                    formData.paymentStatus !== 'paid' && order.paymentStatus !== 'paid'
                                       ? 'bg-gray-100 cursor-not-allowed'
                                       : ''
                                   }`}
                                 >
-                                  <option value="">Chọn trạng thái</option>
+                                  <option value="" className="font-poppins">Select Status</option>
                                   {statusOptions.map((status) => (
-                                    <option key={status} value={status}>
+                                    <option key={status} value={status} className="font-poppins">
                                       {status.charAt(0).toUpperCase() + status.slice(1)}
                                     </option>
                                   ))}
                                 </select>
                                 {(formData.paymentStatus !== 'paid' && order.paymentStatus !== 'paid') && (
-                                  <p className="mt-1 text-sm text-red-600">
-                                    Vui lòng đặt trạng thái thanh toán thành "Paid" trước.
+                                  <p className="mt-1 text-sm text-red-600 font-poppins">
+                                    Please set payment status to "Paid" first.
                                   </p>
                                 )}
                               </div>
                               <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                  Trạng thái thanh toán
+                                <label className="block text-sm font-medium text-gray-700 mb-1 font-poppins">
+                                  Payment Status
                                 </label>
                                 <select
                                   name="paymentStatus"
                                   value={formData.paymentStatus}
                                   onChange={handleInputChange}
-                                  className="w-full border border-gray-300 rounded-md"
+                                  className="w-full border border-gray-300 rounded-md font-poppins"
                                 >
-                                  <option value="">Chọn trạng thái</option>
+                                  <option value="" className="font-poppins">Select Status</option>
                                   {paymentStatusOptions.map((status) => (
-                                    <option key={status} value={status}>
+                                    <option key={status} value={status} className="font-poppins">
                                       {status.charAt(0).toUpperCase() + status.slice(1)}
                                     </option>
                                   ))}
@@ -351,29 +363,29 @@ const OrdersPage = () => {
                             </div>
                             {formError && (
                               <div className="mt-3 bg-red-50 border-l-4 border-red-500 p-3 rounded">
-                                <p className="text-sm text-red-700">{formError}</p>
+                                <p className="text-sm text-red-700 font-poppins">{formError}</p>
                               </div>
                             )}
                             <div className="mt-4 flex justify-end space-x-2">
                               <button
                                 type="button"
-                                className="px-3 sm:px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 text-sm"
+                                className="px-3 sm:px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 text-sm font-poppins"
                                 onClick={() => setEditingOrderId(null)}
                               >
-                                Hủy
+                                Cancel
                               </button>
                               <button
                                 type="submit"
-                                className="px-3 sm:px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm"
+                                className="px-3 sm:px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm font-poppins"
                               >
-                                Cập nhật
+                                Update
                               </button>
                             </div>
                           </form>
                         </div>
                       </div>
                     )}
-  
+
                     {/* Details Section */}
                     {selectedOrderId === order._id && (
                       <div className="block md:table-row">
@@ -382,103 +394,192 @@ const OrdersPage = () => {
                             {/* Mobile close button at top */}
                             <div className="flex justify-end md:hidden mb-2">
                               <button
-                                className="px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 text-sm"
+                                className="px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 text-sm font-poppins"
                                 onClick={() => setSelectedOrderId(null)}
                               >
-                                Đóng
+                                Close
                               </button>
                             </div>
-                            
+
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                               {/* Order & Customer Info */}
                               <div className="space-y-4">
                                 <div className="bg-gray-50 p-3 sm:p-4 rounded border border-gray-200">
-                                  <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">Thông tin đơn hàng</h3>
+                                  <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2 font-poppins">
+                                    Order Information
+                                  </h3>
                                   <div className="space-y-1">
-                                    <p className="text-sm"><span className="text-gray-600">Mã đơn hàng:</span> <span className="font-medium break-all">{order._id}</span></p>
-                                    <p className="text-sm"><span className="text-gray-600">Trạng thái:</span> <span className="font-medium">{order.status}</span></p>
-                                    <p className="text-sm"><span className="text-gray-600">Ngày tạo:</span> <span className="font-medium">{new Date(order.created_at).toLocaleString()}</span></p>
+                                    <p className="text-sm font-poppins">
+                                      <span className="text-gray-600">Order ID:</span>{' '}
+                                      <span className="font-medium break-all">{order._id}</span>
+                                    </p>
+                                    <p className="text-sm font-poppins">
+                                      <span className="text-gray-600">Status:</span>{' '}
+                                      <span className="font-medium">{order.status}</span>
+                                    </p>
+                                    <p className="text-sm font-poppins">
+                                      <span className="text-gray-600">Created At:</span>{' '}
+                                      <span className="font-medium">
+                                        {new Date(order.created_at).toLocaleString()}
+                                      </span>
+                                    </p>
                                   </div>
                                 </div>
-                                
+
                                 <div className="bg-gray-50 p-3 sm:p-4 rounded border border-gray-200">
-                                  <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">Khách hàng</h3>
+                                  <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2 font-poppins">
+                                    Customer
+                                  </h3>
                                   <div className="space-y-1">
-                                    <p className="text-sm"><span className="text-gray-600">Mã khách hàng:</span> <span className="font-medium break-all">{order.user?._id || 'N/A'}</span></p>
-                                    <p className="text-sm"><span className="text-gray-600">Email:</span> <span className="font-medium break-all">{order.user?.email || 'N/A'}</span></p>
+                                    <p className="text-sm font-poppins">
+                                      <span className="text-gray-600">Customer ID:</span>{' '}
+                                      <span className="font-medium break-all">{order.user?._id || 'N/A'}</span>
+                                    </p>
+                                    <p className="text-sm font-poppins">
+                                      <span className="text-gray-600">Email:</span>{' '}
+                                      <span className="font-medium break-all">{order.user?.email || 'N/A'}</span>
+                                    </p>
                                   </div>
                                 </div>
-  
+
                                 <div className="bg-gray-50 p-3 sm:p-4 rounded border border-gray-200">
-                                  <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">Thông tin thanh toán</h3>
+                                  <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2 font-poppins">
+                                    Payment Information
+                                  </h3>
                                   <div className="space-y-1">
-                                    <p className="text-sm"><span className="text-gray-600">Phương thức:</span> <span className="font-medium">{order.paymentInfo?.paymentMethod?.replace('_', ' ') || 'N/A'}</span></p>
-                                    <p className="text-sm"><span className="text-gray-600">Số thẻ:</span> <span className="font-medium">{order.paymentInfo?.cardNumber ? order.paymentInfo.cardNumber.slice(-4).padStart(16, '**** ') : 'N/A'}</span></p>
-                                    <p className="text-sm"><span className="text-gray-600">Tên trên thẻ:</span> <span className="font-medium">{order.paymentInfo?.nameOnCard || 'N/A'}</span></p>
-                                    <p className="text-sm"><span className="text-gray-600">Trạng thái thanh toán:</span> <span className="font-medium">{order.paymentStatus || 'N/A'}</span></p>
+                                    <p className="text-sm font-poppins">
+                                      <span className="text-gray-600">Method:</span>{' '}
+                                      <span className="font-medium">
+                                        {order.paymentInfo?.paymentMethod?.replace('_', ' ') || 'N/A'}
+                                      </span>
+                                    </p>
+                                    <p className="text-sm font-poppins">
+                                      <span className="text-gray-600">Card Number:</span>{' '}
+                                      <span className="font-medium">
+                                        {order.paymentInfo?.cardNumber
+                                          ? order.paymentInfo.cardNumber.slice(-4).padStart(16, '**** ')
+                                          : 'N/A'}
+                                      </span>
+                                    </p>
+                                    <p className="text-sm font-poppins">
+                                      <span className="text-gray-600">Name on Card:</span>{' '}
+                                      <span className="font-medium">{order.paymentInfo?.nameOnCard || 'N/A'}</span>
+                                    </p>
+                                    <p className="text-sm font-poppins">
+                                      <span className="text-gray-600">Payment Status:</span>{' '}
+                                      <span className="font-medium">{order.paymentStatus || 'N/A'}</span>
+                                    </p>
                                   </div>
                                 </div>
                               </div>
-                              
+
                               {/* Products & Shipping Info */}
                               <div className="space-y-4">
                                 <div className="bg-gray-50 p-3 sm:p-4 rounded border border-gray-200">
-                                  <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">Sản phẩm</h3>
+                                  <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2 font-poppins">
+                                    Products
+                                  </h3>
                                   <div className="overflow-x-auto">
                                     <table className="min-w-full divide-y divide-gray-200 text-sm">
                                       <thead className="bg-gray-100">
                                         <tr>
-                                          <th className="px-2 sm:px-3 py-2 text-left text-xs font-medium text-gray-500">Tên</th>
-                                          <th className="px-2 sm:px-3 py-2 text-left text-xs font-medium text-gray-500">Kích thước</th>
-                                          <th className="px-2 sm:px-3 py-2 text-left text-xs font-medium text-gray-500">SL</th>
-                                          <th className="px-2 sm:px-3 py-2 text-left text-xs font-medium text-gray-500">Giá</th>
+                                          <th className="px-2 sm:px-3 py-2 text-left text-xs font-medium text-gray-500 font-poppins">
+                                            Name
+                                          </th>
+                                          <th className="px-2 sm:px-3 py-2 text-left text-xs font-medium text-gray-500 font-poppins">
+                                            Size
+                                          </th>
+                                          <th className="px-2 sm:px-3 py-2 text-left text-xs font-medium text-gray-500 font-poppins">
+                                            Qty
+                                          </th>
+                                          <th className="px-2 sm:px-3 py-2 text-left text-xs font-medium text-gray-500 font-poppins">
+                                            Price
+                                          </th>
                                         </tr>
                                       </thead>
                                       <tbody className="divide-y divide-gray-200">
                                         {order.items.map((item) => (
                                           <tr key={item._id}>
-                                            <td className="px-2 sm:px-3 py-2 text-sm">{item.product?.name || 'N/A'}</td>
-                                            <td className="px-2 sm:px-3 py-2 text-sm">{item.size || 'N/A'}</td>
-                                            <td className="px-2 sm:px-3 py-2 text-sm">{item.quantity}</td>
-                                            <td className="px-2 sm:px-3 py-2 text-sm font-medium text-green-600">{formatCurrency(item.price)}</td>
+                                            <td className="px-2 sm:px-3 py-2 text-sm font-poppins">
+                                              {item.product?.name || 'N/A'}
+                                            </td>
+                                            <td className="px-2 sm:px-3 py-2 text-sm font-poppins">
+                                              {item.size || 'N/A'}
+                                            </td>
+                                            <td className="px-2 sm:px-3 py-2 text-sm font-poppins">
+                                              {item.quantity}
+                                            </td>
+                                            <td className="px-2 sm:px-3 py-2 text-sm font-medium text-green-600 font-poppins">
+                                              {formatCurrency(item.price)}
+                                            </td>
                                           </tr>
                                         ))}
                                       </tbody>
                                     </table>
                                   </div>
                                 </div>
-  
+
                                 <div className="bg-gray-50 p-3 sm:p-4 rounded border border-gray-200">
-                                  <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">Địa chỉ giao hàng</h3>
+                                  <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2 font-poppins">
+                                    Shipping Address
+                                  </h3>
                                   <div className="space-y-1">
-                                    <p className="text-sm"><span className="text-gray-600">Họ tên:</span> <span className="font-medium">{order.shippingAddress?.firstName} {order.shippingAddress?.lastName}</span></p>
-                                    <p className="text-sm"><span className="text-gray-600">Địa chỉ:</span> <span className="font-medium">{order.shippingAddress?.addressLine1 || 'N/A'}</span></p>
-                                    <p className="text-sm"><span className="text-gray-600">Thành phố:</span> <span className="font-medium">{order.shippingAddress?.city || 'N/A'}</span></p>
-                                    <p className="text-sm"><span className="text-gray-600">Quốc gia:</span> <span className="font-medium">{order.shippingAddress?.country || 'N/A'}</span></p>
+                                    <p className="text-sm font-poppins">
+                                      <span className="text-gray-600">Name:</span>{' '}
+                                      <span className="font-medium">
+                                        {order.shippingAddress?.firstName} {order.shippingAddress?.lastName}
+                                      </span>
+                                    </p>
+                                    <p className="text-sm font-poppins">
+                                      <span className="text-gray-600">Address:</span>{' '}
+                                      <span className="font-medium">{order.shippingAddress?.addressLine1 || 'N/A'}</span>
+                                    </p>
+                                    <p className="text-sm font-poppins">
+                                      <span className="text-gray-600">City:</span>{' '}
+                                      <span className="font-medium">{order.shippingAddress?.city || 'N/A'}</span>
+                                    </p>
+                                    <p className="text-sm font-poppins">
+                                      <span className="text-gray-600">Country:</span>{' '}
+                                      <span className="font-medium">{order.shippingAddress?.country || 'N/A'}</span>
+                                    </p>
                                   </div>
                                 </div>
-  
+
                                 <div className="bg-gray-50 p-3 sm:p-4 rounded border border-gray-200">
-                                  <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">Tổng hợp đơn hàng</h3>
+                                  <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2 font-poppins">
+                                    Order Summary
+                                  </h3>
                                   <div className="space-y-1">
-                                    <p className="text-sm"><span className="text-gray-600">Tổng phụ:</span> <span className="font-medium">{formatCurrency(order.orderSummary?.subtotal)}</span></p>
-                                    <p className="text-sm"><span className="text-gray-600">Phí vận chuyển:</span> <span className="font-medium">{formatCurrency(order.orderSummary?.shippingEstimate)}</span></p>
-                                    <p className="text-sm"><span className="text-gray-600">Thuế:</span> <span className="font-medium">{formatCurrency(order.orderSummary?.taxEstimate)}</span></p>
-                                    <p className="font-bold pt-1 mt-1 border-t border-gray-300 text-sm">
-                                      <span className="text-gray-700">Tổng tiền:</span> <span className="text-green-600">{formatCurrency(order.orderSummary?.total)}</span>
+                                    <p className="text-sm font-poppins">
+                                      <span className="text-gray-600">Subtotal:</span>{' '}
+                                      <span className="font-medium">{formatCurrency(order.orderSummary?.subtotal)}</span>
+                                    </p>
+                                    <p className="text-sm font-poppins">
+                                      <span className="text-gray-600">Shipping:</span>{' '}
+                                      <span className="font-medium">
+                                        {formatCurrency(order.orderSummary?.shippingEstimate)}
+                                      </span>
+                                    </p>
+                                    <p className="text-sm font-poppins">
+                                      <span className="text-gray-600">Tax:</span>{' '}
+                                      <span className="font-medium">{formatCurrency(order.orderSummary?.taxEstimate)}</span>
+                                    </p>
+                                    <p className="font-bold pt-1 mt-1 border-t border-gray-300 text-sm font-poppins">
+                                      <span className="text-gray-700">Total:</span>{' '}
+                                      <span className="text-green-600">{formatCurrency(order.orderSummary?.total)}</span>
                                     </p>
                                   </div>
                                 </div>
                               </div>
                             </div>
-                            
+
                             {/* Desktop close button at bottom */}
                             <div className="mt-4 flex justify-end">
                               <button
-                                className="px-3 sm:px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 text-sm"
+                                className="px-3 sm:px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 text-sm font-poppins"
                                 onClick={() => setSelectedOrderId(null)}
                               >
-                                Đóng
+                                Close
                               </button>
                             </div>
                           </div>
@@ -490,16 +591,16 @@ const OrdersPage = () => {
               </div>
             </div>
           </div>
-  
+
           {/* Pagination Controls (only when not filtered) */}
           {!filterStatus && pagination.totalPages > 1 && (
             <div className="mt-4 flex flex-col sm:flex-row justify-between items-center">
-              <div className="text-sm text-gray-500 mb-2 sm:mb-0">
-                Hiển thị {validOrders.length} / {pagination.total} đơn hàng
+              <div className="text-sm text-gray-500 mb-2 sm:mb-0 font-poppins">
+                Showing {validOrders.length} of {pagination.total} orders
               </div>
               <div className="flex flex-wrap justify-center gap-1">
                 <button
-                  className={`px-2 sm:px-3 py-1 border rounded text-sm ${
+                  className={`px-2 sm:px-3 py-1 border rounded text-sm font-poppins ${
                     currentPage === 1
                       ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                       : 'bg-white text-gray-700 hover:bg-gray-50'
@@ -507,26 +608,26 @@ const OrdersPage = () => {
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
                 >
-                  Trước
+                  Previous
                 </button>
-                
+
                 {/* Show limited page numbers on small screens */}
                 {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
-                  .filter(page => {
+                  .filter((page) => {
                     // On mobile, show current, first, last, and pages +/- 1 from current
                     const isMobile = window.innerWidth < 640;
                     if (!isMobile) return true;
-                    
+
                     return (
-                      page === 1 || 
-                      page === pagination.totalPages || 
+                      page === 1 ||
+                      page === pagination.totalPages ||
                       Math.abs(page - currentPage) <= 1
                     );
                   })
                   .map((page) => (
                     <button
                       key={page}
-                      className={`px-2 sm:px-3 py-1 border rounded text-sm ${
+                      className={`px-2 sm:px-3 py-1 border rounded text-sm font-poppins ${
                         currentPage === page
                           ? 'bg-indigo-600 text-white'
                           : 'bg-white text-gray-700 hover:bg-gray-50'
@@ -535,11 +636,10 @@ const OrdersPage = () => {
                     >
                       {page}
                     </button>
-                  ))
-                }
-                
+                  ))}
+
                 <button
-                  className={`px-2 sm:px-3 py-1 border rounded text-sm ${
+                  className={`px-2 sm:px-3 py-1 border rounded text-sm font-poppins ${
                     currentPage === pagination.totalPages
                       ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                       : 'bg-white text-gray-700 hover:bg-gray-50'
@@ -547,7 +647,7 @@ const OrdersPage = () => {
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === pagination.totalPages}
                 >
-                  Sau
+                  Next
                 </button>
               </div>
             </div>
@@ -556,6 +656,6 @@ const OrdersPage = () => {
       )}
     </div>
   );
-}
+};
 
 export default OrdersPage;

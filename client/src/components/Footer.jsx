@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Svg from '../assets/svg.svg';
 import Svg1 from '../assets/svg1.svg';
 import Svg2 from '../assets/svg2.svg';
@@ -45,7 +46,7 @@ const Footer = () => {
             </div>
             <div className="flex flex-col justify-start items-start gap-1.5 sm:gap-2 md:gap-4">
               <div className="inline-flex justify-start items-center">
-                <div className="justify-center text-gray-600 text-xs sm:text-sm md:text-base font-normal font-poppins leading-normal">Release Notes</div>
+                <Link to="/about" className="justify-center text-gray-600 text-xs sm:text-sm md:text-base font-semibold font-poppins leading-normal hover:underline">About us</Link>
               </div>
               <div className="inline-flex justify-start items-center">
                 <div className="justify-center text-gray-600 text-xs sm:text-sm md:text-base font-normal font-poppins leading-normal">Upgrade Guide</div>

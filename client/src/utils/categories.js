@@ -1,5 +1,11 @@
 import categoriesApi from '../api/categoriesApi';
 
+/**
+ * Handle API response
+ * @param {Response} response - Fetch response
+ * @returns {Promise<any>} Parsed response data
+ * @throws {Error} If response is not OK
+ */
 const handleResponse = async (response) => {
   if (!response.ok) {
     const error = await response.json();
@@ -8,8 +14,15 @@ const handleResponse = async (response) => {
   return response.json();
 };
 
+/**
+ * Utility functions for category-related API operations
+ * @namespace categoriesUtils
+ */
 export const categoriesUtils = {
-  // Fetch all categories
+  /**
+   * Fetch all categories
+   * @returns {Promise<any>} List of categories
+   */
   getAllCategories: async () => {
     const response = await fetch(categoriesApi.GET_ALL, {
       method: 'GET',
@@ -20,7 +33,11 @@ export const categoriesUtils = {
     return handleResponse(response);
   },
 
-  // Create a new category
+  /**
+   * Create a new category
+   * @param {Object} data - Category data (name, description)
+   * @returns {Promise<any>} Created category data
+   */
   createCategory: async (data) => {
     const response = await fetch(categoriesApi.CREATE, {
       method: 'POST',
@@ -32,7 +49,11 @@ export const categoriesUtils = {
     return handleResponse(response);
   },
 
-  // Get a category by ID
+  /**
+   * Get a category by ID
+   * @param {string} id - Category identifier
+   * @returns {Promise<any>} Category data
+   */
   getCategoryById: async (id) => {
     const response = await fetch(categoriesApi.GET_BY_ID(id), {
       method: 'GET',
@@ -43,7 +64,12 @@ export const categoriesUtils = {
     return handleResponse(response);
   },
 
-  // Update a category
+  /**
+   * Update a category
+   * @param {string} id - Category identifier
+   * @param {Object} data - Updated category data (name, description)
+   * @returns {Promise<any>} Updated category data
+   */
   updateCategory: async (id, data) => {
     const response = await fetch(categoriesApi.UPDATE(id), {
       method: 'PUT',
@@ -55,7 +81,11 @@ export const categoriesUtils = {
     return handleResponse(response);
   },
 
-  // Delete a category
+  /**
+   * Delete a category
+   * @param {string} id - Category identifier
+   * @returns {Promise<void>} No content on success
+   */
   deleteCategory: async (id) => {
     const response = await fetch(categoriesApi.DELETE(id), {
       method: 'DELETE',

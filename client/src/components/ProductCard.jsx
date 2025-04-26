@@ -33,7 +33,6 @@ const ProductCard = ({
             console.log('Wishlist clicked');
           }}
         >
-          <FaRegHeart className="w-4 h-4 text-gray-600" />
         </div>
       </div>
       

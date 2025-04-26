@@ -27,9 +27,9 @@ export const SearchProvider = ({ children }) => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       const response = await fetch(`${productsApi.FILTER}?search=${encodeURIComponent(query)}`);
-      
+
       if (!response.ok) {
         throw new Error('Failed to fetch search results');
       }
@@ -38,7 +38,7 @@ export const SearchProvider = ({ children }) => {
       console.log('API Response:', data);
 
       let products = [];
-      
+
       if (Array.isArray(data)) {
         products = data;
       } else if (data.data && Array.isArray(data.data)) {
@@ -49,11 +49,13 @@ export const SearchProvider = ({ children }) => {
         throw new Error('Unexpected response format');
       }
 
-      const formattedResults = products.map(product => ({
+      const formattedResults = products.map((product) => ({
         id: product._id || product.id,
         name: product.name || 'Unknown Product',
         price: typeof product.price === 'number' ? product.price : 0,
-        image: product.image || product.imageUrl || '/placeholder.jpg',
+        image: Array.isArray(product.images) && product.images.length > 0
+          ? product.images[0]
+          : product.image || product.imageUrl || '/placeholder.jpg',
       }));
 
       setSearchResults(formattedResults);
@@ -74,15 +76,15 @@ export const SearchProvider = ({ children }) => {
   };
 
   return (
-    <SearchContext.Provider 
-      value={{ 
-        searchResults, 
-        isLoading, 
-        error, 
+    <SearchContext.Provider
+      value={{
+        searchResults,
+        isLoading,
+        error,
         showResults,
         searchProducts,
         clearSearch,
-        setShowResults
+        setShowResults,
       }}
     >
       {children}
@@ -90,4 +92,4 @@ export const SearchProvider = ({ children }) => {
   );
 };
 
-export default SearchContext; 
+export default SearchContext;

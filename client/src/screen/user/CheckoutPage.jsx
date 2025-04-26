@@ -1,7 +1,5 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import Header from '../../components/Header.jsx';
-import Footer from '../../components/Footer.jsx';
 import { CartContext } from '../../contexts/CartContext';
 import { OrdersContext } from '../../contexts/OrderContext';
 
@@ -180,7 +178,7 @@ const CheckoutPage = () => {
   if (cartLoading) {
     return (
       <div className="min-h-screen bg-white flex justify-center items-center font-poppins">
-        <div className="text-gray-600 text-lg">Loading...</div>
+        <div className="text-gray-600 text-lg font-poppins">Loading...</div>
       </div>
     );
   }
@@ -188,49 +186,45 @@ const CheckoutPage = () => {
   if (cartError) {
     return (
       <div className="min-h-screen bg-white flex justify-center items-center font-poppins">
-        <div className="text-red-600 text-lg">{cartError}</div>
+        <div className="text-red-600 text-lg font-poppins">{cartError}</div>
       </div>
     );
   }
 
   return (
     <div className="checkout-page min-h-screen bg-white flex flex-col font-poppins">
-      <main className="flex-1 py-6 md:py-8 lg:py-10 flex justify-center">
-        <div className="w-full max-w-6xl px-4 sm:px-6">
+      <main className="flex-1 py-6 md:py-8 lg:py-10 flex justify-center font-poppins">
+        <div className="w-full max-w-6xl px-4 sm:px-6 font-poppins">
           {/* Breadcrumbs and Heading */}
-          <div className="flex flex-col gap-2 md:gap-4 mb-6 md:mb-8 lg:mb-10">
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-gray-900">Checkout</h2>
-            <div className="flex gap-2 text-sm md:text-base text-gray-600">
-              <Link to="/" className="hover:underline">Homepage</Link>
-              <span>/</span>
-              <span>Checkout</span>
-            </div>
+          <div className="flex flex-col gap-2 md:gap-4 mb-6 md:mb-8 lg:mb-10 font-poppins">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-gray-900 font-poppins">Checkout</h2>
+        
           </div>
 
           {/* Page Content */}
-          <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+          <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 font-poppins">
             {/* Checkout Details */}
-            <div className="w-full lg:w-1/2 space-y-4 md:space-y-6">
+            <div className="w-full lg:w-1/2 space-y-4 md:space-y-6 font-poppins">
               {/* Contact Info */}
-              <div className="border rounded-lg shadow-sm">
-                <div className="flex items-center gap-4 p-4 md:p-6 border-b">
-                  <span className="text-gray-900 font-semibold text-sm md:text-base">CONTACT INFO</span>
+              <div className="border rounded-lg shadow-sm font-poppins">
+                <div className="flex items-center gap-4 p-4 md:p-6 border-b font-poppins">
+                  <span className="text-gray-900 font-semibold text-sm md:text-base font-poppins">CONTACT INFO</span>
                 </div>
-                <div className="p-4 md:p-6 space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-xs md:text-sm font-medium text-gray-900">Your phone number</label>
+                <div className="p-4 md:p-6 space-y-4 font-poppins">
+                  <div className="space-y-2 font-poppins">
+                    <label className="text-xs md:text-sm font-medium text-gray-900 font-poppins">Your phone number</label>
                     <input
                       type="text"
-                      className="w-full p-2 border rounded-md text-sm md:text-base"
+                      className="w-full p-2 border rounded-md text-sm md:text-base font-poppins"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                     />
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-xs md:text-sm font-medium text-gray-900">Email address</label>
+                  <div className="space-y-2 font-poppins">
+                    <label className="text-xs md:text-sm font-medium text-gray-900 font-poppins">Email address</label>
                     <input
                       type="email"
-                      className="w-full p-2 border rounded-md text-sm md:text-base"
+                      className="w-full p-2 border rounded-md text-sm md:text-base font-poppins"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                     />
@@ -239,95 +233,95 @@ const CheckoutPage = () => {
               </div>
 
               {/* Shipping Address */}
-              <div className="border rounded-lg shadow-sm">
-                <div className="flex items-center gap-4 p-4 md:p-6 border-b">
-                  <span className="text-gray-900 font-semibold text-sm md:text-base">SHIPPING ADDRESS</span>
+              <div className="border rounded-lg shadow-sm font-poppins">
+                <div className="flex items-center gap-4 p-4 md:p-6 border-b font-poppins">
+                  <span className="text-gray-900 font-semibold text-sm md:text-base font-poppins">SHIPPING ADDRESS</span>
                 </div>
-                <div className="p-4 md:p-6 space-y-4">
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <div className="space-y-2 w-full sm:w-1/2">
-                      <label className="text-xs md:text-sm font-medium text-gray-900">First name</label>
+                <div className="p-4 md:p-6 space-y-4 font-poppins">
+                  <div className="flex flex-col sm:flex-row gap-4 font-poppins">
+                    <div className="space-y-2 w-full sm:w-1/2 font-poppins">
+                      <label className="text-xs md:text-sm font-medium text-gray-900 font-poppins">First name</label>
                       <input
                         type="text"
-                        className="w-full p-2 border rounded-md text-sm md:text-base"
+                        className="w-full p-2 border rounded-md text-sm md:text-base font-poppins"
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
                       />
                     </div>
-                    <div className="space-y-2 w-full sm:w-1/2">
-                      <label className="text-xs md:text-sm font-medium text-gray-900">Last name</label>
+                    <div className="space-y-2 w-full sm:w-1/2 font-poppins">
+                      <label className="text-xs md:text-sm font-medium text-gray-900 font-poppins">Last name</label>
                       <input
                         type="text"
-                        className="w-full p-2 border rounded-md text-sm md:text-base"
+                        className="w-full p-2 border rounded-md text-sm md:text-base font-poppins"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                       />
                     </div>
                   </div>
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <div className="space-y-2 w-full sm:w-1/2">
-                      <label className="text-xs md:text-sm font-medium text-gray-900">Address line 1</label>
+                  <div className="flex flex-col sm:flex-row gap-4 font-poppins">
+                    <div className="space-y-2 w-full sm:w-1/2 font-poppins">
+                      <label className="text-xs md:text-sm font-medium text-gray-900 font-poppins">Address line 1</label>
                       <input
                         type="text"
-                        className="w-full p-2 border rounded-md text-sm md:text-base"
+                        className="w-full p-2 border rounded-md text-sm md:text-base font-poppins"
                         value={address1}
                         onChange={(e) => setAddress1(e.target.value)}
                       />
                     </div>
-                    <div className="space-y-2 w-full sm:w-1/2">
-                      <label className="text-xs md:text-sm font-medium text-gray-900">Apt, Suite</label>
+                    <div className="space-y-2 w-full sm:w-1/2 font-poppins">
+                      <label className="text-xs md:text-sm font-medium text-gray-900 font-poppins">Apt, Suite</label>
                       <input
                         type="text"
-                        className="w-full p-2 border rounded-md text-sm md:text-base"
+                        className="w-full p-2 border rounded-md text-sm md:text-base font-poppins"
                         value={aptSuite}
                         onChange={(e) => setAptSuite(e.target.value)}
                       />
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-xs md:text-sm font-medium text-gray-900">Address line 2</label>
+                  <div className="space-y-2 font-poppins">
+                    <label className="text-xs md:text-sm font-medium text-gray-900 font-poppins">Address line 2</label>
                     <input
                       type="text"
-                      className="w-full p-2 border rounded-md text-sm md:text-base"
+                      className="w-full p-2 border rounded-md text-sm md:text-base font-poppins"
                       value={address2}
                       onChange={(e) => setAddress2(e.target.value)}
                     />
                   </div>
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <div className="space-y-2 w-full sm:w-1/2">
-                      <label className="text-xs md:text-sm font-medium text-gray-900">City</label>
+                  <div className="flex flex-col sm:flex-row gap-4 font-poppins">
+                    <div className="space-y-2 w-full sm:w-1/2 font-poppins">
+                      <label className="text-xs md:text-sm font-medium text-gray-900 font-poppins">City</label>
                       <input
                         type="text"
-                        className="w-full p-2 border rounded-md text-sm md:text-base"
+                        className="w-full p-2 border rounded-md text-sm md:text-base font-poppins"
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
                       />
                     </div>
-                    <div className="space-y-2 w-full sm:w-1/2">
-                      <label className="text-xs md:text-sm font-medium text-gray-900">Country</label>
+                    <div className="space-y-2 w-full sm:w-1/2 font-poppins">
+                      <label className="text-xs md:text-sm font-medium text-gray-900 font-poppins">Country</label>
                       <input
                         type="text"
-                        className="w-full p-2 border rounded-md text-sm md:text-base"
+                        className="w-full p-2 border rounded-md text-sm md:text-base font-poppins"
                         value={country}
                         onChange={(e) => setCountry(e.target.value)}
                       />
                     </div>
                   </div>
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <div className="space-y-2 w-full sm:w-1/2">
-                      <label className="text-xs md:text-sm font-medium text-gray-900">State/Province</label>
+                  <div className="flex flex-col sm:flex-row gap-4 font-poppins">
+                    <div className="space-y-2 w-full sm:w-1/2 font-poppins">
+                      <label className="text-xs md:text-sm font-medium text-gray-900 font-poppins">State/Province</label>
                       <input
                         type="text"
-                        className="w-full p-2 border rounded-md text-sm md:text-base"
+                        className="w-full p-2 border rounded-md text-sm md:text-base font-poppins"
                         value={state}
                         onChange={(e) => setState(e.target.value)}
                       />
                     </div>
-                    <div className="space-y-2 w-full sm:w-1/2">
-                      <label className="text-xs md:text-sm font-medium text-gray-900">Postal code</label>
+                    <div className="space-y-2 w-full sm:w-1/2 font-poppins">
+                      <label className="text-xs md:text-sm font-medium text-gray-900 font-poppins">Postal code</label>
                       <input
                         type="text"
-                        className="w-full p-2 border rounded-md text-sm md:text-base"
+                        className="w-full p-2 border rounded-md text-sm md:text-base font-poppins"
                         value={postalCode}
                         onChange={(e) => setPostalCode(e.target.value)}
                       />
@@ -337,45 +331,45 @@ const CheckoutPage = () => {
               </div>
 
               {/* Payment */}
-              <div className="border rounded-lg shadow-sm">
-                <div className="flex items-center gap-4 p-4 md:p-6 border-b">
-                  <span className="text-gray-900 font-semibold text-sm md:text-base">PAYMENT</span>
+              <div className="border rounded-lg shadow-sm font-poppins">
+                <div className="flex items-center gap-4 p-4 md:p-6 border-b font-poppins">
+                  <span className="text-gray-900 font-semibold text-sm md:text-base font-poppins">PAYMENT</span>
                 </div>
-                <div className="p-4 md:p-6 space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-xs md:text-sm font-medium text-gray-900">Card number</label>
+                <div className="p-4 md:p-6 space-y-4 font-poppins">
+                  <div className="space-y-2 font-poppins">
+                    <label className="text-xs md:text-sm font-medium text-gray-900 font-poppins">Card number</label>
                     <input
                       type="text"
-                      className="w-full p-2 border rounded-md text-sm md:text-base"
+                      className="w-full p-2 border rounded-md text-sm md:text-base font-poppins"
                       value={cardNumber}
                       onChange={(e) => setCardNumber(e.target.value)}
                     />
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-xs md:text-sm font-medium text-gray-900">Name on the card</label>
+                  <div className="space-y-2 font-poppins">
+                    <label className="text-xs md:text-sm font-medium text-gray-900 font-poppins">Name on the card</label>
                     <input
                       type="text"
-                      className="w-full p-2 border rounded-md text-sm md:text-base"
+                      className="w-full p-2 border rounded-md text-sm md:text-base font-poppins"
                       value={cardName}
                       onChange={(e) => setCardName(e.target.value)}
                     />
                   </div>
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <div className="space-y-2 w-full sm:w-1/2">
-                      <label className="text-xs md:text-sm font-medium text-gray-900">Expiration date (MM/YY)</label>
+                  <div className="flex flex-col sm:flex-row gap-4 font-poppins">
+                    <div className="space-y-2 w-full sm:w-1/2 font-poppins">
+                      <label className="text-xs md:text-sm font-medium text-gray-900 font-poppins">Expiration date (MM/YY)</label>
                       <input
                         type="text"
-                        className="w-full p-2 border rounded-md text-sm md:text-base"
+                        className="w-full p-2 border rounded-md text-sm md:text-base font-poppins"
                         value={expiryDate}
                         onChange={(e) => setExpiryDate(e.target.value)}
                         placeholder="MM/YY"
                       />
                     </div>
-                    <div className="space-y-2 w-full sm:w-1/2">
-                      <label className="text-xs md:text-sm font-medium text-gray-900">CVC</label>
+                    <div className="space-y-2 w-full sm:w-1/2 font-poppins">
+                      <label className="text-xs md:text-sm font-medium text-gray-900 font-poppins">CVC</label>
                       <input
                         type="text"
-                        className="w-full p-2 border rounded-md text-sm md:text-base"
+                        className="w-full p-2 border rounded-md text-sm md:text-base font-poppins"
                         value={cvc}
                         onChange={(e) => setCvc(e.target.value)}
                         placeholder="123"
@@ -387,12 +381,12 @@ const CheckoutPage = () => {
             </div>
 
             {/* Order Summary - shown below checkout details on mobile, adjacent on larger screens */}
-            <div className="w-full lg:w-1/2 mt-6 lg:mt-0 space-y-4 md:space-y-6">
-              <h3 className="text-xl md:text-2xl font-semibold text-gray-900">Order summary</h3>
-              <div className="space-y-4 md:space-y-6 border rounded-lg shadow-sm p-4 md:p-6 bg-gray-50">
+            <div className="w-full lg:w-1/2 mt-6 lg:mt-0 space-y-4 md:space-y-6 font-poppins">
+              <h3 className="text-xl md:text-2xl font-semibold text-gray-900 font-poppins">Order summary</h3>
+              <div className="space-y-4 md:space-y-6 border rounded-lg shadow-sm p-4 md:p-6 bg-gray-50 font-poppins">
                 {cart?.items?.length ? (
                   cart.items.map((item) => (
-                    <div key={item._id} className="flex gap-3 md:gap-4 border-t pt-4 md:pt-6">
+                    <div key={item._id} className="flex gap-3 md:gap-4 border-t pt-4 md:pt-6 font-poppins">
                       <div className="w-16 h-20 md:w-24 md:h-28 overflow-hidden rounded-lg bg-white">
                         <img
                           src={item.product.images?.[0] || 'https://placehold.co/100x100'}
@@ -400,50 +394,50 @@ const CheckoutPage = () => {
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <div className="flex-1 space-y-1 md:space-y-2">
-                        <div className="flex justify-between">
-                          <div>
-                            <h4 className="text-sm md:text-base font-semibold text-gray-900">{item.product.name}</h4>
-                            <p className="text-xs md:text-sm text-gray-600">Size: {item.size}</p>
+                      <div className="flex-1 space-y-1 md:space-y-2 font-poppins">
+                        <div className="flex justify-between font-poppins">
+                          <div className="font-poppins">
+                            <h4 className="text-sm md:text-base font-semibold text-gray-900 font-poppins">{item.product.name}</h4>
+                            <p className="text-xs md:text-sm text-gray-600 font-poppins">Size: {item.size}</p>
                           </div>
-                          <div className="text-xs md:text-sm text-gray-600">
+                          <div className="text-xs md:text-sm text-gray-600 font-poppins">
                             Quantity: {item.quantity}
                           </div>
                         </div>
-                        <div className="flex gap-2">
-                          <span className="text-sm md:text-base font-semibold text-gray-900">${item.price.toFixed(2)}</span>
-                          <span className="text-xs md:text-sm text-gray-600 line-through">${(item.price * 1.2).toFixed(2)}</span>
+                        <div className="flex gap-2 font-poppins">
+                          <span className="text-sm md:text-base font-semibold text-gray-900 font-poppins">${item.price.toFixed(2)}</span>
+                          <span className="text-xs md:text-sm text-gray-600 line-through font-poppins">${(item.price * 1.2).toFixed(2)}</span>
                         </div>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div className="text-gray-600 text-base md:text-lg py-4">Your cart is empty</div>
+                  <div className="text-gray-600 text-base md:text-lg py-4 font-poppins">Your cart is empty</div>
                 )}
 
                 {/* Order Total */}
-                <div className="border-t pt-4 md:pt-6 space-y-2 md:space-y-4">
-                  <div className="flex justify-between text-sm md:text-base text-gray-600">
-                    <span>Subtotal</span>
-                    <span>${subtotal.toFixed(2)}</span>
+                <div className="border-t pt-4 md:pt-6 space-y-2 md:space-y-4 font-poppins">
+                  <div className="flex justify-between text-sm md:text-base text-gray-600 font-poppins">
+                    <span className="font-poppins">Subtotal</span>
+                    <span className="font-poppins">${subtotal.toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-sm md:text-base text-gray-600">
-                    <span>Shipping estimate</span>
-                    <span>${shipping.toFixed(2)}</span>
+                  <div className="flex justify-between text-sm md:text-base text-gray-600 font-poppins">
+                    <span className="font-poppins">Shipping estimate</span>
+                    <span className="font-poppins">${shipping.toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-sm md:text-base text-gray-600">
-                    <span>Tax estimate</span>
-                    <span>${tax.toFixed(2)}</span>
+                  <div className="flex justify-between text-sm md:text-base text-gray-600 font-poppins">
+                    <span className="font-poppins">Tax estimate</span>
+                    <span className="font-poppins">${tax.toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-base md:text-lg text-gray-900 font-semibold pt-2 border-t">
-                    <span>Order total</span>
-                    <span>${total.toFixed(2)}</span>
+                  <div className="flex justify-between text-base md:text-lg text-gray-900 font-semibold pt-2 border-t font-poppins">
+                    <span className="font-poppins">Order total</span>
+                    <span className="font-poppins">${total.toFixed(2)}</span>
                   </div>
                 </div>
 
                 {/* Confirm Order Button */}
                 <button
-                  className="w-full bg-gray-900 text-white py-3 px-4 text-sm md:text-base rounded-full shadow-lg hover:bg-gray-800 transition-colors disabled:opacity-50 flex justify-center items-center"
+                  className="w-full bg-gray-900 text-white py-3 px-4 text-sm md:text-base rounded-full shadow-lg hover:bg-gray-800 transition-colors disabled:opacity-50 flex justify-center items-center font-poppins"
                   onClick={handleCheckout}
                   disabled={orderLoading || cartLoading}
                 >
@@ -451,8 +445,8 @@ const CheckoutPage = () => {
                 </button>
                 
                 {/* Back to shopping link - added for better mobile UX */}
-                <div className="text-center pt-2">
-                  <Link to="/products" className="text-sm md:text-base text-gray-600 hover:text-gray-900 underline">
+                <div className="text-center pt-2 font-poppins">
+                  <Link to="/products" className="text-sm md:text-base text-gray-600 hover:text-gray-900 underline font-poppins">
                     Continue shopping
                   </Link>
                 </div>

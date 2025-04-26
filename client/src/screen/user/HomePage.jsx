@@ -64,6 +64,7 @@ const Home = () => {
               <div className="w-5 sm:w-7 h-4 sm:h-5 relative">
                 <FaArrowRight className="w-4 sm:w-5 h-4 sm:h-5 ml-2 text-white" />
               </div>
+              
             </button>
           </div>
         </div>
