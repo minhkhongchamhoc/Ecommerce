@@ -24,16 +24,6 @@ const ProductCard = ({
           src={image}
           alt={name}
         />
-        <div
-          className="p-2.5 absolute top-[12px] right-4 bg-white rounded-full inline-flex flex-col justify-center items-center"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            // Add wishlist functionality here if needed
-            console.log('Wishlist clicked');
-          }}
-        >
-        </div>
       </div>
       
       <div className="w-full px-2 md:px-4 inline-flex justify-between items-start gap-2 md:gap-5">

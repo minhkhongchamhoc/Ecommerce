@@ -7,7 +7,6 @@ import AboutPage from './screen/user/AboutPage';
 import Layout from '../Layout';
 import Home from './screen/user/HomePage';
 import ProductsPage from './screen/admin/ProductsPage';
-import CategoriesPage from './screen/admin/CategoriesPage';
 import OrdersPage from './screen/admin/OrdersPage';
 import ShopPage from './screen/user/ShopPage';
 import ProductDetail from './screen/user/ProductDetail';
@@ -51,7 +50,6 @@ const Navigation = () => {
           path="/orders"
           element={isLoggedIn ? <Orders /> : <Navigate to="/login" />}
         />
-
         {/* Admin Routes */}
         <Route
           path="/admin"
@@ -68,16 +66,6 @@ const Navigation = () => {
           element={
             isLoggedIn && user?.role === 'admin' ? (
               <ProductsPage />
-            ) : (
-              <Navigate to="/" />
-            )
-          }
-        />
-        <Route
-          path="/admin/categories"
-          element={
-            isLoggedIn && user?.role === 'admin' ? (
-              <CategoriesPage />
             ) : (
               <Navigate to="/" />
             )
